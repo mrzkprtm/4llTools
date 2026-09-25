@@ -4,6 +4,7 @@ import { CloseIcon, MenuIcon } from './components/Icons'
 import ToolTile from './components/ToolTile'
 import Home from './Home'
 import Sidebar from './Sidebar'
+import { applyPageMeta, homeMeta, notFoundMeta, toolMeta } from './seo'
 import { getTool, getToolComponent, tools } from './tools/registry'
 
 export default function App() {
@@ -14,6 +15,8 @@ export default function App() {
   useEffect(() => {
     setMenuOpen(false)
     window.scrollTo(0, 0)
+    const tool = getTool(pathname.slice(1))
+    applyPageMeta(pathname === '/' ? homeMeta : tool ? toolMeta(tool) : notFoundMeta)
   }, [pathname])
 
   useEffect(() => {
@@ -60,13 +63,6 @@ function ToolPage() {
   const { slug = '' } = useParams()
   const tool = getTool(slug)
   const Component = getToolComponent(slug)
-
-  useEffect(() => {
-    document.title = tool ? `${tool.name} · 4llTools` : 'Not found · 4llTools'
-    return () => {
-      document.title = '4llTools'
-    }
-  }, [tool])
 
   if (!tool || !Component) {
     return (
