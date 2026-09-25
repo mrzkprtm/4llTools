@@ -50,6 +50,17 @@ Each folder in `src/tools/` is one tool. The folder name becomes its URL, and th
 
 The tool is now live at `/my-tool`. Each tool is loaded only when it's opened, so adding more doesn't slow down the home page.
 
+## Deploy on Cloudflare Pages
+
+1. In the Cloudflare dashboard go to **Workers & Pages → Create → Pages → Connect to Git** and pick this repository.
+2. Use these build settings:
+   - Framework preset: **Vite** (or None)
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+3. Click **Save and Deploy**. Every push to `main` deploys, and pull requests get preview links.
+
+`.node-version` pins Node 22 for the build, which Vite needs. There is no `404.html`, so Pages serves `index.html` for unknown paths and direct links like `/qr-reader` work. Pages sites are always HTTPS, which the camera needs.
+
 ## Deploy on Vercel
 
 1. Go to [vercel.com/new](https://vercel.com/new) and import this repository.
