@@ -54,7 +54,7 @@ function prerender(): Plugin {
         await write('/index.html', page(home, mod.homeStructuredData(home, tools)))
         await write('/404.html', page(mod.notFoundMeta, []))
         const cards: [string, ShareCard][] = [
-          [home.image, { eyebrow: `A pocket workbench · ${tools.length} tools`, title: 'Free online tools that run in your browser', description: 'QR codes, JSON, PDFs, images, passwords, calculators and more. No sign-up.' }],
+          [home.image, { eyebrow: `A pocket workbench · ${tools.length} tools`, title: 'Free online tools that run in your browser', description: 'QR codes, JSON, PDFs, images, calculators, and physics, math and algorithm simulations.' }],
         ]
 
         const groups = mod.groupByCategory(tools)
