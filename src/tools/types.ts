@@ -1,4 +1,13 @@
-export type Category = 'Scan & Code' | 'Text' | 'Developer' | 'Security' | 'Convert'
+export type Category =
+  | 'Scan & Code'
+  | 'Text'
+  | 'Developer'
+  | 'Security'
+  | 'Convert'
+  | 'Calculator'
+  | 'Design'
+  | 'Image'
+  | 'Utility'
 
 export interface ToolMeta {
   /** Short display name. */

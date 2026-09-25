@@ -10,7 +10,9 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "dompurify": "^3.4.16",
     "jsqr": "^1.4.0",
+    "marked": "^18.0.14",
     "qrcode": "^1.5.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
