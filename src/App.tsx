@@ -1,6 +1,7 @@
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation, useParams } from 'react-router-dom'
-import { CloseIcon, MenuIcon } from './components/Icons'
+import Icon from './components/Icon'
+import Skeleton from './components/Skeleton'
 import ToolTile from './components/ToolTile'
 import Home from './Home'
 import Sidebar from './Sidebar'
@@ -36,7 +37,7 @@ export default function App() {
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          {menuOpen ? <CloseIcon /> : <MenuIcon />}
+          <Icon key={menuOpen ? 'close' : 'menu'} name={menuOpen ? 'close' : 'menu'} size={22} className="swap-in" />
         </button>
         <Link to="/" className="brand" aria-label="4llTools home">
           <span className="brand-4">4</span>ll<span className="brand-tools">Tools</span>
@@ -67,11 +68,13 @@ function ToolPage() {
   if (!tool || !Component) {
     return (
       <section className="not-found">
+        <Icon name="compass-2" size={56} className="not-found-icon" />
         <p className="eyebrow">404</p>
         <h1>There's no tool called “{slug}”.</h1>
         <p>
           <Link to="/" className="btn primary">
             Browse all tools
+            <Icon name="arrow-right" size={18} className="btn-arrow" />
           </Link>
         </p>
       </section>
@@ -79,7 +82,7 @@ function ToolPage() {
   }
 
   return (
-    <article className="tool-page">
+    <article className="tool-page" key={tool.slug}>
       <header className="tool-head">
         <ToolTile tool={tool} size="lg" />
         <div>
@@ -91,7 +94,7 @@ function ToolPage() {
         </div>
       </header>
       <div className="panel">
-        <Suspense fallback={<p className="muted loading">Loading {tool.name}…</p>}>
+        <Suspense fallback={<Skeleton label={`Loading ${tool.name}`} />}>
           <Component />
         </Suspense>
       </div>

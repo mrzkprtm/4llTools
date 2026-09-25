@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Security',
   keywords: ['random', 'secure', 'kata sandi', 'sandi'],
   symbol: 'Pw',
+  icon: 'key',
 }

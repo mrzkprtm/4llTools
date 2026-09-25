@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Utility',
   keywords: ['stopwatch', 'countdown', 'timer', 'waktu'],
   symbol: 'St',
+  icon: 'timer',
 }

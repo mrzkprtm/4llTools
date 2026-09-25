@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['escape', 'unescape', 'html'],
   symbol: '&;',
+  icon: 'code',
 }

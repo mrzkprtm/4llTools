@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Text',
   keywords: ['md', 'render', 'preview'],
   symbol: 'Md',
+  icon: 'article',
 }

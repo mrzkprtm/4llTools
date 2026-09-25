@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Text',
   keywords: ['placeholder', 'dummy text', 'teks contoh'],
   symbol: 'Li',
+  icon: 'paragraph',
 }

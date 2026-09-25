@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['pretty', 'beautify', 'minify', 'validate', 'rapikan'],
   symbol: '{}',
+  icon: 'curly-braces',
 }

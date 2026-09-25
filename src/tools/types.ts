@@ -19,6 +19,8 @@ export interface ToolMeta {
   keywords?: string[]
   /** 1–3 characters shown on the tool's tile, like an element symbol ("Qr", "{}"). */
   symbol: string
+  /** A Majesticons name (https://majesticons.com), without "-line", drawn as a duotone icon. */
+  icon: string
 }
 
 export interface Tool extends ToolMeta {

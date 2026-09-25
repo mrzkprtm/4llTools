@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Calculator',
   keywords: ['persen', 'diskon', 'discount', 'percent'],
   symbol: '%',
+  icon: 'percent',
 }

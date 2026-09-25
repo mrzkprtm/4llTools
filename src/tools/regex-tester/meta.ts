@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['regexp', 'pattern', 'match'],
   symbol: '.*',
+  icon: 'flask',
 }

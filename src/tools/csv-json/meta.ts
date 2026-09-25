@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Convert',
   keywords: ['csv', 'json', 'excel', 'spreadsheet'],
   symbol: 'Cj',
+  icon: 'table',
 }

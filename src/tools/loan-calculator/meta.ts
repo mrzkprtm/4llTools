@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Calculator',
   keywords: ['cicilan', 'kredit', 'kpr', 'bunga', 'installment', 'mortgage'],
   symbol: 'Lo',
+  icon: 'coins',
 }

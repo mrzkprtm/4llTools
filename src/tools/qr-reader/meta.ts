@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Scan & Code',
   keywords: ['scan', 'scanner', 'camera', 'kamera', 'pindai', 'barcode'],
   symbol: 'Qr',
+  icon: 'camera',
 }

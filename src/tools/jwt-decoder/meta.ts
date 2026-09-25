@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['token', 'jwt', 'auth', 'bearer'],
   symbol: 'Jw',
+  icon: 'ticket',
 }

@@ -1,3 +1,4 @@
+import icons from 'virtual:majesticons'
 import { describe, expect, it } from 'vitest'
 import { encodeBase64 } from './base64/codec'
 import { CASES, splitWords } from './case-converter/cases'
@@ -33,6 +34,10 @@ describe('registry with all tools', () => {
     for (const t of tools) expect([...t.symbol].length, t.slug).toBeGreaterThan(0)
     for (const t of tools) expect([...t.symbol].length, t.slug).toBeLessThanOrEqual(3)
     expect(new Set(tools.map((t) => t.symbol)).size).toBe(tools.length)
+  })
+
+  it('gives every tool a Majesticons icon with a line layer', () => {
+    for (const t of tools) expect(icons[t.icon]?.[1], t.slug).toContain('<path')
   })
 
   it('groups tools by category in alphabetical order', () => {

@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Text',
   keywords: ['uppercase', 'lowercase', 'camel', 'snake', 'kebab', 'huruf besar', 'huruf kecil'],
   symbol: 'Aa',
+  icon: 'font-size',
 }

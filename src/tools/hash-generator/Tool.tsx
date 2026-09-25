@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Busy from '../../components/Busy'
 import CopyButton from '../../components/CopyButton'
 import { ALGORITHMS, hashBytes, type Algorithm } from './hash'
 
@@ -8,12 +9,18 @@ export default function HashGenerator() {
   const [source, setSource] = useState<Source>({ kind: 'text', text: '' })
   const [hashes, setHashes] = useState<Partial<Record<Algorithm, string>>>({})
   const [upper, setUpper] = useState(false)
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     let cancelled = false
     const data = source.kind === 'text' ? new TextEncoder().encode(source.text) : source.data
+    // Only big inputs take long enough for a "hashing" line to be worth showing.
+    const slow = data.byteLength > 1_000_000
+    setBusy(slow)
     Promise.all(ALGORITHMS.map((a) => hashBytes(a, data))).then((values) => {
-      if (!cancelled) setHashes(Object.fromEntries(ALGORITHMS.map((a, i) => [a, values[i]])))
+      if (cancelled) return
+      setHashes(Object.fromEntries(ALGORITHMS.map((a, i) => [a, values[i]])))
+      setBusy(false)
     })
     return () => {
       cancelled = true
@@ -43,6 +50,7 @@ export default function HashGenerator() {
       <label style={{ fontWeight: 400 }}>
         <input type="checkbox" checked={upper} onChange={(e) => setUpper(e.target.checked)} /> Uppercase
       </label>
+      {busy && <Busy label="Hashing file…" />}
       {ALGORITHMS.map((a) => {
         const h = upper ? (hashes[a] ?? '').toUpperCase() : (hashes[a] ?? '')
         return (

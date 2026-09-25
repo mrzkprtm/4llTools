@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['binary', 'hex', 'octal', 'biner', 'heksadesimal'],
   symbol: '0x',
+  icon: 'cpu',
 }

@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { SearchIcon } from './components/Icons'
+import Icon from './components/Icon'
 import ToolTile from './components/ToolTile'
 import { categoryKey, groupByCategory } from './tools/grouping'
 import { searchTools, tools } from './tools/registry'
@@ -21,7 +21,7 @@ export default function Home() {
           sign-up and no upload.
         </p>
         <div className="search-box search-box-lg">
-          <SearchIcon />
+          <Icon name="search" size={20} />
           <input
             className="search"
             type="search"
@@ -43,13 +43,14 @@ export default function Home() {
             <span className="cat-count">{list.length}</span>
           </h2>
           <div className="grid">
-            {list.map((t) => (
-              <Link key={t.slug} to={`/${t.slug}`} className="card">
+            {list.map((t, i) => (
+              <Link key={t.slug} to={`/${t.slug}`} className="card" style={{ '--i': i } as CSSProperties}>
                 <ToolTile tool={t} />
                 <span className="card-body">
                   <span className="card-name">{t.name}</span>
                   <span className="card-desc">{t.description}</span>
                 </span>
+                <Icon name="arrow-right" size={18} className="card-arrow" />
               </Link>
             ))}
           </div>

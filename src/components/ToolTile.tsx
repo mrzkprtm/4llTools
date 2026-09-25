@@ -1,12 +1,13 @@
 import type { Tool } from '../tools/types'
-import { categoryKey, indexOf } from '../tools/grouping'
+import { categoryKey } from '../tools/grouping'
+import Icon from './Icon'
 
-/** The tool's symbol set like an element on a periodic table: index number on top, symbol below. */
+/** The tool's duotone icon on a tile tinted by category, with its short symbol in the corner. */
 export default function ToolTile({ tool, size = 'md' }: { tool: Tool; size?: 'sm' | 'md' | 'lg' }) {
   return (
     <span className={`tile tile-${size}`} data-cat={categoryKey(tool.category)} aria-hidden="true">
-      {size !== 'sm' && <span className="tile-num">{indexOf(tool)}</span>}
-      <span className="tile-sym">{tool.symbol}</span>
+      {size !== 'sm' && <span className="tile-sym">{tool.symbol}</span>}
+      <Icon name={tool.icon} size={size === 'sm' ? 18 : size === 'md' ? 28 : 44} />
     </span>
   )
 }

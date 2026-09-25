@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { SearchIcon } from './components/Icons'
+import Icon from './components/Icon'
 import ToolTile from './components/ToolTile'
 import { groupByCategory } from './tools/grouping'
 import { searchTools, tools } from './tools/registry'
@@ -33,7 +33,7 @@ export default function Sidebar({ open, onNavigate, onRequestOpen }: Props) {
   return (
     <aside className={`sidebar ${open ? 'open' : ''}`} aria-label="Tools">
       <div className="search-box">
-        <SearchIcon />
+        <Icon name="search" size={18} />
         <input
           ref={inputRef}
           className="search"
@@ -47,6 +47,7 @@ export default function Sidebar({ open, onNavigate, onRequestOpen }: Props) {
       </div>
       <nav>
         <NavLink to="/" end className="nav-link nav-home" onClick={onNavigate}>
+          <Icon name="home-simple" size={18} />
           Index of all tools
         </NavLink>
         {results.length === 0 && <p className="muted nav-empty">Nothing matches “{query}”.</p>}

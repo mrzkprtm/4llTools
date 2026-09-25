@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Image',
   keywords: ['compress', 'resize', 'kompres', 'gambar', 'foto', 'webp'],
   symbol: 'Im',
+  icon: 'image',
 }
