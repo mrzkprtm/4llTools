@@ -156,7 +156,7 @@ export default function MatrixRain() {
         </div>
       )}
       <Select label="Colour" value={color} options={Object.entries(COLORS).map(([k, c]) => [k as ColorKey, c.name] as const)} onChange={setColor} />
-      <Slider label="Font size" value={size} min={10} max={32} unit=" px" onChange={setSize} />
+      <Slider label="Font size" value={size} min={12} max={32} unit=" px" onChange={setSize} />
       <Slider label="Speed" value={speed} min={0.2} max={3} step={0.1} unit="×" onChange={setSpeed} />
       <Slider label="Density" value={density} min={0.1} max={1} step={0.05} format={(v) => `${Math.round(v * 100)}%`} onChange={setDensity} />
       <Toggle label="Glow" checked={glow} onChange={setGlow} />
