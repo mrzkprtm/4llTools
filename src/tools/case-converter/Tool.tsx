@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import MorphText from '../../motion/MorphText'
 import { CASES } from './cases'
 
 export default function CaseConverter() {
@@ -14,7 +15,7 @@ export default function CaseConverter() {
           <div key={c.name}>
             <label>{c.name}</label>
             <div className="row" style={{ margin: 0, flexWrap: 'nowrap' }}>
-              <div className="output" style={{ flex: 1, minHeight: 42 }}>{out}</div>
+              <div className="output" style={{ flex: 1, minHeight: 42 }}><MorphText text={out} limit={160} /></div>
               <CopyButton text={out} />
             </div>
           </div>

@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import Busy from '../../components/Busy'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
+import SettleOutput from '../../motion/SettleOutput'
 import { byteSize, run, type Lang, type Mode, type Result } from './process'
 
 const SAMPLES: Record<Lang, string> = {
@@ -101,12 +105,15 @@ export default function Minifier() {
 
   return (
     <div>
-      <div className="row">
-        <button type="button" className={`btn ${lang === 'js' ? 'primary' : ''}`} onClick={() => switchLang('js')}>JavaScript</button>
-        <button type="button" className={`btn ${lang === 'css' ? 'primary' : ''}`} onClick={() => switchLang('css')}>CSS</button>
-        <span style={{ width: 8 }} />
-        <button type="button" className={`btn ${mode === 'minify' ? 'primary' : ''}`} onClick={() => setMode('minify')}>Minify</button>
-        <button type="button" className={`btn ${mode === 'beautify' ? 'primary' : ''}`} onClick={() => setMode('beautify')}>Beautify</button>
+      <div className="row" style={{ gap: 16 }}>
+        <PillRow style={{ margin: 0 }}>
+          <button type="button" className={`btn ${lang === 'js' ? 'primary' : ''}`} onClick={() => switchLang('js')}>JavaScript</button>
+          <button type="button" className={`btn ${lang === 'css' ? 'primary' : ''}`} onClick={() => switchLang('css')}>CSS</button>
+        </PillRow>
+        <PillRow style={{ margin: 0 }}>
+          <button type="button" className={`btn ${mode === 'minify' ? 'primary' : ''}`} onClick={() => setMode('minify')}>Minify</button>
+          <button type="button" className={`btn ${mode === 'beautify' ? 'primary' : ''}`} onClick={() => setMode('beautify')}>Beautify</button>
+        </PillRow>
       </div>
       <div className="row">
         {mode === 'beautify' ? (
@@ -148,14 +155,16 @@ export default function Minifier() {
         </p>
       )}
       <div className="stats">
-        <div className="stat"><b>{formatBytes(before)}</b>Before</div>
-        <div className="stat"><b>{formatBytes(after)}</b>After</div>
-        <div className="stat"><b className={saved > 0 ? 'ok' : undefined}>{saved > 0 ? `${saved}%` : saved < 0 ? `+${-saved}%` : '0%'}</b>{saved >= 0 ? 'Saved' : 'Larger'}</div>
+        <div className="stat"><b><Roll>{formatBytes(before)}</Roll></b>Before</div>
+        <div className="stat"><b><Roll>{formatBytes(after)}</Roll></b>After</div>
+        <div className="stat"><b className={saved > 0 ? 'ok' : undefined}><Roll>{saved > 0 ? `${saved}%` : saved < 0 ? `+${-saved}%` : '0%'}</Roll></b>{saved >= 0 ? 'Saved' : 'Larger'}</div>
       </div>
+      <div className="bar" style={{ marginTop: 10 }} aria-hidden="true"><i style={{ transform: `scaleX(${before ? Math.min(1, after / before) : 0})` }} /></div>
       <label htmlFor="min-out">
-        Output {busy && <span className="muted" style={{ fontWeight: 400 }} aria-live="polite">· working…</span>}
+        Output
       </label>
-      <textarea id="min-out" readOnly value={output} spellCheck={false} style={{ minHeight: 200, opacity: busy ? 0.6 : 1, transition: 'opacity .2s' }} />
+      {busy && <Busy label={mode === 'minify' ? 'Minifying…' : 'Beautifying…'} />}
+      <SettleOutput id="min-out" value={output} motion="order" delay={60} style={{ minHeight: 200, opacity: busy ? 0.6 : 1, transition: 'opacity .2s' }} />
       <div className="row">
         <CopyButton text={output} />
         <button type="button" className="btn" onClick={download} disabled={!output}>Download</button>

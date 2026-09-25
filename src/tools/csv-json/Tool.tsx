@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
+import SettleOutput from '../../motion/SettleOutput'
 import { csvToJson, jsonToCsv } from './csv'
 
 export default function CsvJson() {
@@ -10,8 +13,17 @@ export default function CsvJson() {
 
   let output = ''
   let error = ''
+  let rows = 0
   try {
-    output = mode === 'csv2json' ? JSON.stringify(csvToJson(input, delimiter, header), null, 2) : input.trim() ? jsonToCsv(JSON.parse(input), delimiter) : ''
+    if (mode === 'csv2json') {
+      const data = csvToJson(input, delimiter, header)
+      rows = data.length
+      output = JSON.stringify(data, null, 2)
+    } else if (input.trim()) {
+      const data = JSON.parse(input)
+      rows = Array.isArray(data) ? data.length : 1
+      output = jsonToCsv(data, delimiter)
+    }
   } catch (err) {
     error = err instanceof Error ? err.message : String(err)
   }
@@ -27,7 +39,7 @@ export default function CsvJson() {
 
   return (
     <div>
-      <div className="row">
+      <PillRow>
         <button type="button" className={`btn ${mode === 'csv2json' ? 'primary' : ''}`} onClick={() => setMode('csv2json')}>CSV → JSON</button>
         <button type="button" className={`btn ${mode === 'json2csv' ? 'primary' : ''}`} onClick={() => setMode('json2csv')}>JSON → CSV</button>
         <select value={delimiter} onChange={(e) => setDelimiter(e.target.value)} style={{ width: 'auto' }} aria-label="Delimiter">
@@ -41,14 +53,14 @@ export default function CsvJson() {
             <input type="checkbox" checked={header} onChange={(e) => setHeader(e.target.checked)} /> First row is the header
           </label>
         )}
-      </div>
+      </PillRow>
       <label htmlFor="csv-in">{mode === 'csv2json' ? 'CSV' : 'JSON'}</label>
       <textarea id="csv-in" value={input} onChange={(e) => setInput(e.target.value)} spellCheck={false} />
       <label htmlFor="csv-file">Or open a file</label>
       <input id="csv-file" type="file" accept=".csv,.json,.txt,text/csv,application/json" onChange={async (e) => { const f = e.target.files?.[0]; if (f) setInput(await f.text()); e.target.value = '' }} />
-      {error && <p className="error">{error}</p>}
+      {error ? <p className="error shake-once" key={error}>{error}</p> : output && <p style={{ margin: '10px 0 0' }}><span className="chip"><Roll>{rows}</Roll> {rows === 1 ? 'row' : 'rows'}</span></p>}
       <label htmlFor="csv-out">{mode === 'csv2json' ? 'JSON' : 'CSV'}</label>
-      <textarea id="csv-out" readOnly value={output} spellCheck={false} />
+      <SettleOutput id="csv-out" value={output} motion="order" />
       <div className="row">
         <CopyButton text={output} />
         <button type="button" className="btn" onClick={download} disabled={!output}>Download</button>

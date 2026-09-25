@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import SettleOutput from '../../motion/SettleOutput'
 import { ConvertError, FORMAT_LABEL, FORMATS, convert, detectFormat, type Format } from './convert'
 
 const EXAMPLE = `# docker-compose style service
@@ -26,6 +27,7 @@ export default function YamlJsonToml() {
   const [from, setFrom] = useState<Format | 'auto'>('auto')
   const [to, setTo] = useState<Format>('json')
   const [indent, setIndent] = useState(2)
+  const [turns, setTurns] = useState(0)
 
   const detected = useMemo(() => detectFormat(input), [input])
   const source: Format = from === 'auto' ? detected : from
@@ -40,6 +42,7 @@ export default function YamlJsonToml() {
   }, [input, source, to, indent])
 
   function swap() {
+    setTurns((t) => t + 1)
     if (result.output) setInput(result.output)
     setFrom(to)
     setTo(source === to ? (to === 'json' ? 'yaml' : 'json') : source)
@@ -63,7 +66,7 @@ export default function YamlJsonToml() {
           <option value="auto">Auto-detect ({FORMAT_LABEL[detected]})</option>
           {FORMATS.map((f) => <option key={f} value={f}>{FORMAT_LABEL[f]}</option>)}
         </select>
-        <button type="button" className="btn" onClick={swap} title="Use the output as input and swap directions" aria-label="Swap input and output">⇄ Swap</button>
+        <button type="button" className="btn" onClick={swap} title="Use the output as input and swap directions" aria-label="Swap input and output"><span className="spin-icon" style={{ transform: `rotate(${turns * 180}deg)` }}>⇄</span> Swap</button>
         <label htmlFor="yj-to" style={{ fontWeight: 400 }}>To</label>
         <select id="yj-to" value={to} onChange={(e) => setTo(e.target.value as Format)} style={{ width: 'auto' }}>
           {FORMATS.map((f) => <option key={f} value={f}>{FORMAT_LABEL[f]}</option>)}
@@ -98,7 +101,7 @@ export default function YamlJsonToml() {
         </div>
         <div style={{ minWidth: 0 }}>
           <label htmlFor="yj-out">{FORMAT_LABEL[to]} output</label>
-          <textarea id="yj-out" readOnly value={result.output} spellCheck={false} style={{ minHeight: 320 }} />
+          <SettleOutput id="yj-out" key={to} className="swap-code" value={result.output} motion="order" style={{ minHeight: 320 }} />
           <div className="row" style={{ marginTop: 8 }}>
             <CopyButton text={result.output} />
             <button type="button" className="btn" onClick={download} disabled={!result.output}>Download .{EXT[to]}</button>
@@ -106,7 +109,7 @@ export default function YamlJsonToml() {
         </div>
       </div>
       {result.error && (
-        <div className="error" role="alert">
+        <div className="error shake-once" role="alert" key={result.error.message}>
           <p style={{ margin: '8px 0 4px' }}>
             {result.error.line ? <b>Line {result.error.line}{result.error.column ? `, column ${result.error.column}` : ''}: </b> : null}
             {result.error.message}

@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import Roll from '../../motion/Roll'
+import { useSettled } from '../../motion/useSettled'
 import { diffLines } from './diff'
 
 // Caps lines(original) × lines(changed) so the comparison table stays around 16 MB.
@@ -11,6 +13,7 @@ export default function TextDiff() {
   const ops = a || b ? (tooBig ? [] : diffLines(a, b)) : []
   const added = ops.filter((o) => o.type === 'add').length
   const removed = ops.filter((o) => o.type === 'del').length
+  const settled = useSettled(`${a}\u0000${b}`, 250)
 
   return (
     <div>
@@ -28,12 +31,12 @@ export default function TextDiff() {
       {ops.length > 0 && (
         <>
           <p>
-            <span className="ok">+{added} added</span> · <span className="error">−{removed} removed</span>
+            <span className="chip good calm">+<Roll>{added}</Roll> added</span> <span className="chip bad calm">−<Roll>{removed}</Roll> removed</span>
             {added + removed === 0 && <span className="muted"> · The texts are identical.</span>}
           </p>
-          <div className="output" style={{ padding: '6px 0' }}>
+          <div key={settled} className="output diff-out" style={{ padding: '6px 0' }}>
             {ops.map((o, i) => (
-              <div key={i} className={`diff-line ${o.type === 'add' ? 'diff-add' : o.type === 'del' ? 'diff-del' : ''}`}>
+              <div key={i} className={`diff-line ${o.type === 'add' ? 'diff-add' : o.type === 'del' ? 'diff-del' : ''}`} style={o.type === 'same' ? undefined : { animationDelay: `${Math.min(i, 40) * 10}ms` }}>
                 {o.type === 'add' ? '+ ' : o.type === 'del' ? '− ' : '  '}
                 {o.text || ' '}
               </div>

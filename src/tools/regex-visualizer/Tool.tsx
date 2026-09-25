@@ -34,6 +34,9 @@ const FRAME_COLORS: Record<FrameKind, string> = {
 }
 
 function DiagramSvg({ d }: { d: Diagram }) {
+  // The track draws in from left to right; each piece starts when the pen reaches its x position.
+  const delay = (x: number) => ({ animationDelay: `${Math.round((x / Math.max(1, d.width)) * 420)}ms` })
+  const startX = (path: string) => Number(/M\s*(-?[\d.]+)/.exec(path)?.[1] ?? 0)
   return (
     <svg
       width={d.width}
@@ -47,7 +50,7 @@ function DiagramSvg({ d }: { d: Diagram }) {
         if (p.kind === 'frame') {
           const c = FRAME_COLORS[p.style]
           return (
-            <g key={i}>
+            <g key={i} className="rr-fade" style={delay(p.x)}>
               <rect x={p.x} y={p.y} width={p.w} height={p.h} rx={8} fill="none" stroke={c} strokeWidth={1.2} strokeDasharray={p.style === 'capture' ? undefined : '4 3'} />
               <text x={p.x + 4} y={p.y - 5} fill={c} fontSize={11}>{p.label}</text>
             </g>
@@ -57,24 +60,24 @@ function DiagramSvg({ d }: { d: Diagram }) {
       })}
       {d.prims.map((p, i) =>
         p.kind === 'path' ? (
-          <path key={i} d={p.d} fill="none" stroke={p.role === 'loop' || p.role === 'skip' ? 'var(--muted)' : 'var(--text)'} strokeWidth={1.5} strokeOpacity={p.role ? 0.75 : 0.55} strokeLinecap="round" />
+          <path key={i} d={p.d} pathLength={1} className="rr-path" style={delay(startX(p.d))} fill="none" stroke={p.role === 'loop' || p.role === 'skip' ? 'var(--muted)' : 'var(--text)'} strokeWidth={1.5} strokeOpacity={p.role ? 0.75 : 0.55} strokeLinecap="round" />
         ) : null,
       )}
       {d.prims.map((p, i) => {
         if (p.kind === 'box') {
           const c = BOX_COLORS[p.style]
           if (p.style === 'terminal') {
-            return <circle key={i} cx={p.x + p.w / 2} cy={p.y + p.h / 2} r={p.w / 2} fill={c.fill} stroke={c.stroke} strokeWidth={2}><title>{p.label}</title></circle>
+            return <circle key={i} className="rr-pop" style={delay(p.x)} cx={p.x + p.w / 2} cy={p.y + p.h / 2} r={p.w / 2} fill={c.fill} stroke={c.stroke} strokeWidth={2}><title>{p.label}</title></circle>
           }
           return (
-            <g key={i}>
+            <g key={i} className="rr-pop" style={delay(p.x)}>
               <rect x={p.x} y={p.y} width={p.w} height={p.h} rx={p.style === 'anchor' ? 14 : 5} fill={c.fill} stroke={c.stroke} strokeWidth={1.2} />
               <text x={p.x + p.w / 2} y={p.y + p.h / 2} textAnchor="middle" dominantBaseline="central" fill="var(--text)">{p.label}</text>
             </g>
           )
         }
         if (p.kind === 'text') {
-          return <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="central" fill="var(--muted)" fontSize={11}>{p.text}</text>
+          return <text key={i} className="rr-fade" style={delay(p.x)} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="central" fill="var(--muted)" fontSize={11}>{p.text}</text>
         }
         return null
       })}
@@ -154,7 +157,7 @@ export default function RegexVisualizer() {
         <>
           <label>Diagram</label>
           <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: 'var(--surface)', WebkitOverflowScrolling: 'touch' }}>
-            <DiagramSvg d={diagram} />
+            <DiagramSvg key={pattern} d={diagram} />
           </div>
           <p className="muted" style={{ fontSize: '0.82rem', margin: '6px 0 0' }}>
             Read left to right. Branches are alternatives, a line looping back underneath means “repeat”, and a line over the top means “can be skipped”.

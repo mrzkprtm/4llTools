@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-import { useMemo, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
 
 const SAMPLE = `# Hello 👋
@@ -19,6 +19,25 @@ console.log('code blocks too')
 export default function MarkdownPreview() {
   const [md, setMd] = useState(SAMPLE)
   const html = useMemo(() => DOMPurify.sanitize(marked.parse(md, { async: false, gfm: true, breaks: true })), [md])
+  const preview = useRef<HTMLDivElement>(null)
+
+  // Patch only the blocks that changed, so the preview never flashes and new blocks can rise in.
+  useLayoutEffect(() => {
+    const root = preview.current
+    if (!root) return
+    const tpl = document.createElement('template')
+    tpl.innerHTML = html
+    const next = [...tpl.content.childNodes].filter((n) => n.nodeType === 1 || n.textContent?.trim())
+    const first = root.childNodes.length === 0
+    next.forEach((node, i) => {
+      const old = root.childNodes[i]
+      if (old && (old as Element).outerHTML === (node as Element).outerHTML) return
+      if (!first && node instanceof HTMLElement) node.classList.add(old ? 'md-changed' : 'md-new')
+      if (old) root.replaceChild(node, old)
+      else root.appendChild(node)
+    })
+    while (root.childNodes.length > next.length) root.lastChild!.remove()
+  }, [html])
 
   return (
     <div>
@@ -29,7 +48,7 @@ export default function MarkdownPreview() {
         </div>
         <div>
           <label>Preview</label>
-          <div className="markdown-body output" style={{ minHeight: 360, fontFamily: 'inherit', wordBreak: 'normal' }} dangerouslySetInnerHTML={{ __html: html }} />
+          <div ref={preview} className="markdown-body output" style={{ minHeight: 360, fontFamily: 'inherit', wordBreak: 'normal' }} />
         </div>
       </div>
       <div className="row">

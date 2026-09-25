@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import SettleOutput from '../../motion/SettleOutput'
 import { cssToTailwind, tailwindToCss, type TwVersion } from './convert'
 
 const SAMPLE_CSS = `.card {
@@ -43,14 +45,14 @@ export default function CssTailwind() {
 
   return (
     <div>
-      <div className="row">
+      <PillRow>
         <button type="button" className={`btn ${mode === 'css2tw' ? 'primary' : ''}`} onClick={() => setMode('css2tw')}>CSS → Tailwind</button>
         <button type="button" className={`btn ${mode === 'tw2css' ? 'primary' : ''}`} onClick={() => setMode('tw2css')}>Tailwind → CSS</button>
         <select value={version} onChange={(e) => setVersion(Number(e.target.value) as TwVersion)} style={{ width: 'auto' }} aria-label="Tailwind version">
           <option value={4}>Tailwind v4</option>
           <option value={3}>Tailwind v3</option>
         </select>
-      </div>
+      </PillRow>
 
       {mode === 'css2tw' ? (
         <>
@@ -71,7 +73,9 @@ export default function CssTailwind() {
                 <div key={r.selector || '(declarations)'} style={{ marginTop: 16 }}>
                   <label>{r.selector || 'Classes'}</label>
                   <div className="row" style={{ margin: 0, flexWrap: 'nowrap', alignItems: 'stretch' }}>
-                    <div className="output" style={{ flex: 1, minWidth: 0, wordBreak: 'normal', overflowWrap: 'anywhere' }}>{classes || <span className="muted">No classes</span>}</div>
+                    <div className="output tw-chips" style={{ flex: 1, minWidth: 0, wordBreak: 'normal', overflowWrap: 'anywhere' }}>
+                      {classes ? classes.split(' ').map((c, i) => <span key={c} className="tw-chip" style={{ animationDelay: `${Math.min(i, 40) * 12}ms` }}>{c}</span>) : <span className="muted">No classes</span>}
+                    </div>
                     <CopyButton text={classes} />
                   </div>
                   {r.notes.map((n) => <p key={n} className="muted" style={{ fontSize: '0.85rem', margin: '6px 0 0' }}>{n}.</p>)}
@@ -100,7 +104,7 @@ export default function CssTailwind() {
             </p>
           )}
           <label htmlFor="ct-out">CSS</label>
-          <textarea id="ct-out" readOnly value={reverse.css} spellCheck={false} style={{ minHeight: 220 }} />
+          <SettleOutput id="ct-out" value={reverse.css} motion="order" style={{ minHeight: 220 }} />
           <div className="row">
             <CopyButton text={reverse.css} />
           </div>

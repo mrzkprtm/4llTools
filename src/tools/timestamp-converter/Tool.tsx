@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import MorphText from '../../motion/MorphText'
+import Roll from '../../motion/Roll'
 import { parseTimestamp } from './parse'
 
 function toLocalInput(d: Date): string {
@@ -24,7 +26,7 @@ export default function TimestampConverter() {
   return (
     <div>
       <p>
-        Current Unix time: <b style={{ fontVariantNumeric: 'tabular-nums' }}>{now}</b>
+        Current Unix time: <b><Roll>{now}</Roll></b>
       </p>
       <label htmlFor="ts-in">Timestamp → date</label>
       <input id="ts-in" type="text" inputMode="numeric" value={ts} onChange={(e) => setTs(e.target.value)} placeholder="1700000000" />
@@ -32,9 +34,9 @@ export default function TimestampConverter() {
       {date && (
         <table className="simple" style={{ marginTop: 8 }}>
           <tbody>
-            <tr><th>Your time</th><td>{date.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'long' })}</td></tr>
-            <tr><th>UTC</th><td>{date.toUTCString()}</td></tr>
-            <tr><th>ISO 8601</th><td>{date.toISOString()} <CopyButton text={date.toISOString()} /></td></tr>
+            <tr><th>Your time</th><td><MorphText text={date.toLocaleString(undefined, { dateStyle: 'full', timeStyle: 'long' })} stagger={3} /></td></tr>
+            <tr><th>UTC</th><td><MorphText text={date.toUTCString()} stagger={3} /></td></tr>
+            <tr><th>ISO 8601</th><td><MorphText text={date.toISOString()} stagger={3} /> <CopyButton text={date.toISOString()} /></td></tr>
           </tbody>
         </table>
       )}
@@ -42,7 +44,7 @@ export default function TimestampConverter() {
       <input id="ts-local" type="datetime-local" step={1} value={local} onChange={(e) => setLocal(e.target.value)} style={{ width: '100%' }} />
       {localSeconds && (
         <div className="row">
-          <div className="output" style={{ flex: 1 }}>{localSeconds}</div>
+          <div className="output" style={{ flex: 1 }}><Roll>{localSeconds}</Roll></div>
           <CopyButton text={localSeconds} />
         </div>
       )}

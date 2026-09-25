@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
 import {
   CSS_UNITS,
   convertUnit,
@@ -28,7 +30,7 @@ export default function AspectRatioCalculator() {
   const [mode, setMode] = useState<Mode>('ratio')
   return (
     <div>
-      <div className="row" role="tablist" aria-label="Calculator">
+      <PillRow role="tablist" label="Calculator">
         {MODES.map(([m, label]) => (
           <button
             key={m}
@@ -41,7 +43,7 @@ export default function AspectRatioCalculator() {
             {label}
           </button>
         ))}
-      </div>
+      </PillRow>
       {mode === 'ratio' && <RatioPanel />}
       {mode === 'screen' && <ScreenPanel />}
       {mode === 'units' && <UnitsPanel />}
@@ -93,17 +95,17 @@ function RatioPanel() {
       {!simple && (w || h) && <p className="error">Enter a width and height greater than 0.</p>}
       {simple && near && (
         <div className="stats">
-          <div className="stat"><b>{simple.w}:{simple.h}</b>Simplified ratio</div>
-          <div className="stat"><b>{fmt(width / height, 4)}</b>Decimal (w ÷ h)</div>
+          <div className="stat"><b><Roll>{`${simple.w}:${simple.h}`}</Roll></b>Simplified ratio</div>
+          <div className="stat"><b><Roll>{fmt(width / height, 4)}</Roll></b>Decimal (w ÷ h)</div>
           <div className="stat">
-            <b>{near.label}</b>
+            <b key={near.label} className="pop" style={{ display: 'block' }}>{near.label}</b>
             {near.diff < 0.0005 ? 'Exact match' : `Closest common (${(near.diff * 100).toFixed(1)}% off)`} · {near.use}
           </div>
         </div>
       )}
 
       <h3 style={{ margin: '26px 0 0' }}>Resize while keeping a ratio</h3>
-      <div className="row">
+      <PillRow>
         {PRESETS.map((p) => (
           <button key={p} type="button" className={preset === p ? 'btn primary' : 'btn'} onClick={() => setPreset(p)}>{p}</button>
         ))}
@@ -111,7 +113,7 @@ function RatioPanel() {
         {preset === 'custom' && (
           <input type="text" value={custom} onChange={(e) => setCustom(e.target.value)} aria-label="Custom ratio like 5:4" placeholder="5:4" style={{ width: 90 }} />
         )}
-      </div>
+      </PillRow>
       {!lock && <p className="error">Enter a ratio like 5:4 or 2.39:1.</p>}
       <div className="row">
         <Field id="ar-lw" label="Width" value={outW !== null ? String(outW) : lockW} onChange={(v) => { setLockW(v); if (v) setLockH('') }} />
@@ -120,7 +122,7 @@ function RatioPanel() {
       {lock && boxW > 0 && boxH > 0 && (
         <>
           <p className="muted" style={{ margin: '4px 0 10px' }}>
-            {lockText} → <b style={{ color: 'var(--text)' }}>{fmt(boxW, 2)} × {fmt(boxH, 2)}</b>
+            {lockText} → <b style={{ color: 'var(--text)' }}><Roll>{`${fmt(boxW, 2)} × ${fmt(boxH, 2)}`}</Roll></b>
           </p>
           <RatioBox w={boxW} h={boxH} label={`${fmt(boxW, 0)} × ${fmt(boxH, 0)}`} />
         </>
@@ -134,6 +136,7 @@ function RatioBox({ w, h, label }: { w: number; h: number; label: string }) {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', padding: 8 }}>
       <div
+        className="ratio-box"
         style={{
           width: `min(100%, ${round((MAX_H * w) / h, 0)}px)`,
           aspectRatio: `${w} / ${h}`,
@@ -147,7 +150,6 @@ function RatioBox({ w, h, label }: { w: number; h: number; label: string }) {
           fontFamily: 'var(--mono)',
           fontSize: '0.85rem',
           color: 'var(--accent)',
-          transition: 'width 0.25s ease, aspect-ratio 0.25s ease',
           overflow: 'hidden',
         }}
       >
@@ -195,11 +197,11 @@ function ScreenPanel() {
       {!r && <p className="error">Enter a resolution and a diagonal size greater than 0.</p>}
       {r && (
         <div className="stats">
-          <div className="stat"><b>{fmt(r.ppi, 1)}</b>Pixels per inch (PPI)</div>
+          <div className="stat"><b><Roll>{fmt(r.ppi, 1)}</Roll></b>Pixels per inch (PPI)</div>
           <div className="stat"><b>{fmt(r.widthIn, 1)}″ × {fmt(r.heightIn, 1)}″</b>Physical size</div>
           <div className="stat"><b>{fmt(r.widthCm, 1)} × {fmt(r.heightCm, 1)}</b>Size in cm</div>
           <div className="stat"><b>{fmt(r.dotPitchMm, 3)} mm</b>Dot pitch</div>
-          <div className="stat"><b>{fmt(width * height / 1e6, 2)} MP</b>Total pixels</div>
+          <div className="stat"><b><Roll>{fmt(width * height / 1e6, 2)}</Roll> MP</b>Total pixels</div>
         </div>
       )}
 

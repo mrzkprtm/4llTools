@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import MorphText from '../../motion/MorphText'
+import Roll from '../../motion/Roll'
 import { addDays, daysBetween, diffYmd, parseDate, toInputValue } from './dates'
 
 export default function DateCalculator() {
@@ -28,10 +30,10 @@ export default function DateCalculator() {
       </div>
       {ymd && days !== null && (
         <div className="stats">
-          <div className="stat"><b>{ymd.years}y {ymd.months}m {ymd.days}d</b><span className="muted">Years, months, days</span></div>
-          <div className="stat"><b>{days.toLocaleString()}</b><span className="muted">Days</span></div>
-          <div className="stat"><b>{Math.floor(days / 7).toLocaleString()}w {days % 7}d</b><span className="muted">Weeks</span></div>
-          <div className="stat"><b>{(days * 24).toLocaleString()}</b><span className="muted">Hours</span></div>
+          <div className="stat"><b><Roll>{`${ymd.years}y ${ymd.months}m ${ymd.days}d`}</Roll></b><span className="muted">Years, months, days</span></div>
+          <div className="stat"><b><Roll>{days.toLocaleString()}</Roll></b><span className="muted">Days</span></div>
+          <div className="stat"><b><Roll>{`${Math.floor(days / 7).toLocaleString()}w ${days % 7}d`}</Roll></b><span className="muted">Weeks</span></div>
+          <div className="stat"><b><Roll>{(days * 24).toLocaleString()}</Roll></b><span className="muted">Hours</span></div>
         </div>
       )}
       <h3>Add or subtract days</h3>
@@ -40,7 +42,7 @@ export default function DateCalculator() {
         <span>+</span>
         <input type="number" value={offset} onChange={(e) => setOffset(e.target.value)} style={{ width: 100 }} aria-label="Days to add (negative to subtract)" />
         <span>days =</span>
-        <b>{shifted ? long(shifted) : '—'}</b>
+        <b><MorphText text={shifted ? long(shifted) : '—'} /></b>
       </div>
     </div>
   )

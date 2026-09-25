@@ -1,5 +1,7 @@
 import { useRef, useState, type ReactNode } from 'react'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import { useFlip } from '../../motion/useFlip'
 import { boxShadowCss, gradientCss, tailwindArbitrary, toHex8, type ColorStop, type Gradient, type GradientType, type ShadowLayer } from './css'
 
 type Layer = ShadowLayer & { id: number }
@@ -58,10 +60,10 @@ export default function ShadowGradient() {
   const [mode, setMode] = useState<'shadow' | 'gradient'>('shadow')
   return (
     <div>
-      <div className="row" role="tablist" aria-label="Generator">
+      <PillRow role="tablist" label="Generator">
         <button type="button" role="tab" aria-selected={mode === 'shadow'} className={mode === 'shadow' ? 'btn primary' : 'btn'} onClick={() => setMode('shadow')}>Box-shadow</button>
         <button type="button" role="tab" aria-selected={mode === 'gradient'} className={mode === 'gradient' ? 'btn primary' : 'btn'} onClick={() => setMode('gradient')}>Gradient</button>
-      </div>
+      </PillRow>
       {mode === 'shadow' ? <ShadowPanel /> : <GradientPanel />}
     </div>
   )
@@ -79,8 +81,8 @@ function Slider({ label, value, min, max, step = 1, unit = 'px', onChange }: { l
   )
 }
 
-function Card({ children }: { children: ReactNode }) {
-  return <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: 12, background: 'var(--surface)', marginTop: 10 }}>{children}</div>
+function Card({ children, flip }: { children: ReactNode; flip?: string }) {
+  return <div data-flip={flip} style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: 12, background: 'var(--surface)', marginTop: 10 }}>{children}</div>
 }
 
 function OutputRow({ label, text }: { label: string; text: string }) {
@@ -103,6 +105,8 @@ function ShadowPanel() {
   const [bgColor, setBgColor] = useState('#f1f5f9')
   const [radius, setRadius] = useState(16)
 
+  const list = useRef<HTMLDivElement>(null)
+  useFlip(list)
   const update = (id: number, patch: Partial<ShadowLayer>) => setLayers((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)))
   const css = boxShadowCss(layers)
 
@@ -115,7 +119,7 @@ function ShadowPanel() {
         ))}
       </div>
       <div style={{ background: bgColor, borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', padding: '48px 16px', display: 'flex', justifyContent: 'center', transition: 'background-color 0.2s' }}>
-        <div style={{ width: 'min(100%, 220px)', height: 140, background: boxColor, borderRadius: radius, boxShadow: css, transition: 'box-shadow 0.2s, background-color 0.2s, border-radius 0.2s' }} />
+        <div style={{ width: 'min(100%, 220px)', height: 140, background: boxColor, borderRadius: radius, boxShadow: css, transition: 'box-shadow var(--spring-snap-ms) var(--spring-snap), background-color 0.3s, border-radius var(--spring-snap-ms) var(--spring-snap)' }} />
       </div>
       <div className="row" style={{ gap: 16 }}>
         <label style={{ fontWeight: 400 }}>Box <input type="color" value={boxColor} onChange={(e) => setBoxColor(e.target.value)} style={{ verticalAlign: 'middle', width: 40, height: 32, padding: 0, border: 'none', background: 'none' }} /></label>
@@ -123,8 +127,9 @@ function ShadowPanel() {
         <div style={{ flex: '1 1 160px' }}><Slider label="Corner radius" value={radius} min={0} max={70} onChange={setRadius} /></div>
       </div>
 
+      <div ref={list}>
       {layers.map((l, i) => (
-        <Card key={l.id}>
+        <Card key={l.id} flip={String(l.id)}>
           <div className="row" style={{ margin: '0 0 4px', justifyContent: 'space-between' }}>
             <b>Layer {i + 1}</b>
             <span className="row" style={{ margin: 0 }}>
@@ -145,6 +150,7 @@ function ShadowPanel() {
           </div>
         </Card>
       ))}
+      </div>
       <div className="row">
         <button type="button" className="btn" onClick={() => setLayers((ls) => [...ls, ...withIds([{ x: 0, y: 8, blur: 20, spread: 0, color: '#000000', opacity: 0.15, inset: false }])])}>+ Add layer</button>
       </div>
@@ -163,6 +169,9 @@ function GradientPanel() {
   const [angle, setAngle] = useState(first.angle)
   const [shape, setShape] = useState<'circle' | 'ellipse'>(first.shape)
   const [stops, setStops] = useState<Stop[]>(() => first.stops.map((s, i) => ({ ...s, id: i })))
+  const [picked, setPicked] = useState(0)
+  const stopList = useRef<HTMLDivElement>(null)
+  useFlip(stopList)
 
   const g: Gradient = { type, angle, shape, stops }
   const css = gradientCss(g)
@@ -185,11 +194,11 @@ function GradientPanel() {
       <div className="row">
         <span className="muted">Presets:</span>
         {GRADIENT_PRESETS.map((p) => (
-          <button key={p.name} type="button" className="btn" onClick={() => { setType(p.g.type); setAngle(p.g.angle); setShape(p.g.shape); setStops(withIds(p.g.stops)) }}>{p.name}</button>
+          <button key={p.name} type="button" className="btn" onClick={() => { setType(p.g.type); setAngle(p.g.angle); setShape(p.g.shape); setStops(withIds(p.g.stops)); setPicked((n) => n + 1) }}>{p.name}</button>
         ))}
       </div>
-      <div style={{ height: 200, borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: css }} />
-      <div className="row">
+      <div key={`${picked}:${type}`} className={picked || type !== first.type ? 'wipe-in' : undefined} style={{ height: 200, borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', background: css }} />
+      <PillRow>
         {(['linear', 'radial', 'conic'] as GradientType[]).map((t) => (
           <button key={t} type="button" className={type === t ? 'btn primary' : 'btn'} onClick={() => setType(t)} style={{ textTransform: 'capitalize' }}>{t}</button>
         ))}
@@ -199,17 +208,19 @@ function GradientPanel() {
             <option value="ellipse">ellipse</option>
           </select>
         )}
-      </div>
+      </PillRow>
       {type !== 'radial' && <Slider label={type === 'conic' ? 'Start angle' : 'Angle'} value={angle} min={0} max={360} unit="°" onChange={setAngle} />}
 
+      <div ref={stopList}>
       {stops.map((s, i) => (
-        <div key={s.id} className="row" style={{ margin: '6px 0', flexWrap: 'nowrap' }}>
+        <div key={s.id} data-flip={String(s.id)} className="row" style={{ margin: '6px 0', flexWrap: 'nowrap' }}>
           <input type="color" value={s.color} onChange={(e) => update(s.id, { color: e.target.value })} aria-label={`Stop ${i + 1} color`} style={{ width: 40, height: 32, padding: 0, border: 'none', background: 'none', flex: 'none' }} />
           <input type="range" min={0} max={100} value={s.position} onChange={(e) => update(s.id, { position: Number(e.target.value) })} aria-label={`Stop ${i + 1} position`} style={{ flex: 1, minWidth: 0 }} />
           <span className="muted" style={{ fontFamily: 'var(--mono)', width: 40, textAlign: 'right', flex: 'none' }}>{s.position}%</span>
           <button type="button" className="btn" disabled={stops.length <= 2} onClick={() => setStops((ss) => ss.filter((x) => x.id !== s.id))} aria-label={`Remove stop ${i + 1}`}>×</button>
         </div>
       ))}
+      </div>
       <div className="row">
         <button type="button" className="btn" onClick={addStop}>+ Add color stop</button>
       </div>

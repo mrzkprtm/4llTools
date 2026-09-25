@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react'
+import Busy from '../../components/Busy'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
 import { curlCommands, parseRequestHeaders, simulateCors } from './cors'
 import { parseHeaders } from './headers'
 import { analyzeSecurity, type Level } from './security'
@@ -91,11 +94,11 @@ export default function CorsChecker() {
 
   return (
     <div>
-      <div className="row" role="tablist">
+      <PillRow role="tablist">
         {([['security', 'Security headers'], ['cors', 'CORS simulator'], ['live', 'Live test']] as const).map(([k, label]) => (
           <button key={k} type="button" role="tab" aria-selected={tab === k} className={`btn ${tab === k ? 'primary' : ''}`} onClick={() => setTab(k)}>{label}</button>
         ))}
-      </div>
+      </PillRow>
 
       {tab !== 'live' && (
         <>
@@ -110,14 +113,14 @@ export default function CorsChecker() {
       {tab === 'security' && (
         <>
           <div className="stats">
-            <div className="stat"><b style={{ color: report.grade.startsWith('A') ? 'var(--ok)' : report.grade === 'F' || report.grade === 'E' ? 'var(--danger)' : undefined }}>{report.grade}</b>Grade ({report.score}/100)</div>
-            <div className="stat"><b style={{ color: 'var(--ok)' }}>{counts.good}</b>Good</div>
-            <div className="stat"><b style={{ color: '#b45309' }}>{counts.warn}</b>Warnings</div>
-            <div className="stat"><b style={{ color: 'var(--danger)' }}>{counts.bad}</b>Problems</div>
+            <div className="stat"><b style={{ color: report.grade.startsWith('A') ? 'var(--ok)' : report.grade === 'F' || report.grade === 'E' ? 'var(--danger)' : undefined }}><span key={report.grade} className="pop" style={{ display: 'inline-block' }}>{report.grade}</span></b>Grade (<Roll>{report.score}</Roll>/100)</div>
+            <div className="stat"><b style={{ color: 'var(--ok)' }}><Roll>{counts.good}</Roll></b>Good</div>
+            <div className="stat"><b style={{ color: '#b45309' }}><Roll>{counts.warn}</Roll></b>Warnings</div>
+            <div className="stat"><b style={{ color: 'var(--danger)' }}><Roll>{counts.bad}</Roll></b>Problems</div>
           </div>
           <div style={{ display: 'grid', gap: 6, marginTop: 14 }}>
             {report.findings.map((f, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: 'var(--surface)' }}>
+              <div key={`${i}:${f.header}:${f.level}`} className="finding" style={{ animationDelay: `${Math.min(i, 10) * 35}ms`, display: 'flex', gap: 10, alignItems: 'flex-start', padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: 'var(--surface)' }}>
                 <Badge level={f.level} />
                 <div style={{ minWidth: 0, fontSize: '0.92rem' }}>
                   <b style={{ fontFamily: 'var(--mono)', fontSize: '0.82rem', wordBreak: 'break-all' }}>{f.header}</b>
@@ -184,14 +187,14 @@ export default function CorsChecker() {
           </label>
           {separatePreflight && <textarea value={preRaw} onChange={(e) => setPreRaw(e.target.value)} spellCheck={false} aria-label="Preflight response headers" style={{ minHeight: 110 }} />}
 
-          <div className="output" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', marginTop: 14, borderColor: sim.allowed ? 'var(--ok)' : 'var(--danger)' }}>
+          <div className="output" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', marginTop: 14, borderColor: sim.allowed ? 'var(--ok)' : 'var(--danger)', transition: 'border-color 0.3s' }}>
             <div style={{ fontSize: '1.15rem', fontWeight: 700, color: sim.allowed ? 'var(--ok)' : 'var(--danger)' }}>
-              {sim.allowed ? '✓ Allowed' : '✗ Blocked by CORS'}
+              <span key={String(sim.allowed)} className={sim.allowed ? 'pop' : 'shake-once'} style={{ display: 'inline-block' }}>{sim.allowed ? '✓ Allowed' : '✗ Blocked by CORS'}</span>
               <span className="muted" style={{ fontWeight: 400, fontSize: '0.9rem' }}> · {sim.sameOrigin ? 'same origin' : sim.preflight ? 'preflighted request' : 'simple request'}</span>
             </div>
             <ol style={{ paddingLeft: 20, margin: '8px 0 0' }}>
               {sim.steps.map((s, i) => (
-                <li key={i} style={{ margin: '4px 0', color: s.ok === false ? 'var(--danger)' : undefined }}>
+                <li key={`${i}:${s.text}`} className="finding" style={{ animationDelay: `${Math.min(i, 10) * 40}ms`, margin: '4px 0', color: s.ok === false ? 'var(--danger)' : undefined }}>
                   {s.ok === true ? '✓ ' : s.ok === false ? '✗ ' : ''}{s.text}
                 </li>
               ))}
@@ -221,9 +224,10 @@ export default function CorsChecker() {
           <label style={{ fontWeight: 400, marginTop: 0 }}>
             <input type="checkbox" checked={liveCreds} onChange={(e) => setLiveCreds(e.target.checked)} /> Include credentials
           </label>
-          {live && live.ok && (
-            <div className="output" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', borderColor: 'var(--ok)' }}>
-              <b className="ok">✓ CORS allows {live.origin}</b>
+          {busy && <Busy label="Sending a real request…" />}
+          {live && live.ok && !busy && (
+            <div className="output settle-in" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', borderColor: 'var(--ok)' }}>
+              <span className="chip good">✓ CORS allows {live.origin}</span>
               <div className="muted" style={{ fontSize: '0.88rem' }}>Status {live.status} · {Math.round(live.ms)} ms</div>
               <label style={{ marginTop: 10 }}>Headers JavaScript can read</label>
               <div style={{ overflowX: 'auto' }}>
@@ -234,9 +238,9 @@ export default function CorsChecker() {
               <p className="muted" style={{ fontSize: '0.85rem', marginBottom: 0 }}>Only safelisted headers and those in Access-Control-Expose-Headers are visible. Run curl for the full list.</p>
             </div>
           )}
-          {live && !live.ok && (
-            <div className="output" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', borderColor: 'var(--danger)' }}>
-              <b className="error">✗ Request failed</b> <span className="muted">({live.message}{live.ms ? `, ${Math.round(live.ms)} ms` : ''})</span>
+          {live && !live.ok && !busy && (
+            <div className="output settle-in" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', borderColor: 'var(--danger)' }}>
+              <span className="chip bad">✗ Request failed</span> <span className="muted">({live.message}{live.ms ? `, ${Math.round(live.ms)} ms` : ''})</span>
               <p style={{ margin: '6px 0 0' }}>
                 {live.reachable === true && `The server is reachable (a no-cors request got through), so it most likely does not send CORS headers allowing ${live.origin}${liveCreds ? ', or does not allow credentials' : ''}.`}
                 {live.reachable === false && 'Even a no-cors request failed: the host may be down, the name may not resolve, the TLS certificate may be invalid, or an http:// URL was blocked on this https page. It could still be CORS as well; the browser cannot tell us.'}

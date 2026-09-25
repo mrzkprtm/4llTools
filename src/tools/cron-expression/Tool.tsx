@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react'
 import cronstrue from 'cronstrue/i18n'
 import CopyButton from '../../components/CopyButton'
+import Icon from '../../components/Icon'
+import Check from '../../motion/Check'
+import PillRow from '../../motion/PillRow'
 import { FIELD_SPECS, generate, nextRuns, parseCron, PRESETS, type FieldName, type GenMode, type GenOptions } from './cron'
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -67,11 +70,13 @@ export default function CronExpression() {
         <CopyButton text={expr.trim()} />
       </div>
 
-      {/* Visual field chips */}
+      {/* Visual field chips; the gear turns a notch whenever the schedule changes */}
       <div className="row" style={{ gap: 6 }} aria-hidden="true">
+        <span className="cron-gear" style={{ transform: `rotate(${expr.length * 30}deg)` }}><Icon name="settings-cog" size={22} /></span>
         {fieldNames.map((name, i) => (
           <div
             key={name}
+            className={badField === name ? 'shake-once' : undefined}
             style={{
               flex: '1 1 70px',
               minWidth: 0,
@@ -83,7 +88,7 @@ export default function CronExpression() {
               transition: 'border-color .2s, background-color .2s',
             }}
           >
-            <div style={{ fontFamily: 'var(--mono)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <div key={rawParts[i] ?? ''} className="flip-in" style={{ display: 'block', fontFamily: 'var(--mono)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {expr.trim().startsWith('@') ? (result.ok ? result.cron.expression.split(' ')[i] : '·') : (rawParts[i] ?? '·')}
             </div>
             <div className="muted" style={{ fontSize: '0.72rem' }}>{FIELD_SPECS[name].label}</div>
@@ -92,9 +97,9 @@ export default function CronExpression() {
       </div>
 
       {result.ok ? (
-        <p style={{ fontSize: '1.15rem', fontWeight: 600, margin: '10px 0' }} aria-live="polite">
-          <span className="ok" aria-hidden="true">✓ </span>
-          {description}
+        <p style={{ fontSize: '1.15rem', fontWeight: 600, margin: '10px 0', display: 'flex', gap: 8, alignItems: 'center' }} aria-live="polite">
+          <span className="ok" aria-hidden="true"><Check key={description} size={20} /></span>
+          <span key={description} className="swap-code">{description}</span>
         </p>
       ) : (
         <p className="error" role="alert">{result.error}</p>
@@ -157,8 +162,8 @@ export default function CronExpression() {
           <label>Next 10 runs (your local time)</label>
           {result.ok && runs.length === 0 && <p className="muted">This schedule never matches a real date.</p>}
           <ol style={{ margin: 0, paddingLeft: 22, fontFamily: 'var(--mono)', fontSize: '0.86rem', lineHeight: 1.8 }}>
-            {runs.map((d) => (
-              <li key={d.getTime()}>
+            {runs.map((d, i) => (
+              <li key={d.getTime()} className="settle-in" style={{ animationDelay: `${i * 35}ms` }}>
                 {DAY_NAMES[d.getDay()]} {d.getFullYear()}-{pad(d.getMonth() + 1)}-{pad(d.getDate())} {pad(d.getHours())}:{pad(d.getMinutes())}
                 {result.ok && result.cron.hasSeconds ? `:${pad(d.getSeconds())}` : ''}
               </li>
@@ -168,13 +173,13 @@ export default function CronExpression() {
       </div>
 
       <h3 style={{ marginTop: 28, marginBottom: 0, fontSize: '1rem' }}>Generator</h3>
-      <div className="row">
+      <PillRow>
         {(['minutes', 'hourly', 'daily', 'weekly', 'monthly', 'yearly'] as GenMode[]).map((m) => (
           <button key={m} type="button" className={`btn ${gen.mode === m ? 'primary' : ''}`} onClick={() => updateGen({ mode: m })}>
             {m === 'minutes' ? 'Every N min' : m[0].toUpperCase() + m.slice(1)}
           </button>
         ))}
-      </div>
+      </PillRow>
       <div className="row">
         {gen.mode === 'minutes' && (
           <>

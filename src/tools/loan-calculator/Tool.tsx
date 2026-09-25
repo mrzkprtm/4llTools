@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Roll from '../../motion/Roll'
 import { monthlyPayment, schedule } from './loan'
 
 const money = (n: number) => (Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: 0 }) : '—')
@@ -28,12 +29,19 @@ export default function LoanCalculator() {
       {!valid && <p className="error">Enter an amount above the down payment and a term of up to 50 years.</p>}
       {valid && (
         <>
-          <div className="stats">
-            <div className="stat"><b>{money(pay)}</b><span className="muted">Monthly payment</span></div>
-            <div className="stat"><b>{money(total - principal)}</b><span className="muted">Total interest</span></div>
-            <div className="stat"><b>{money(total)}</b><span className="muted">Total paid</span></div>
-            <div className="stat"><b>{months}</b><span className="muted">Months</span></div>
+          <div className="stats" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 190px), 1fr))' }}>
+            <div className="stat"><b><Roll>{money(pay)}</Roll></b><span className="muted">Monthly payment</span></div>
+            <div className="stat"><b><Roll>{money(total - principal)}</Roll></b><span className="muted">Total interest</span></div>
+            <div className="stat"><b><Roll>{money(total)}</Roll></b><span className="muted">Total paid</span></div>
+            <div className="stat"><b><Roll>{months}</Roll></b><span className="muted">Months</span></div>
           </div>
+          <div className="split-bar" role="img" aria-label={`Principal ${Math.round((principal / total) * 100)}%, interest ${Math.round(((total - principal) / total) * 100)}%`}>
+            <i style={{ flexGrow: principal }} />
+            <i style={{ flexGrow: Math.max(0, total - principal) }} />
+          </div>
+          <p className="muted" style={{ margin: '6px 0 0', fontSize: '0.85rem' }}>
+            <span className="key-dot" /> Principal {Math.round((principal / total) * 100)}% · <span className="key-dot interest" /> Interest {Math.round(((total - principal) / total) * 100)}%
+          </p>
           <p className="muted">Uses a fixed rate with equal monthly payments (anuitas). Real offers may add fees or insurance.</p>
           <button type="button" className="btn" onClick={() => setShowTable(!showTable)}>{showTable ? 'Hide' : 'Show'} payment schedule</button>
           {showTable && (

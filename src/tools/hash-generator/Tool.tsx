@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Busy from '../../components/Busy'
 import CopyButton from '../../components/CopyButton'
+import { Scramble } from '../../motion/useScramble'
 import { ALGORITHMS, hashBytes, type Algorithm } from './hash'
 
 type Source = { kind: 'text'; text: string } | { kind: 'file'; name: string; data: ArrayBuffer }
@@ -57,7 +58,7 @@ export default function HashGenerator() {
           <div key={a}>
             <label>{a}</label>
             <div className="row" style={{ margin: 0, flexWrap: 'nowrap' }}>
-              <div className="output" style={{ flex: 1, fontSize: '0.85rem' }}>{h}</div>
+              <div className="output" style={{ flex: 1, fontSize: '0.85rem' }}><Scramble text={h} limit={128} duration={220} pool="0123456789abcdef" /></div>
               <CopyButton text={h} />
             </div>
           </div>

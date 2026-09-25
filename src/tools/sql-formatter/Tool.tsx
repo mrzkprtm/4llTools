@@ -1,6 +1,8 @@
 import { useMemo, useRef, useState } from 'react'
 import { format, type KeywordCase, type SqlLanguage } from 'sql-formatter'
 import CopyButton from '../../components/CopyButton'
+import Check from '../../motion/Check'
+import SettleOutput from '../../motion/SettleOutput'
 import { friendlyParseError, lintSql, type Severity } from './lint'
 
 const DIALECTS: [SqlLanguage, string][] = [
@@ -95,13 +97,14 @@ export default function SqlFormatter() {
         </span>
       </label>
       {findings.length === 0 ? (
-        <p className="ok" style={{ margin: 0 }}>✓ No problems spotted.</p>
+        <p style={{ margin: 0 }}><span className="chip good"><Check size={14} /> No problems spotted</span></p>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'grid', gap: 6 }}>
           {findings.map((f, i) => (
             <li
               key={`${f.rule}-${f.line}-${i}`}
-              style={{ borderLeft: `3px solid ${SEVERITY_STYLE[f.severity].color}`, background: 'var(--sunken)', borderRadius: 'var(--radius-sm)', padding: '8px 10px' }}
+              className="finding"
+              style={{ animationDelay: `${Math.min(i, 10) * 40}ms`, borderLeft: `3px solid ${SEVERITY_STYLE[f.severity].color}`, background: 'var(--sunken)', borderRadius: 'var(--radius-sm)', padding: '8px 10px' }}
             >
               <div className="row" style={{ margin: 0, gap: 6, justifyContent: 'space-between' }}>
                 <span style={{ minWidth: 0 }}>
@@ -128,7 +131,7 @@ export default function SqlFormatter() {
         </p>
       )}
       <label htmlFor="sql-out">Formatted</label>
-      <textarea id="sql-out" readOnly value={formatted.ok ? formatted.text : ''} spellCheck={false} style={{ minHeight: 240 }} />
+      <SettleOutput id="sql-out" value={formatted.ok ? formatted.text : ''} motion="order" style={{ minHeight: 240 }} />
       <div className="row">
         <CopyButton text={formatted.ok ? formatted.text : ''} />
         <button type="button" className="btn" onClick={download} disabled={!formatted.ok || !formatted.text}>Download .sql</button>

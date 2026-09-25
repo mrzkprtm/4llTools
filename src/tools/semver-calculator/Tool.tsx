@@ -1,5 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import MorphText from '../../motion/MorphText'
+import Roll from '../../motion/Roll'
+import { useFlip } from '../../motion/useFlip'
 import { checkRange, compareVersions, explainRange, nextVersions, parseVersion, sortVersions } from './semver-logic'
 
 const mono = { fontFamily: 'var(--mono)' }
@@ -40,9 +43,9 @@ function BumpSection() {
       {parsed && (
         <>
           <div className="stats">
-            <div className="stat"><b>{parsed.major}</b>Major</div>
-            <div className="stat"><b>{parsed.minor}</b>Minor</div>
-            <div className="stat"><b>{parsed.patch}</b>Patch</div>
+            <div className="stat"><b><Roll>{parsed.major}</Roll></b>Major</div>
+            <div className="stat"><b><Roll>{parsed.minor}</Roll></b>Minor</div>
+            <div className="stat"><b><Roll>{parsed.patch}</Roll></b>Patch</div>
             <div className="stat"><b style={{ fontSize: '1.1rem', wordBreak: 'break-all' }}>{parsed.prerelease.length ? parsed.prerelease.join('.') : '—'}</b>Pre-release</div>
             <div className="stat"><b style={{ fontSize: '1.1rem', wordBreak: 'break-all' }}>{parsed.build.length ? parsed.build.join('.') : '—'}</b>Build metadata</div>
           </div>
@@ -53,7 +56,7 @@ function BumpSection() {
                 {nextVersions(version, preid).map((n) => (
                   <tr key={n.kind}>
                     <td style={mono}>{n.kind}</td>
-                    <td style={{ ...mono, whiteSpace: 'nowrap' }}><b>{n.next ?? '—'}</b></td>
+                    <td style={{ ...mono, whiteSpace: 'nowrap' }}><b><MorphText text={n.next ?? '—'} stagger={6} /></b></td>
                     <td className="muted" style={{ minWidth: 180 }}>{n.when}</td>
                   </tr>
                 ))}
@@ -77,7 +80,7 @@ function CompareSection() {
       <h3 style={{ margin: '8px 0 0' }}>Compare two versions</h3>
       <div className="row" style={{ flexWrap: 'nowrap' }}>
         <input type="text" value={a} onChange={(e) => setA(e.target.value)} aria-label="Version A" spellCheck={false} style={{ ...mono, flex: 1, minWidth: 0 }} />
-        <b style={{ fontSize: '1.4rem', width: 28, textAlign: 'center', flex: 'none', color: 'var(--accent)' }} aria-live="polite">{cmp?.symbol ?? '?'}</b>
+        <b key={cmp?.symbol ?? '?'} className="pop" style={{ fontSize: '1.4rem', width: 28, textAlign: 'center', flex: 'none', color: 'var(--accent)' }} aria-live="polite">{cmp?.symbol ?? '?'}</b>
         <input type="text" value={b} onChange={(e) => setB(e.target.value)} aria-label="Version B" spellCheck={false} style={{ ...mono, flex: 1, minWidth: 0 }} />
         <button type="button" className="btn" onClick={() => { setA(b); setB(a) }} aria-label="Swap versions" style={{ flex: 'none' }}>⇄</button>
       </div>
@@ -142,7 +145,7 @@ function RangeSection() {
           <div>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, ...mono, fontSize: '0.9rem' }}>
               {result.results.map((r, i) => (
-                <li key={i} style={{ padding: '3px 0', color: !r.valid ? 'var(--muted)' : r.satisfies ? 'var(--ok)' : 'var(--danger)' }}>
+                <li key={`${i}:${r.version}:${r.satisfies}`} className="settle-in" style={{ animationDelay: `${Math.min(i, 12) * 25}ms`, padding: '3px 0', color: !r.valid ? 'var(--muted)' : r.satisfies ? 'var(--ok)' : 'var(--danger)' }}>
                   {!r.valid ? '?' : r.satisfies ? '✓' : '✗'} {r.version}{!r.valid && ' (invalid)'}
                 </li>
               ))}
@@ -164,6 +167,8 @@ function SortSection() {
   const [desc, setDesc] = useState(false)
   const { sorted, invalid } = sortVersions(list, desc)
   const out = sorted.join('\n')
+  const listRef = useRef<HTMLOListElement>(null)
+  useFlip(listRef)
 
   return (
     <section>
@@ -171,7 +176,9 @@ function SortSection() {
       <div className="two-col" style={{ marginTop: 10 }}>
         <textarea value={list} onChange={(e) => setList(e.target.value)} aria-label="Versions to sort" spellCheck={false} style={{ ...mono, minHeight: 160 }} />
         <div>
-          <div className="output" style={{ whiteSpace: 'pre', minHeight: 60, overflowX: 'auto' }}>{out || ' '}</div>
+          <ol ref={listRef} className="output sorted-list" style={{ minHeight: 60, overflowX: 'auto' }}>
+            {sorted.map((v, i) => <li key={`${v}:${sorted.indexOf(v) === i ? 0 : i}`} data-flip={`${v}:${sorted.indexOf(v) === i ? 0 : i}`}>{v}</li>)}
+          </ol>
           <div className="row">
             <label style={{ fontWeight: 400 }}><input type="checkbox" checked={desc} onChange={(e) => setDesc(e.target.checked)} /> Newest first</label>
             <CopyButton text={out} />

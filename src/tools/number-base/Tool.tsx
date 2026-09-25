@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import Roll from '../../motion/Roll'
 import { BASES, formatInBase, parseInBase } from './base'
 
 export default function NumberBase() {
@@ -37,9 +38,32 @@ export default function NumberBase() {
           </div>
         )
       })}
+      {value !== null && value >= 0n && value < 1n << 64n && <Bits value={value} onChange={(v) => { setEditing(null); setValue(v) }} />}
       <label style={{ fontWeight: 400 }}>
         <input type="checkbox" checked={upper} onChange={(e) => setUpper(e.target.checked)} /> Uppercase hex letters
       </label>
+    </div>
+  )
+}
+
+/** The value as a strip of bit switches; clicking one flips that bit. */
+function Bits({ value, onChange }: { value: bigint; onChange: (v: bigint) => void }) {
+  const width = value < 1n << 8n ? 8 : value < 1n << 16n ? 16 : value < 1n << 32n ? 32 : 64
+  return (
+    <div className="bits-wrap">
+      <label>Bits <span className="muted">(<Roll>{width}</Roll>-bit, tap to flip)</span></label>
+      <div className="bits" role="group" aria-label="Bits" style={{ gridTemplateColumns: `repeat(${Math.min(width, 16)}, minmax(0, 1fr))` }}>
+        {Array.from({ length: width }, (_, k) => {
+          const i = width - 1 - k
+          const on = ((value >> BigInt(i)) & 1n) === 1n
+          return (
+            <button key={i} type="button" className={`bit ${on ? 'on' : ''}`} aria-pressed={on} aria-label={`Bit ${i}`} title={`Bit ${i}`}
+              onClick={() => onChange(value ^ (1n << BigInt(i)))}>
+              <span key={String(on)}>{on ? 1 : 0}</span>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

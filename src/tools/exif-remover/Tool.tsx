@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import exifr from 'exifr'
+import Check from '../../motion/Check'
+import Roll from '../../motion/Roll'
+import { useFlip } from '../../motion/useFlip'
 import { detectKind, stripImage, type ImageKind } from './strip'
 
 const formatBytes = (n: number) => (n < 1024 ? `${n} B` : n < 1024 ** 2 ? `${(n / 1024).toFixed(1)} KB` : `${(n / 1024 ** 2).toFixed(2)} MB`)
@@ -105,6 +108,8 @@ export default function ExifRemover() {
   const [dragging, setDragging] = useState(false)
   const nextId = useRef(1)
   const urls = useRef<string[]>([])
+  const list = useRef<HTMLDivElement>(null)
+  useFlip(list, { max: 40 })
 
   useEffect(() => () => urls.current.forEach((u) => URL.revokeObjectURL(u)), [])
 
@@ -204,8 +209,9 @@ export default function ExifRemover() {
           padding: '28px 16px',
           position: 'relative',
           textAlign: 'center',
-          transition: 'border-color .15s, background-color .15s, transform .15s',
-          transform: dragging ? 'scale(1.01)' : 'none',
+          transition: 'border-color .15s, background-color .15s, transform var(--spring-snap-ms) var(--spring-snap)',
+          transform: dragging ? 'scale(1.02)' : 'none',
+          animation: dragging ? 'breathe 1.2s ease-in-out infinite' : undefined,
         }}
       >
         <p style={{ margin: '0 0 10px', fontWeight: 600 }}>Drop photos here</p>
@@ -233,23 +239,27 @@ export default function ExifRemover() {
         </p>
       )}
 
+      <div ref={list}>
       {items.map((it) => (
-        <div key={it.id} style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: 14, marginTop: 12, background: 'var(--surface)' }}>
+        <div key={it.id} data-flip={String(it.id)} className={it.status === 'working' ? 'busy-bar' : undefined} style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: 14, marginTop: 12, background: 'var(--surface)' }}>
           <div className="row" style={{ margin: 0, justifyContent: 'space-between' }}>
             <b style={{ overflowWrap: 'anywhere', minWidth: 0 }}>{it.name}</b>
             {it.status === 'working' && <span className="muted" aria-live="polite">Processing…</span>}
             {it.status === 'done' && it.url && (
-              <a className="btn primary" href={it.url} download={it.outName}>Download</a>
+              <span className="row" style={{ margin: 0 }}>
+                <span className="chip good"><Check size={14} /> Clean</span>
+                <a className="btn primary shine" href={it.url} download={it.outName}>Download</a>
+              </span>
             )}
           </div>
           {it.status === 'error' && <p className="error">{it.error}</p>}
           {it.status === 'done' && it.found && (
             <>
               <div className="stats">
-                <div className="stat"><b>{formatBytes(it.originalSize)}</b>Before</div>
-                <div className="stat"><b>{formatBytes(it.outSize ?? 0)}</b>After</div>
-                <div className="stat"><b>{it.found.tagCount}</b>Tags found</div>
-                <div className="stat"><b className={it.remaining && it.remaining > 0 ? 'error' : 'ok'}>{Math.max(0, it.remaining ?? 0)}</b>Tags left</div>
+                <div className="stat"><b><Roll>{formatBytes(it.originalSize)}</Roll></b>Before</div>
+                <div className="stat"><b><Roll>{formatBytes(it.outSize ?? 0)}</Roll></b>After</div>
+                <div className="stat"><b><Roll>{it.found.tagCount}</Roll></b>Tags found</div>
+                <div className="stat"><b className={it.remaining && it.remaining > 0 ? 'error' : 'ok'}><Roll>{Math.max(0, it.remaining ?? 0)}</Roll></b>Tags left</div>
               </div>
               {it.found.gps && (
                 <p className="error" style={{ fontWeight: 600 }}>
@@ -276,7 +286,7 @@ export default function ExifRemover() {
               <p className="muted" style={{ fontSize: '0.86rem', marginBottom: 0 }}>
                 {it.method === 'lossless'
                   ? it.removed && it.removed.length
-                    ? `Removed losslessly: ${it.removed.join(', ')}.`
+                    ? <>Removed losslessly: {it.removed.map((r, i) => <span key={r} className="peel-chip" style={{ animationDelay: `${i * 70}ms` }}>{r}</span>)}.</>
                     : 'No metadata blocks to remove; the file is unchanged.'
                   : 'Re-encoded via canvas.'}{' '}
                 {it.note}
@@ -285,6 +295,7 @@ export default function ExifRemover() {
           )}
         </div>
       ))}
+      </div>
     </div>
   )
 }

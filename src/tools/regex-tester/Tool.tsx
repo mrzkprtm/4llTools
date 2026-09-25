@@ -1,4 +1,5 @@
 import { useState, type ReactNode } from 'react'
+import Roll from '../../motion/Roll'
 import { findMatches } from './regex'
 
 const FLAGS = [
@@ -20,7 +21,7 @@ export default function RegexTester() {
     let last = 0
     result.matches.forEach((m, i) => {
       if (!m.text) return
-      highlighted.push(text.slice(last, m.index), <mark key={i}>{m.text}</mark>)
+      highlighted.push(text.slice(last, m.index), <mark key={`${m.index}:${m.text}`} style={{ animationDelay: `${Math.min(i, 30) * 10}ms` }}>{m.text}</mark>)
       last = m.index + m.text.length
     })
     highlighted.push(text.slice(last))
@@ -47,7 +48,7 @@ export default function RegexTester() {
       {result?.ok && (
         <>
           <label>
-            {result.matches.length} match{result.matches.length === 1 ? '' : 'es'}
+            <Roll>{result.matches.length}</Roll> match{result.matches.length === 1 ? '' : 'es'}
           </label>
           <div className="output" style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit', wordBreak: 'break-word' }}>{highlighted}</div>
           {result.matches.some((m) => m.groups.length > 0) && (

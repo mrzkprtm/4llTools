@@ -1,5 +1,9 @@
-import { useState, type ReactNode } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
+import Busy from '../../components/Busy'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
+import { useFlip } from '../../motion/useFlip'
 import { CACHEABLE, CLASSES, classOf, describeUnknown, findCode, searchCodes, type StatusCode } from './codes'
 import { normalizeUrl, probe, type ProbeResult } from './probe'
 
@@ -16,7 +20,7 @@ function Pill({ children, color }: { children: ReactNode; color?: string }) {
 function CodeCard({ c, open, onToggle }: { c: StatusCode; open: boolean; onToggle: () => void }) {
   const color = TONE[classOf(c.code)]
   return (
-    <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: open ? 'var(--sunken)' : 'var(--surface)', transition: 'background-color .15s' }}>
+    <div data-flip={String(c.code)} style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: open ? 'var(--sunken)' : 'var(--surface)', transition: 'background-color .15s' }}>
       <button type="button" onClick={onToggle} aria-expanded={open}
         style={{ all: 'unset', boxSizing: 'border-box', width: '100%', cursor: 'pointer', display: 'flex', gap: 12, alignItems: 'baseline', padding: '10px 12px' }}>
         <b style={{ fontFamily: 'var(--mono)', fontSize: '1.15rem', color, minWidth: 40 }}>{c.code}</b>
@@ -25,10 +29,10 @@ function CodeCard({ c, open, onToggle }: { c: StatusCode; open: boolean; onToggl
           {c.unofficial && <Pill color="#b45309">unofficial</Pill>} {c.deprecated && <Pill>deprecated</Pill>}
           <span className="muted" style={{ display: 'block', fontSize: '0.88rem' }}>{c.desc}</span>
         </span>
-        <span aria-hidden className="muted" style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform .15s' }}>›</span>
+        <span aria-hidden className="muted" style={{ transform: open ? 'rotate(90deg)' : 'none', transition: 'transform var(--spring-snap-ms) var(--spring-snap)' }}>›</span>
       </button>
       {open && (
-        <div style={{ padding: '0 12px 12px 64px', fontSize: '0.92rem' }}>
+        <div className="settle-in" style={{ padding: '0 12px 12px 64px', fontSize: '0.92rem' }}>
           <p style={{ margin: '4px 0' }}><b>When to use:</b> {c.when}</p>
           {c.fixes && <p style={{ margin: '4px 0' }}><b>{c.code >= 400 ? 'Common causes & fixes:' : 'Notes:'}</b> {c.fixes}</p>}
           {c.headers && (
@@ -57,6 +61,8 @@ export default function HttpStatusCodes() {
   const [busy, setBusy] = useState(false)
   const [result, setResult] = useState<ProbeResult | null>(null)
   const [urlError, setUrlError] = useState('')
+  const grid = useRef<HTMLDivElement>(null)
+  useFlip(grid, { max: 40 })
 
   const results = searchCodes(query, cls)
   const exact = /^\d{3}$/.test(query.trim()) ? Number(query.trim()) : null
@@ -88,17 +94,17 @@ export default function HttpStatusCodes() {
     <div>
       <label htmlFor="hsc-q">Search by code, name or keyword</label>
       <input id="hsc-q" type="text" value={query} onChange={(e) => { setQuery(e.target.value); const n = Number(e.target.value.trim()); if (/^\d{3}$/.test(e.target.value.trim())) setOpen(new Set([n])) }} placeholder="e.g. 404, redirect, rate limit, cloudflare, 5xx" />
-      <div className="row">
+      <PillRow>
         <button type="button" className={`btn ${cls === null ? 'primary' : ''}`} onClick={() => setCls(null)}>All</button>
         {Object.entries(CLASSES).map(([k, v]) => (
           <button key={k} type="button" className={`btn ${cls === k ? 'primary' : ''}`} onClick={() => setCls(cls === k ? null : k)}>
             <span style={{ fontFamily: 'var(--mono)' }}>{k}xx</span> <span style={{ fontWeight: 400 }}>{v}</span>
           </button>
         ))}
-      </div>
+      </PillRow>
       {unknown && <p className="muted">{unknown}</p>}
-      <p className="muted" style={{ fontSize: '0.85rem', margin: '4px 0 8px' }}>{results.length} code{results.length === 1 ? '' : 's'}</p>
-      <div style={{ display: 'grid', gap: 6 }}>
+      <p className="muted" style={{ fontSize: '0.85rem', margin: '4px 0 8px' }}><Roll>{results.length}</Roll> code{results.length === 1 ? '' : 's'}</p>
+      <div ref={grid} style={{ display: 'grid', gap: 6 }}>
         {results.map((c) => <CodeCard key={c.code} c={c} open={open.has(c.code)} onToggle={() => toggle(c.code)} />)}
         {results.length === 0 && !unknown && <p className="muted">No codes match.</p>}
       </div>
@@ -118,17 +124,18 @@ export default function HttpStatusCodes() {
       <label style={{ fontWeight: 400, marginTop: 0 }}>
         <input type="checkbox" checked={follow} onChange={(e) => setFollow(e.target.checked)} /> Follow redirects (fetch follows them automatically, so you see the final status)
       </label>
-      {urlError && <p className="error">{urlError}</p>}
+      {urlError && <p className="error shake-once">{urlError}</p>}
       <div className="row" style={{ flexWrap: 'nowrap' }}>
         <div className="output" style={{ flex: 1, minWidth: 0 }}>curl -sI {normalizeUrl(url) ?? url}</div>
         <CopyButton text={`curl -sI ${normalizeUrl(url) ?? url}`} />
       </div>
 
+      {busy && <Busy label="Waiting for the server…" />}
       {result && (
-        <div className="output" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', marginTop: 8 }}>
+        <div className="output settle-in" style={{ fontFamily: 'var(--font)', wordBreak: 'normal', marginTop: 8 }}>
           {result.kind === 'response' && (
             <>
-              <div style={{ fontFamily: 'var(--mono)', fontSize: '1.4rem', fontWeight: 700, color: TONE[classOf(result.status)] }}>
+              <div className="pop" style={{ fontFamily: 'var(--mono)', fontSize: '1.4rem', fontWeight: 700, color: TONE[classOf(result.status)] }}>
                 {result.status} {found?.name ?? result.statusText}
               </div>
               <div className="muted" style={{ fontSize: '0.88rem' }}>
@@ -142,7 +149,7 @@ export default function HttpStatusCodes() {
           )}
           {result.kind === 'blocked' && (
             <p style={{ margin: 0 }}>
-              <b className="error">Could not read the response</b> ({Math.round(result.ms)} ms). {result.message}{' '}
+              <span className="chip bad">Could not read the response</span> ({Math.round(result.ms)} ms). {result.message}{' '}
               {result.reachable === true && 'The server did respond (a no-cors request succeeded), so it most likely does not allow this site to read responses (no CORS headers). The status code is hidden from the browser.'}
               {result.reachable === false && 'A second, no-cors request also failed, so the host is probably unreachable, the DNS name is wrong, the TLS certificate is invalid, or an http:// URL was blocked on this https page.'}
             </p>
