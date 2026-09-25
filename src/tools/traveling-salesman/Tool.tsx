@@ -76,12 +76,17 @@ export default function TravelingSalesman() {
     if (res.done) return false
     const s = res.value
     r.step = s
-    if (s.tour.length === cities.current.length) tour.current = [...s.tour]
     if (s.swap && s.accepted) {
       r.flash = s.swap
       r.flashT = 1
     }
     return !s.done
+  }
+
+  /** Remembers the latest full tour so the next method can start from it. */
+  function keepTour() {
+    const s = run.current.step
+    if (s && s.tour.length === cities.current.length) tour.current = [...s.tour]
   }
 
   function newCities(n = count, layout: Layout = 'random') {
@@ -135,6 +140,7 @@ export default function TravelingSalesman() {
                 let k = Math.min(100000, Math.floor(r.acc))
                 r.acc -= k
                 while (k-- > 0 && advance()) void 0
+                keepTour()
                 if (run.current.step) {
                   pushCap(r.hist, run.current.step.len, 600)
                   if (Number.isFinite(run.current.step.bestLen)) pushCap(r.best, run.current.step.bestLen, 600)
@@ -218,7 +224,7 @@ export default function TravelingSalesman() {
         </>
       }
     >
-      <PlayBar running={running} setRunning={(v) => { if (v && run.current.step?.done) start(); setRunning(v) }} onStep={() => { if (run.current.step?.done) start(); advance(); bump() }} onReset={() => { tour.current = cities.current.map((_, i) => i); start(); bump() }} />
+      <PlayBar running={running} setRunning={(v) => { if (v && run.current.step?.done) start(); setRunning(v) }} onStep={() => { if (run.current.step?.done) start(); advance(); keepTour(); bump() }} onReset={() => { tour.current = cities.current.map((_, i) => i); start(); bump() }} />
       <Choice label="Method" value={method} options={[['nn', 'Nearest'], ['twoopt', '2-opt'], ['anneal', 'Annealing'], ['brute', 'Brute force']]} onChange={(m) => { setMethod(m); start(m); bump() }} />
       <Slider label="Speed" value={speedV} min={0} max={100} format={(v) => fmt(speedOf(v), 0)} unit=" steps/s" onChange={setSpeedV} />
       <Slider label="Random cities" value={count} min={4} max={200} onChange={(v) => { setCount(v); newCities(v) }} />
