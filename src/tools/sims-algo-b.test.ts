@@ -8,6 +8,7 @@ import { PATTERNS, lifeStep, parseRule, patternCells, ruleToString, stamp } from
 import { ecaStep, guessClass, ruleFromTable, ruleTable, singleCell } from './cellular-automaton/eca'
 import { HIGHWAY_PERIOD, antStep, highwayDetector, makeAnt, parseTurmite } from './langtons-ant/ant'
 import { convexHull, type Pt } from './convex-hull/hull'
+import { anneal, bruteForce, finish, nearestNeighbour, tourLength, twoOpt, type City } from './traveling-salesman/tsp'
 
 describe('stack-queue', () => {
   it('circular queue wraps round and keeps FIFO order', () => {
@@ -269,5 +270,51 @@ describe('convex-hull', () => {
     for (const a of algos) expect(sorted(convexHull(square, a))).toEqual([0, 2, 4, 6])
     const diag: Pt[] = [0, 3, 1, 2].map((v) => ({ x: v, y: v }))
     for (const a of algos) expect(sorted(convexHull(diag, a))).toEqual([0, 1])
+  })
+})
+
+describe('traveling-salesman', () => {
+  const randomCities = (n: number, seed: number): City[] => {
+    const r = rng(seed)
+    return Array.from({ length: n }, () => ({ x: r() * 100, y: r() * 100 }))
+  }
+
+  it('measures closed tours', () => {
+    const sq: City[] = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }]
+    expect(tourLength(sq, [0, 1, 2, 3])).toBeCloseTo(4)
+    expect(tourLength(sq, [0, 2, 1, 3])).toBeCloseTo(2 + 2 * Math.SQRT2)
+    expect(tourLength(sq, [2])).toBe(0)
+  })
+
+  it('2-opt never makes the tour longer and ends with no improving swap', () => {
+    const c = randomCities(40, 7)
+    const nn = finish(nearestNeighbour(c))!
+    expect(nn.tour.length).toBe(40)
+    expect(new Set(nn.tour).size).toBe(40)
+    let prev = Infinity
+    let last = nn
+    for (const s of twoOpt(c, c.map((_, i) => i))) {
+      expect(s.len).toBeLessThanOrEqual(prev + 1e-9)
+      prev = s.len
+      last = s
+    }
+    expect(last.done).toBe(true)
+    expect(last.len).toBeCloseTo(tourLength(c, last.tour), 6)
+    expect(finish(twoOpt(c, last.tour))!.len).toBeCloseTo(last.len, 9)
+  })
+
+  it('brute force is optimal on small sets', () => {
+    // Cities on a circle, shuffled: the best tour visits them in angular order.
+    const order = [3, 0, 6, 2, 5, 1, 7, 4]
+    const circle = order.map((k) => ({ x: Math.cos((k / 8) * 2 * Math.PI), y: Math.sin((k / 8) * 2 * Math.PI) }))
+    const perimeter = 8 * 2 * Math.sin(Math.PI / 8)
+    expect(finish(bruteForce(circle))!.bestLen).toBeCloseTo(perimeter, 9)
+    for (const seed of [1, 2, 3]) {
+      const c = randomCities(8, seed)
+      const best = finish(bruteForce(c))!.bestLen
+      expect(best).toBeLessThanOrEqual(finish(twoOpt(c, c.map((_, i) => i)))!.len + 1e-9)
+      expect(best).toBeLessThanOrEqual(finish(nearestNeighbour(c))!.len + 1e-9)
+      expect(finish(anneal(c, c.map((_, i) => i), { T0: 50, cooling: 0.999 }, rng(seed)))!.bestLen).toBeGreaterThanOrEqual(best - 1e-9)
+    }
   })
 })

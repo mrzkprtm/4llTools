@@ -158,7 +158,7 @@ export default function ClothSimulation() {
       <Choice label="Drag to" value={mode} options={[['pull', 'Pull'], ['cut', 'Cut']]} onChange={setMode} />
       <Slider label="Gravity" value={gravity} min={0} max={2000} step={20} unit=" px/s²" onChange={setGravity} />
       <Slider label="Wind" value={wind} min={0} max={1500} step={20} unit=" px/s²" onChange={setWind} />
-      <Slider label="Stiffness (iterations)" value={iters} min={1} max={30} onChange={setIters} />
+      <Slider label="Stiffness (iterations)" value={iters} min={3} max={24} onChange={setIters} />
       <Toggle label="Tearable" checked={tear} onChange={setTear} />
       {tear && <Slider label="Tears at" value={tearAt} min={1.4} max={4} step={0.1} unit="× length" onChange={setTearAt} />}
       <Choice label="Look" value={look} options={[['shaded', 'Shaded'], ['wire', 'Wireframe']]} onChange={setLook} />

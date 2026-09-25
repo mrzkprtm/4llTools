@@ -3,8 +3,10 @@ import { EMPTY, SAND, STONE, WATER, makeGrid, place, step } from './falling-sand
 import { makeSwarm, retarget, sampleText, stepSwarm } from './text-particles/particles'
 import { addDrop, stepWave, waveEnergy } from './water-ripples/ripples'
 import { fbm, project } from './terrain-generator/terrain'
-import { makeNoise } from '../sim/math'
+import { makeNoise, rng } from '../sim/math'
 import { maurer, polar, rosePeriod, rosePetals } from './rose-curves/rose'
+import { buildCurve, hilbertD2xy, hilbertXy2d, mortonD2xy } from './space-filling-curves/curves'
+import { coverage, makePacker, stepPacker } from './circle-packing/packing'
 import { arcPoint, cornerColor, orientations, tileArcs } from './truchet-tiles/truchet'
 
 describe('falling-sand', () => {
@@ -233,5 +235,91 @@ describe('rose-curves', () => {
     expect(pts[1]).toBeCloseTo(0)
     const t = (39 * Math.PI) / 180
     expect(pts[2]).toBeCloseTo(Math.cos(2 * t) * Math.cos(t))
+  })
+})
+
+describe('space-filling-curves', () => {
+  it('round-trips Hilbert index ↔ cell', () => {
+    for (const N of [2, 4, 16, 64])
+      for (let d = 0; d < N * N; d++) {
+        const [x, y] = hilbertD2xy(N, d)
+        expect(hilbertXy2d(N, x, y)).toBe(d)
+      }
+    expect(mortonD2xy(0b1101)).toEqual([0b11, 0b10])
+  })
+
+  it('visits every cell exactly once, moving to a neighbouring cell each step', () => {
+    for (const [kind, order] of [['hilbert', 5], ['moore', 4], ['peano', 3], ['zorder', 3]] as const) {
+      const c = buildCurve(kind, order)
+      const seen = new Set<string>()
+      for (let i = 0; i < c.pts.length; i += 2) seen.add(`${c.pts[i]},${c.pts[i + 1]}`)
+      expect(seen.size).toBe(c.n * c.n)
+      expect(c.pts.length / 2).toBe(c.n * c.n)
+      if (kind === 'zorder') continue
+      for (let i = 2; i < c.pts.length; i += 2) expect(Math.abs(c.pts[i] - c.pts[i - 2]) + Math.abs(c.pts[i + 1] - c.pts[i - 1])).toBe(1)
+    }
+    expect(buildCurve('peano', 2).n).toBe(9)
+    const moore = buildCurve('moore', 3)
+    const last = moore.pts.length - 2
+    // The Moore curve is a closed loop.
+    expect(Math.abs(moore.pts[last] - moore.pts[0]) + Math.abs(moore.pts[last + 1] - moore.pts[1])).toBe(1)
+  })
+
+  it('coarsens order n into order n − 1, which is what the morph animation relies on', () => {
+    for (const [kind, order, f] of [['hilbert', 5, 2], ['moore', 4, 2], ['peano', 3, 3]] as const) {
+      const fine = buildCurve(kind, order).pts
+      const coarse = buildCurve(kind, order - 1).pts
+      const seq: string[] = []
+      for (let i = 0; i < fine.length; i += 2) {
+        const key = `${Math.floor(fine[i] / f)},${Math.floor(fine[i + 1] / f)}`
+        if (seq[seq.length - 1] !== key) seq.push(key)
+      }
+      const want: string[] = []
+      for (let i = 0; i < coarse.length; i += 2) want.push(`${coarse[i]},${coarse[i + 1]}`)
+      expect(seq).toEqual(want)
+    }
+  })
+
+  it('builds the Gosper curve with 7^n segments', () => {
+    expect(buildCurve('gosper', 2).pts.length / 2).toBe(7 ** 2 + 1)
+  })
+})
+
+describe('circle-packing', () => {
+  function run(inside?: (x: number, y: number) => boolean) {
+    const random = rng(12)
+    const p = makePacker({ w: 300, h: 200, minR: 2, maxR: 30, spacing: 1.5, inside })
+    for (let k = 0; k < 3000 && p.idle < 40; k++) stepPacker(p, random, 1.5, 8, 60)
+    return p
+  }
+
+  it('grows circles that never overlap each other or the edges', () => {
+    const p = run()
+    const cs = p.circles
+    expect(cs.length).toBeGreaterThan(100)
+    expect(cs.every((c) => !c.growing)).toBe(true)
+    for (let i = 0; i < cs.length; i++) {
+      const a = cs[i]
+      expect(a.x - a.r).toBeGreaterThanOrEqual(-1e-9)
+      expect(a.y + a.r).toBeLessThanOrEqual(200 + 1e-9)
+      expect(a.r).toBeLessThanOrEqual(30)
+      for (let j = i + 1; j < cs.length; j++) {
+        const b = cs[j]
+        expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThanOrEqual(a.r + b.r + 1.5 - 1e-9)
+      }
+    }
+    // Growth packs the space densely.
+    expect(coverage(cs, 300 * 200)).toBeGreaterThan(0.5)
+  })
+
+  it('keeps every circle inside a mask shape', () => {
+    const inside = (x: number, y: number) => Math.hypot(x - 150, y - 100) < 80
+    const p = run(inside)
+    for (const c of p.circles) expect(Math.hypot(c.x - 150, c.y - 100) + c.r).toBeLessThanOrEqual(80.5)
+  })
+
+  it('computes coverage as circle area over total area', () => {
+    expect(coverage([{ r: 1 }, { r: 2 }], 5 * Math.PI)).toBeCloseTo(1)
+    expect(coverage([], 100)).toBe(0)
   })
 })

@@ -4,6 +4,7 @@ import { decayProbability, stepDecay, theoretical } from './half-life/decay'
 import { configString, element, isStable, shellCounts } from './atom-builder/atom'
 import { angleAt, apply, mul, rotation, type Vec3 } from './molecule-viewer/geometry'
 import { MOLECULES, hillFormula } from './molecule-viewer/molecules'
+import { cleanDNA, codonToAmino, complement, gcContent, proteinString, randomCoding, transcribe, translate } from './dna-transcription/genetics'
 import { barriers, collisionEnergy, equilibriumK, predictedK, reacts } from './reaction-equilibrium/equilibrium'
 import { concentration, fitsPore, passesMembrane, poreCentres, waterActivity } from './diffusion-membrane/membrane'
 
@@ -138,5 +139,37 @@ describe('molecule-viewer', () => {
     expect(mol('glucose').bonds.length).toBe(24)
     expect(mol('caffeine').bonds.length).toBe(25)
     expect(mol('c6h6').bonds.filter((b) => b[2] === 2).length).toBe(3)
+  })
+})
+
+describe('dna-transcription', () => {
+  it('pairs bases for the complement and the mRNA', () => {
+    expect(complement('ATGC')).toBe('TACG')
+    expect(transcribe('TACG')).toBe('AUGC')
+    expect(transcribe(complement('ATGGCC'))).toBe('AUGGCC')
+    expect(cleanDNA('atg c-x1')).toEqual({ seq: 'ATGC', bad: ['X'] })
+    expect(gcContent('GGCA')).toBe(0.75)
+  })
+
+  it('translates with the standard codon table until a stop codon', () => {
+    expect(codonToAmino('AUG')).toBe('M')
+    expect(codonToAmino('UGG')).toBe('W')
+    expect(codonToAmino('UGA')).toBe('*')
+    expect(codonToAmino('GGG')).toBe('G')
+    const t = translate('GCAUGGCCAAGUUUGGACUGUGGCAUUAAGC')
+    expect(t.start).toBe(2)
+    expect(proteinString(t)).toBe('MAKFGLWH')
+    expect(t.stopped).toBe(true)
+  })
+
+  it('respects the reading frame', () => {
+    // From base 0 the frame is GCA UGG CCA …; from the first AUG it is AUG GCC AAG …
+    expect(translate('GCAUGGCCAAG', false).aminos.join('')).toBe('AWP')
+    expect(translate('GCAUGGCCAAG', true).aminos.join('')).toBe('MAK')
+    expect(translate('CCCGGG', true).start).toBe(-1)
+    const gene = translate(transcribe(complement(randomCoding(10, rng(3)))))
+    expect(gene.aminos[0]).toBe('M')
+    expect(gene.aminos.at(-1)).toBe('*')
+    expect(gene.aminos.length).toBe(12)
   })
 })

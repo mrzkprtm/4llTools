@@ -7,6 +7,7 @@ import { binarySearch, halvingGuesses, linearSearch, run as runSearch, sortedDat
 import { apply, emptyTree, inorder as bstInorder, insert as bstInsert, isBalanced, isValid, levelorder, postorder, preorder, rebuildAvl, remove as bstRemove, search as bstSearch, treeHeight } from './bst-visualizer/bst'
 import { heapSort as heapSortSteps, heapify, isHeap, pop as heapPop, push as heapPush, run as runHeap } from './heap-visualizer/heap'
 import { preset as graphPreset, traverse, type Graph } from './graph-traversal/graph'
+import { UnionFind, buildEdges, mst, scatterPoints } from './minimum-spanning-tree/mst'
 import { WALL, WEIGHT, makeGrid, pathCost, scatter, solve, divisionMaze, neighbours } from './pathfinding-visualizer/path'
 
 function drain<T>(g: Generator<unknown, T, undefined>): T {
@@ -322,5 +323,45 @@ describe('graph-traversal', () => {
       const g = graphPreset(p, 800, 480, rng(6))
       expect(traverse(g, 0, 'bfs').order.length).toBe(g.nodes.length)
     }
+  })
+})
+
+describe('minimum-spanning-tree', () => {
+  it("Kruskal's and Prim's give the same total weight on seeded graphs", () => {
+    for (let seed = 1; seed <= 15; seed++) {
+      const random = rng(seed)
+      const pts = scatterPoints(8 + seed * 2, 560, 500, random, 50)
+      const edges = buildEdges(pts, 1 + (seed % 4), () => 1 + Math.floor(random() * 20))
+      const n = pts.length
+      const k = mst(n, edges, 'kruskal')
+      expect(k.count).toBe(n - 1)
+      for (const start of [0, n - 1]) expect(mst(n, edges, 'prim', start)).toEqual(k)
+    }
+  })
+
+  it('k-nearest edges are always connected', () => {
+    for (let seed = 1; seed <= 10; seed++) {
+      const pts = scatterPoints(30, 560, 500, rng(seed * 7), 60)
+      const edges = buildEdges(pts, 1, () => 1)
+      const uf = new UnionFind(pts.length)
+      for (const e of edges) uf.union(e.a, e.b)
+      expect(uf.size[uf.find(0)]).toBe(pts.length)
+    }
+  })
+})
+
+describe('minimum-spanning-tree (small exact case)', () => {
+  it('matches a hand-checked MST', () => {
+    // Square 0-1-2-3 with diagonals; cheapest tree uses edges 0-1 (1), 1-2 (2), 2-3 (3).
+    const edges = [
+      { a: 0, b: 1, w: 1 },
+      { a: 1, b: 2, w: 2 },
+      { a: 2, b: 3, w: 3 },
+      { a: 3, b: 0, w: 4 },
+      { a: 0, b: 2, w: 5 },
+      { a: 1, b: 3, w: 6 },
+    ]
+    expect(mst(4, edges, 'kruskal')).toEqual({ weight: 6, count: 3 })
+    expect(mst(4, edges, 'prim', 3)).toEqual({ weight: 6, count: 3 })
   })
 })

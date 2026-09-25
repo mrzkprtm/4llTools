@@ -164,16 +164,16 @@ export default function DnaTranscription() {
               text(ctx, 'template', bx(0) - 18, CY + 62, { color: theme.text, size: 12 })
 
               // mRNA: paired in the bubble, peeling off to its own track behind the polymerase.
-              const made = a.phase === 1 ? Math.min(L, Math.floor(a.pol) + 1) : a.phase >= 2 ? L : 0
+              const built = a.phase === 1 ? Math.min(L, Math.floor(a.pol) + 1) : a.phase >= 2 ? L : 0
               let prev: [number, number] | null = null
-              for (let i = 0; i < made; i++) {
+              for (let i = 0; i < built; i++) {
                 const x = bx(i)
                 const k = a.phase === 1 ? smooth((a.pol - 2 - i) / 4) : 1
                 const y = (1 - k) * (y2(i) + 30) + k * YM
                 if (prev && x > -20 && x < W + 20) line(ctx, prev[0], prev[1], x, y, alpha(BASE_COLOR.U, 0.8), 3)
                 prev = [x, y]
               }
-              for (let i = Math.max(0, lo); i < Math.min(made, hi + 1); i++) {
+              for (let i = Math.max(0, lo); i < Math.min(built, hi + 1); i++) {
                 const x = bx(i)
                 const k = a.phase === 1 ? smooth((a.pol - 2 - i) / 4) : 1
                 const y = (1 - k) * (y2(i) + 30) + k * YM
@@ -181,7 +181,7 @@ export default function DnaTranscription() {
                 rrect(ctx, x - 7, y - 10, 14, 20, 3, alpha(BASE_COLOR[mrna[i]], inFrame ? 1 : 0.4))
                 text(ctx, mrna[i], x, y + 5, { color: '#fff', size: 12, align: 'center', weight: 700 })
               }
-              if (made > 0) {
+              if (built > 0) {
                 text(ctx, "5'", bx(0) - 12, YM + 5, { color: theme.muted, size: 12, align: 'right' })
                 text(ctx, 'mRNA', bx(0) - 12, YM + 22, { color: BASE_COLOR.U, size: 12, align: 'right', weight: 700 })
               }
@@ -229,7 +229,7 @@ export default function DnaTranscription() {
                 if (a.phase === 2 && frac < 0.5 && aa !== '*') {
                   const e = smooth(frac * 2.2)
                   const ty = YM + 150 - e * 110
-                  const anti = transcribe(complement(tr.codons[k].replace(/U/g, 'T')))
+                  const anti = transcribe(tr.codons[k].replace(/U/g, 'T'))
                   rrect(ctx, centre(k) - 1.5 * SP, ty - 10, 3 * SP, 22, 5, alpha(theme.surface, 0.95), theme.border)
                   text(ctx, anti, centre(k), ty + 5, { color: theme.text, size: 12, align: 'center', weight: 700 })
                   circle(ctx, centre(k), ty + 32, 16, CLASS_COLOR[aminoClass(aa)])

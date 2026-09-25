@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { deg, rad } from '../sim/math'
+import { deg, rad, rng } from '../sim/math'
 import { approachSpeed, dopplerObserved, machAngle } from './doppler-effect/doppler'
 import { principalRays, signedFocal, thinLens } from './lens-ray-tracer/optics'
 import { brewsterAngle, criticalAngle, fresnelReflectance, refractAngle } from './snells-law/snell'
 import { fieldAt, potentialAt, traceLine } from './electric-field/field'
+import { borisStep, cyclotronPeriod, driftSpeed, larmorRadius } from './lorentz-force/lorentz'
+import { Fluid } from './fluid-smoke/fluid'
+import { Cloth } from './cloth-simulation/cloth'
 
 describe('doppler effect', () => {
   it('raises the pitch ahead and lowers it behind', () => {
@@ -100,5 +103,127 @@ describe('electric field', () => {
     const line = traceLine(dipole, 306, 248, { maxSteps: 2000 })
     expect(line.end).toBe('charge')
     expect(line.hit).toBe(1)
+  })
+})
+
+describe('lorentz force', () => {
+  it('keeps the speed exact and closes the circle after one period in a pure B field', () => {
+    const m = 2
+    const q = 1
+    const B = 1.5
+    const v = 120
+    const T = cyclotronPeriod(m, q, B)
+    const p = { x: 0, y: 0, vx: v, vy: 0 }
+    const n = 2000
+    let minY = 0
+    for (let i = 0; i < n; i++) {
+      borisStep(p, q / m, 0, 0, B, T / n)
+      minY = Math.min(minY, p.y)
+      expect(Math.hypot(p.vx, p.vy)).toBeCloseTo(v, 9)
+    }
+    expect(Math.hypot(p.x, p.y)).toBeLessThan(0.5)
+    // A positive charge moving right with B out of the screen curves downwards (clockwise).
+    expect(-minY).toBeCloseTo(2 * larmorRadius(m, v, q, B), 0)
+  })
+
+  it('lets only v = E/B through a velocity selector', () => {
+    const B = 1.5
+    const v = 150
+    const E = v * B
+    expect(driftSpeed(E, B)).toBe(v)
+    const straight = { x: 0, y: 0, vx: v, vy: 0 }
+    const fast = { x: 0, y: 0, vx: v * 1.3, vy: 0 }
+    for (let i = 0; i < 600; i++) {
+      borisStep(straight, 1, 0, E, B, 1 / 600)
+      borisStep(fast, 1, 0, E, B, 1 / 600)
+    }
+    expect(Math.abs(straight.y)).toBeLessThan(1e-6)
+    expect(straight.x).toBeCloseTo(v)
+    expect(fast.y).toBeLessThan(-5)
+  })
+
+  it('drifts at E/B in crossed fields', () => {
+    const E = 90
+    const B = 1.5
+    const T = cyclotronPeriod(1, 1, B)
+    const p = { x: 0, y: 0, vx: 0, vy: 0 }
+    const n = 3000
+    for (let i = 0; i < n * 3; i++) borisStep(p, 1, 0, E, B, T / n)
+    expect(p.x / (3 * T)).toBeCloseTo(driftSpeed(E, B), 1)
+  })
+})
+
+describe('fluid', () => {
+  function swirlField(f: Fluid) {
+    for (let j = 1; j <= f.ny; j++)
+      for (let i = 1; i <= f.nx; i++) {
+        const k = f.IX(i, j)
+        const dx = i - f.nx / 2
+        const dy = j - f.ny / 2
+        const g = Math.exp(-(dx * dx + dy * dy) / 60)
+        f.u[k] = dx * g
+        f.v[k] = dy * g
+      }
+  }
+
+  it('projection removes most of the divergence', () => {
+    const f = new Fluid(64, 40)
+    swirlField(f)
+    const before = f.divergence()
+    f.project(16)
+    const after16 = f.divergence()
+    f.project(80)
+    expect(after16).toBeLessThan(before * 0.4)
+    expect(f.divergence()).toBeLessThan(before * 0.1)
+  })
+
+  it('keeps the dye in a closed tank when nothing fades', () => {
+    const f = new Fluid(64, 40)
+    f.addDye(32, 20, 1, 0.5, 0.2, 6)
+    f.addVelocity(28, 20, 30, 10, 5)
+    const random = rng(4)
+    const total = f.totalDye()
+    for (let s = 0; s < 180; s++) {
+      if (s % 20 === 0) f.addVelocity(10 + random() * 44, 5 + random() * 30, random() * 40 - 20, random() * 40 - 20, 4)
+      f.step(1 / 60, { vorticity: 5 })
+    }
+    expect(f.totalDye()).toBeCloseTo(total, 6)
+    // With fade the dye decays exponentially instead.
+    f.step(1, { fade: 0.5 })
+    expect(f.totalDye() / total).toBeCloseTo(0.5, 6)
+  })
+})
+
+describe('cloth', () => {
+  it('keeps pinned points where they were hung', () => {
+    const c = new Cloth(12, 8, 10, 0, 0, 'corners')
+    const pins = [0, 11].map((k) => [c.x[k], c.y[k]])
+    for (let s = 0; s < 400; s++) c.step(1 / 120, { gravity: 980, iterations: 8, force: () => [300, 0] })
+    ;[0, 11].forEach((k, i) => {
+      expect(c.x[k]).toBe(pins[i][0])
+      expect(c.y[k]).toBe(pins[i][1])
+    })
+    expect(c.y[c.n - 1]).toBeGreaterThan(50)
+  })
+
+  it('relaxes back to its rest lengths', () => {
+    const c = new Cloth(12, 8, 10, 0, 0, 'row')
+    const random = rng(9)
+    for (let k = 12; k < c.n; k++) {
+      c.x[k] += (random() - 0.5) * 6
+      c.y[k] += (random() - 0.5) * 6
+    }
+    expect(c.maxStretch()).toBeGreaterThan(0.2)
+    c.satisfy(300)
+    expect(c.maxStretch()).toBeLessThan(0.01)
+  })
+
+  it('breaks links that are cut or overstretched', () => {
+    const c = new Cloth(12, 8, 10, 0, 0, 'row')
+    expect(c.cut(-5, 35, 200, 35, 6)).toBeGreaterThan(5)
+    const t = new Cloth(4, 4, 10, 0, 0, 'row')
+    t.x[15] += 200
+    t.satisfy(1, 2)
+    expect(Array.from(t.alive).some((a) => a === 0)).toBe(true)
   })
 })

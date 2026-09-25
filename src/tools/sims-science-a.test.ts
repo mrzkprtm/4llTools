@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { rk4, rng } from '../sim/math'
+import { PLANETS, dateFromDay, dayNumber, meanLongitude, position, solveKepler } from './solar-system/orrery'
 import { createNet, evaluate, gradients, makeData, predict, trainEpoch, type Net, type Point } from './neural-network/nn'
 import { createPopulation, crossover, fitness as gaFitness, mutate as gaMutate, nextGeneration, sanitize } from './genetic-algorithm/ga'
 import { BOUNDS, createWorld as createNS, endDay, energyCost, mutate } from './natural-selection/selection'
@@ -268,5 +269,36 @@ describe('neural-network training', () => {
       e++
     }
     expect(evaluate(net, data).accuracy).toBeGreaterThanOrEqual(0.97)
+  })
+})
+
+describe('solar-system', () => {
+  it('mean longitude returns to its start after one orbital period', () => {
+    for (const p of PLANETS) {
+      const start = meanLongitude(p, 1234.5)
+      const after = meanLongitude(p, 1234.5 + p.period)
+      expect(Math.min(Math.abs(after - start), 360 - Math.abs(after - start))).toBeLessThan(1e-6)
+      expect(meanLongitude(p, 1234.5 + p.period / 2)).not.toBeCloseTo(start, 0)
+    }
+  })
+
+  it('converts dates to days since J2000 and back', () => {
+    expect(dayNumber(new Date(Date.UTC(2000, 0, 1, 12)))).toBe(0)
+    expect(dayNumber(new Date(Date.UTC(2000, 0, 2, 12)))).toBe(1)
+    expect(dayNumber(new Date(Date.UTC(2024, 0, 1, 0)))).toBe(8765.5)
+    expect(dateFromDay(8765.5).toISOString()).toBe('2024-01-01T00:00:00.000Z')
+  })
+
+  it('solves Kepler’s equation and puts Earth at 180° at the March equinox', () => {
+    for (const [M, e] of [[0.3, 0.2], [2.5, 0.0934], [5, 0.6]]) {
+      const E = solveKepler(M, e)
+      expect(E - e * Math.sin(E)).toBeCloseTo(M, 10)
+    }
+    const earth = PLANETS.find((p) => p.name === 'Earth')!
+    // Seen from Earth the Sun is at longitude 0° at the equinox, so Earth is at 180°.
+    const eq = position(earth, dayNumber(new Date(Date.UTC(2024, 2, 20, 3, 6))))
+    expect(Math.abs(eq.lon - 180)).toBeLessThan(1)
+    expect(eq.r).toBeGreaterThan(0.98)
+    expect(eq.r).toBeLessThan(1.02)
   })
 })

@@ -8,6 +8,7 @@ import { cull, emit, makePool, stepPool, wellAccel } from './particle-playground
 import { envelope, penAt, settleTime, swing, type Machine } from './harmonograph/harmonograph'
 import { bandLevels, binFrequency, frequencyBin, logEdges, midiFrequency, noteName, peakFrequency, risingZero, rmsDb } from './audio-visualizer/analysis'
 import { caseIndex, countBlobs, field, marchingSquares } from './metaballs/metaballs'
+import { PRESETS, fitTransform, parseRules, rewrite, turtle } from './l-system-plants/lsystem'
 import { makeField, makeParticles, seedParticles, stepParticles, swirl } from './flow-field-art/field'
 
 describe('flow-field-art', () => {
@@ -322,5 +323,57 @@ describe('metaballs', () => {
     const two = [ball(40, 40, 15), ball(160, 160, 15)]
     for (let j = 0; j <= rows; j++) for (let i = 0; i <= cols; i++) grid[j * (cols + 1) + i] = field(two, i * cell, j * cell)
     expect(countBlobs(grid, cols, rows, 1)).toBe(2)
+  })
+})
+
+describe('l-system-plants', () => {
+  it('rewrites all symbols in parallel: algae lengths are Fibonacci numbers', () => {
+    const r = rewrite('A', { A: 'AB', B: 'A' }, 10)
+    expect(r.lengths).toEqual([1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144])
+    expect(rewrite('A', { A: 'AB', B: 'A' }, 4).str).toBe('ABAABABA')
+    // Koch: every F becomes 4 Fs, so the snowflake has 3·4ⁿ segments.
+    const k = rewrite('F--F--F', parseRules('F=F+F--F+F'), 3)
+    expect([...k.str].filter((c) => c === 'F')).toHaveLength(3 * 4 ** 3)
+  })
+
+  it('stops before passing the length cap', () => {
+    const r = rewrite('A', { A: 'AA' }, 30, 1000)
+    expect(r.capped).toBe(true)
+    expect(r.done).toBe(9)
+    expect(r.str.length).toBe(512)
+  })
+
+  it('parses rules in several notations', () => {
+    expect(parseRules('X=F[+X]\nF → FF; Y -> -FX')).toEqual({ X: 'F[+X]', F: 'FF', Y: '-FX' })
+    expect(parseRules('F=')).toEqual({ F: '' })
+  })
+
+  it('walks the turtle with turns and branch push/pop, and fits the bounds', () => {
+    const sq = turtle('F+F+F+F', { angle: 90 })
+    expect(sq.count).toBe(4)
+    expect(sq.bounds.minX).toBeCloseTo(0)
+    expect(sq.bounds.maxX).toBeCloseTo(1)
+    expect(sq.bounds.maxY - sq.bounds.minY).toBeCloseTo(1)
+    // Back at the start after four turns.
+    expect(sq.seg[14]).toBeCloseTo(0)
+    expect(sq.seg[15]).toBeCloseTo(0)
+    const y = turtle('F[+F]F', { angle: 90, heading: -90 })
+    expect(y.maxDepth).toBe(1)
+    expect(Array.from(y.depth)).toEqual([0, 1, 0])
+    // After the branch the trunk continues straight up from (0, -1) to (0, -2).
+    expect(y.seg[9]).toBeCloseTo(-1)
+    expect(y.seg[11]).toBeCloseTo(-2)
+    const fit = fitTransform(y.bounds, 100, 100, 10)
+    expect(fit.s).toBeCloseTo(40)
+    // Moving without drawing and non-drawing variables leave no segments.
+    expect(turtle('fXF', { angle: 90 }).count).toBe(1)
+  })
+
+  it('keeps every preset within the symbol cap', () => {
+    for (const p of Object.values(PRESETS)) {
+      const r = rewrite(p.axiom, parseRules(p.rules), p.iterations)
+      expect(r.capped).toBe(false)
+      expect(turtle(r.str, { angle: p.angle, heading: p.heading, draw: p.draw }).count).toBeGreaterThan(100)
+    }
   })
 })
