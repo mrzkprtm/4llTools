@@ -1,0 +1,63 @@
+import { Suspense, useEffect } from 'react'
+import { Link, Route, Routes, useParams } from 'react-router-dom'
+import Home from './Home'
+import { getTool, getToolComponent } from './tools/registry'
+
+export default function App() {
+  return (
+    <div className="app">
+      <header className="topbar">
+        <Link to="/" className="brand">
+          <span className="brand-mark">4</span>llTools
+        </Link>
+      </header>
+      <main className="content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/:slug" element={<ToolPage />} />
+        </Routes>
+      </main>
+    </div>
+  )
+}
+
+function ToolPage() {
+  const { slug = '' } = useParams()
+  const tool = getTool(slug)
+  const Component = getToolComponent(slug)
+
+  useEffect(() => {
+    document.title = tool ? `${tool.name} · 4llTools` : 'Not found · 4llTools'
+    return () => {
+      document.title = '4llTools'
+    }
+  }, [tool])
+
+  if (!tool || !Component) {
+    return (
+      <section className="panel">
+        <h1>Tool not found</h1>
+        <p>
+          <Link to="/">Back to all tools</Link>
+        </p>
+      </section>
+    )
+  }
+
+  return (
+    <section>
+      <Link to="/" className="back">
+        ← All tools
+      </Link>
+      <h1 className="tool-title">
+        <span aria-hidden="true">{tool.icon}</span> {tool.name}
+      </h1>
+      <p className="muted">{tool.description}</p>
+      <div className="panel">
+        <Suspense fallback={<p className="muted">Loading…</p>}>
+          <Component />
+        </Suspense>
+      </div>
+    </section>
+  )
+}
