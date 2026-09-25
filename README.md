@@ -60,7 +60,7 @@ Each folder in `src/tools/` is one tool. The folder name becomes its URL, and th
      description: 'One sentence about what it does.',
      category: 'Text', // see Category in src/tools/types.ts
      keywords: ['extra', 'search', 'words'],
-     icon: '✨',
+     symbol: 'Mt', // 1–3 characters, shown on the tool's tile
    }
    ```
 

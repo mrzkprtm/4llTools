@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Turn any text or link into a QR code you can download.',
   category: 'Scan & Code',
   keywords: ['make', 'create', 'buat', 'png'],
-  icon: '🔳',
+  symbol: 'Qg',
 }

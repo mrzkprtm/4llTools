@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Read the header and payload of a JSON Web Token.',
   category: 'Developer',
   keywords: ['token', 'jwt', 'auth', 'bearer'],
-  icon: '🎫',
+  symbol: 'Jw',
 }

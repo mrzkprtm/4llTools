@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Test a regular expression and see every match highlighted.',
   category: 'Developer',
   keywords: ['regexp', 'pattern', 'match'],
-  icon: '🧪',
+  symbol: '.*',
 }

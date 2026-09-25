@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Generate random UUID v4 identifiers in bulk.',
   category: 'Developer',
   keywords: ['guid', 'id', 'random'],
-  icon: '🆔',
+  symbol: 'Id',
 }

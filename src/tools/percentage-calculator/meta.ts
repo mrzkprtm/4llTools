@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Work out percentages, changes and discounts.',
   category: 'Calculator',
   keywords: ['persen', 'diskon', 'discount', 'percent'],
-  icon: '％',
+  symbol: '%',
 }

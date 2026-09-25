@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Compare two texts and see what was added or removed.',
   category: 'Text',
   keywords: ['compare', 'difference', 'bandingkan', 'perbedaan'],
-  icon: '🆚',
+  symbol: 'Df',
 }

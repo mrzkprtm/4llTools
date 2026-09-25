@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Pick a color and get HEX, RGB and HSL values.',
   category: 'Design',
   keywords: ['colour', 'warna', 'hex', 'rgb', 'hsl', 'picker'],
-  icon: '🎨',
+  symbol: 'Hx',
 }

@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Escape text for HTML, or turn entities back into text.',
   category: 'Developer',
   keywords: ['escape', 'unescape', 'html'],
-  icon: '🏷️',
+  symbol: '&;',
 }

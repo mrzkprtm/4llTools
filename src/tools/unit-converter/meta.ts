@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Convert length, weight, temperature, data size and more.',
   category: 'Convert',
   keywords: ['konversi', 'satuan', 'meter', 'kg', 'celsius', 'mb'],
-  icon: '📏',
+  symbol: 'Un',
 }

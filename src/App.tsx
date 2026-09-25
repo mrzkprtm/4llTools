@@ -1,13 +1,16 @@
-import { Suspense, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import { CloseIcon, MenuIcon } from './components/Icons'
+import ToolTile from './components/ToolTile'
 import Home from './Home'
 import Sidebar from './Sidebar'
 import { applyPageMeta, homeMeta, notFoundMeta, toolMeta } from './seo'
-import { getTool, getToolComponent } from './tools/registry'
+import { getTool, getToolComponent, tools } from './tools/registry'
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
+  const openMenu = useCallback(() => setMenuOpen(true), [])
 
   useEffect(() => {
     setMenuOpen(false)
@@ -15,6 +18,13 @@ export default function App() {
     const tool = getTool(pathname.slice(1))
     applyPageMeta(pathname === '/' ? homeMeta : tool ? toolMeta(tool) : notFoundMeta)
   }, [pathname])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setMenuOpen(false)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOpen])
 
   return (
     <div className="app">
@@ -26,14 +36,17 @@ export default function App() {
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          {menuOpen ? '✕' : '☰'}
+          {menuOpen ? <CloseIcon /> : <MenuIcon />}
         </button>
-        <Link to="/" className="brand">
-          <span className="brand-mark">4</span>llTools
+        <Link to="/" className="brand" aria-label="4llTools home">
+          <span className="brand-4">4</span>ll<span className="brand-tools">Tools</span>
         </Link>
+        <span className="topbar-meta">
+          {tools.length} tools · everything runs in your browser
+        </span>
       </header>
       <div className="layout">
-        <Sidebar open={menuOpen} onNavigate={() => setMenuOpen(false)} />
+        <Sidebar open={menuOpen} onNavigate={() => setMenuOpen(false)} onRequestOpen={openMenu} />
         {menuOpen && <div className="backdrop" onClick={() => setMenuOpen(false)} />}
         <main className="content">
           <Routes>
@@ -53,26 +66,35 @@ function ToolPage() {
 
   if (!tool || !Component) {
     return (
-      <section className="panel">
-        <h1>Tool not found</h1>
+      <section className="not-found">
+        <p className="eyebrow">404</p>
+        <h1>There's no tool called “{slug}”.</h1>
         <p>
-          <Link to="/">Back to all tools</Link>
+          <Link to="/" className="btn primary">
+            Browse all tools
+          </Link>
         </p>
       </section>
     )
   }
 
   return (
-    <section>
-      <h1 className="tool-title">
-        <span aria-hidden="true">{tool.icon}</span> {tool.name}
-      </h1>
-      <p className="muted">{tool.description}</p>
+    <article className="tool-page">
+      <header className="tool-head">
+        <ToolTile tool={tool} size="lg" />
+        <div>
+          <p className="eyebrow">
+            <Link to="/">All tools</Link> / {tool.category}
+          </p>
+          <h1 className="tool-title">{tool.name}</h1>
+          <p className="tool-desc">{tool.description}</p>
+        </div>
+      </header>
       <div className="panel">
-        <Suspense fallback={<p className="muted">Loading…</p>}>
+        <Suspense fallback={<p className="muted loading">Loading {tool.name}…</p>}>
           <Component />
         </Suspense>
       </div>
-    </section>
+    </article>
   )
 }

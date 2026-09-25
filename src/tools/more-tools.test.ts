@@ -29,6 +29,12 @@ describe('registry with all tools', () => {
     expect(new Set(tools.map((t) => t.name)).size).toBe(tools.length)
   })
 
+  it('gives every tool a unique 1–3 character symbol', () => {
+    for (const t of tools) expect([...t.symbol].length, t.slug).toBeGreaterThan(0)
+    for (const t of tools) expect([...t.symbol].length, t.slug).toBeLessThanOrEqual(3)
+    expect(new Set(tools.map((t) => t.symbol)).size).toBe(tools.length)
+  })
+
   it('groups tools by category in alphabetical order', () => {
     const names = groupByCategory(tools).map(([c]) => c)
     expect(names).toEqual([...names].sort())

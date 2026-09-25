@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Compute SHA-1, SHA-256, SHA-384 and SHA-512 hashes of text or files.',
   category: 'Security',
   keywords: ['sha', 'sha256', 'checksum', 'hash'],
-  icon: '#️⃣',
+  symbol: 'Sh',
 }

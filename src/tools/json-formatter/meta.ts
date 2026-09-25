@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Prettify, minify and validate JSON.',
   category: 'Developer',
   keywords: ['pretty', 'beautify', 'minify', 'validate', 'rapikan'],
-  icon: '🧾',
+  symbol: '{}',
 }

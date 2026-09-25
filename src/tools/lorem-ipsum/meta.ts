@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Generate placeholder paragraphs, sentences or words.',
   category: 'Text',
   keywords: ['placeholder', 'dummy text', 'teks contoh'],
-  icon: '📄',
+  symbol: 'Li',
 }

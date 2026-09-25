@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Convert numbers between binary, octal, decimal and hex.',
   category: 'Developer',
   keywords: ['binary', 'hex', 'octal', 'biner', 'heksadesimal'],
-  icon: '🔢',
+  symbol: '0x',
 }

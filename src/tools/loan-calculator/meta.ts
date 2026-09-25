@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Estimate monthly installments and total interest.',
   category: 'Calculator',
   keywords: ['cicilan', 'kredit', 'kpr', 'bunga', 'installment', 'mortgage'],
-  icon: '🏦',
+  symbol: 'Lo',
 }
