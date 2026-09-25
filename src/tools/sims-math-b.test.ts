@@ -1,6 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { rng } from '../sim/math'
 import { centroid, rmsDistance, stepAll, theoryRms, theoryWithin, type WalkMode } from './random-walk/walk'
+import { compile, curl, divergence, rk4Field } from './vector-field/field'
+import { apply, det, eigen2x2, IDENTITY, lerpMatrix, trace, type Mat } from './matrix-transform/matrix'
+import { bernstein, bezierPoint, deCasteljau, type Pt } from './bezier-construction/bezier'
+import { evalF, polyString, radius, taylorCoeffs, taylorEval, type FnId } from './taylor-series/taylor'
+import { integrate, riemann } from './riemann-sums/riemann'
+import { factorize, isEuler, sacksCoord, sieve, spiralCoord, spiralIndex } from './ulam-spiral/ulam'
+import { bounds, branches } from './fractal-tree/tree'
+import { allowed, chaosStep, fernStep, insideConvex, optimalR, regularPolygon, type Rule } from './chaos-game/chaos'
+import { collatz, coral, stoppingTime, totalStoppingTime } from './collatz-conjecture/collatz'
 
 describe('random walk', () => {
   it('spreads like √n · step for every mode', () => {
@@ -28,8 +37,6 @@ describe('random walk', () => {
     expect(theoryWithin('1d', 100, 1, 0, 10)).toBeCloseTo(0.6827, 3)
   })
 })
-
-import { compile, curl, divergence, rk4Field } from './vector-field/field'
 
 describe('vector field parser', () => {
   it('follows precedence, powers and implicit multiplication', () => {
@@ -59,8 +66,6 @@ describe('vector field parser', () => {
     expect(p[1]).toBeCloseTo(0, 6)
   })
 })
-
-import { apply, det, eigen2x2, IDENTITY, lerpMatrix, trace, type Mat } from './matrix-transform/matrix'
 
 describe('2×2 matrices', () => {
   it('computes det, trace and interpolation', () => {
@@ -98,8 +103,6 @@ describe('2×2 matrices', () => {
   })
 })
 
-import { bernstein, bezierPoint, deCasteljau, type Pt } from './bezier-construction/bezier'
-
 describe('Bézier curves', () => {
   const pts: Pt[] = [[0, 0], [1, 3], [4, 3], [6, -1], [7, 2]]
   it('returns every de Casteljau level down to one point that matches the Bernstein sum', () => {
@@ -121,8 +124,6 @@ describe('Bézier curves', () => {
     expect(bernstein(3, 1, 0.5)).toBeCloseTo(0.375, 12)
   })
 })
-
-import { evalF, polyString, radius, taylorCoeffs, taylorEval, type FnId } from './taylor-series/taylor'
 
 describe('Taylor series', () => {
   it('matches sin with 10 terms around 0', () => {
@@ -147,8 +148,6 @@ describe('Taylor series', () => {
   })
 })
 
-import { integrate, riemann } from './riemann-sums/riemann'
-
 describe('Riemann sums', () => {
   const sq = (x: number) => x * x
   it('gives the textbook values for x² on [0, 1] with n = 4', () => {
@@ -167,5 +166,106 @@ describe('Riemann sums', () => {
     expect(err('mid', 20) / err('mid', 40)).toBeCloseTo(4, 0)
     expect(err('simpson', 20) / err('simpson', 40)).toBeGreaterThan(14)
     expect(riemann(Math.sin, 0, 2 * Math.PI, 7, 'mid')).toBeCloseTo(0, 12)
+  })
+})
+
+describe('prime spirals', () => {
+  it('sieves primes', () => {
+    const p = sieve(100)
+    const primes = [...p.keys()].filter((k) => p[k])
+    expect(primes.slice(0, 10)).toEqual([2, 3, 5, 7, 11, 13, 17, 19, 23, 29])
+    expect(primes.length).toBe(25)
+    expect(sieve(40000).reduce((s, v) => s + v, 0)).toBe(4203)
+  })
+  it('lays integers on the Ulam spiral and inverts it', () => {
+    expect([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 25, 26].map(spiralCoord)).toEqual([[0, 0], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1], [2, -1], [2, -2], [3, -2]])
+    for (let k = 1; k < 5000; k++) expect(spiralIndex(...spiralCoord(k))).toBe(k)
+    const [x, y] = sacksCoord(49)
+    expect(x).toBeCloseTo(7, 9)
+    expect(y).toBeCloseTo(0, 9)
+  })
+  it('factorizes and spots Euler numbers', () => {
+    expect(factorize(360)).toEqual([2, 2, 2, 3, 3, 5])
+    expect(factorize(9991)).toEqual([97, 103])
+    expect(factorize(97)).toEqual([97])
+    expect([41, 43, 47, 53, 1681].every(isEuler)).toBe(true)
+    expect(isEuler(42)).toBe(false)
+  })
+})
+
+describe('fractal tree', () => {
+  const base = { angle: 25, ratio: 0.7, trunk: 100, asym: 0, taper: 0.7 }
+  it('has 2^depth − 1 branches', () => {
+    for (let depth = 1; depth <= 12; depth++) expect(branches({ ...base, depth }).length).toBe(2 ** depth - 1)
+  })
+  it('scales each level by the ratio and stays symmetric without asymmetry', () => {
+    const segs = branches({ ...base, depth: 6 })
+    const len = (i: number) => Math.hypot(segs[i].x2 - segs[i].x1, segs[i].y2 - segs[i].y1)
+    expect(len(0)).toBeCloseTo(100, 9)
+    expect(len(1)).toBeCloseTo(70, 9)
+    expect(len(3)).toBeCloseTo(49, 9)
+    const [minX, minY, maxX] = bounds(segs)
+    expect(minX).toBeCloseTo(-maxX, 9)
+    expect(minY).toBeLessThan(-100)
+    // A straight tree (angle 0) is one tall line of total height trunk·(1 − r^d) / (1 − r).
+    const [, top] = bounds(branches({ ...base, angle: 0, depth: 5 }))
+    expect(-top).toBeCloseTo((100 * (1 - 0.7 ** 5)) / 0.3, 9)
+  })
+})
+
+describe('chaos game', () => {
+  it('stays inside the polygon and obeys the rule', () => {
+    for (const [n, rule] of [[3, 'any'], [4, 'no-repeat'], [5, 'not-neighbour'], [6, 'not-next']] as [number, Rule][]) {
+      const poly = regularPolygon(n, 0, 0, 100)
+      const random = rng(n * 11)
+      const s = { x: 0, y: 0, last: -1 }
+      for (let i = 0; i < 5000; i++) {
+        const prev = s.last
+        const v = chaosStep(s, poly, optimalR(n), rule, random)
+        expect(allowed(rule, v, prev, n)).toBe(true)
+        expect(insideConvex([s.x, s.y], poly, 1e-6)).toBe(true)
+      }
+    }
+  })
+  it('knows the touching ratios', () => {
+    expect(optimalR(3)).toBeCloseTo(0.5, 12)
+    expect(optimalR(4)).toBeCloseTo(0.5, 12)
+    expect(optimalR(5)).toBeCloseTo((Math.sqrt(5) - 1) / 2, 12)
+    expect(optimalR(6)).toBeCloseTo(2 / 3, 12)
+  })
+  it('keeps the Barnsley fern inside its known box', () => {
+    const random = rng(3)
+    const s = { x: 0, y: 0 }
+    const used = [0, 0, 0, 0]
+    for (let i = 0; i < 20000; i++) {
+      used[fernStep(s, random)]++
+      expect(s.x).toBeGreaterThan(-2.2)
+      expect(s.x).toBeLessThan(2.7)
+      expect(s.y).toBeGreaterThanOrEqual(0)
+      expect(s.y).toBeLessThan(10)
+    }
+    expect(used[1] / 20000).toBeCloseTo(0.85, 1)
+  })
+})
+
+describe('Collatz', () => {
+  it('follows 27 for 111 steps up to 9232', () => {
+    const s = collatz(27)
+    expect(s.length - 1).toBe(111)
+    expect(totalStoppingTime(27)).toBe(111)
+    expect(Math.max(...s)).toBe(9232)
+    expect(stoppingTime(27)).toBe(96)
+    expect(collatz(6)).toEqual([6, 3, 10, 5, 16, 8, 4, 2, 1])
+    expect(collatz(1)).toEqual([1])
+  })
+  it('builds a coral where each node sits one unit from its parent at its own depth', () => {
+    const c = coral(300, 0.15, 0.3)
+    expect(new Set(c.values).size).toBe(c.values.length)
+    for (let i = 1; i < c.values.length; i++) {
+      const p = c.parent[i]
+      expect(Math.hypot(c.x[i] - c.x[p], c.y[i] - c.y[p])).toBeCloseTo(1, 9)
+      expect(c.depth[i]).toBe(totalStoppingTime(c.values[i]))
+    }
+    expect(c.maxDepth).toBe(Math.max(...Array.from({ length: 300 }, (_, i) => totalStoppingTime(i + 1))))
   })
 })
