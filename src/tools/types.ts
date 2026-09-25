@@ -7,6 +7,7 @@ export type Category =
   | 'Calculator'
   | 'Design'
   | 'Image'
+  | 'Network'
   | 'Utility'
 
 export interface ToolMeta {
