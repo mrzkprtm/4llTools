@@ -23,7 +23,7 @@ export interface PageMeta {
 export const homeMeta: PageMeta = {
   title: `${SITE_NAME}: Free Online Tools That Run in Your Browser`,
   description:
-    '100 free online tools: QR code reader, JSON formatter, PDF merge, image converters, password tools, calculators and more. No sign-up, runs in your browser.',
+    '200 free online tools: physics and math simulations, algorithm visualizers, QR, JSON, PDF and image tools and calculators. No sign-up, runs in your browser.',
   path: '/',
 }
 

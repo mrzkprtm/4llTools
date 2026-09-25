@@ -17,8 +17,8 @@ export default function Home() {
           Small tools for everyday jobs. <em>Nothing you type leaves this tab.</em>
         </h1>
         <p className="hero-sub">
-          Scan a QR code, tidy some JSON, work out a loan or resize a photo. Every tool runs in your browser, with no
-          sign-up and no upload.
+          Scan a QR code, tidy some JSON, work out a loan, or play with physics, math and algorithm simulations. Every
+          tool runs in your browser, with no sign-up and no upload.
         </p>
         <div className="search-box search-box-lg">
           <Icon name="search" size={20} />
