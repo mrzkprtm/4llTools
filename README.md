@@ -1,6 +1,6 @@
 # 4llTools
 
-A growing collection of small, handy web tools. Every tool runs entirely in the browser, so nothing you type or scan is sent anywhere.
+A growing collection of small, handy web tools, plus interactive simulations of physics, math, algorithms, science and generative art. Every tool runs entirely in the browser, so nothing you type or scan is sent anywhere.
 
 ## Tools
 
@@ -106,6 +106,106 @@ A growing collection of small, handy web tools. Every tool runs entirely in the 
 | Utility | Screen Recorder | Record your screen, a window or a tab with microphone audio and download the video |
 | Utility | Typing Speed Test | Test your typing speed in WPM and accuracy with English or Indonesian words |
 | Utility | Webcam & Mic Test | Check your webcam, microphone level and left/right speakers before a video call |
+| Physics | Projectile Motion Simulator | Launch projectiles at any angle and speed, add air drag and see range, height and flight time live |
+| Physics | Pendulum Lab | Swing a pendulum, change its length, gravity and damping, and watch its period and energy change |
+| Physics | Double Pendulum Chaos | Watch two nearly identical double pendulums drift apart into chaos, with glowing trails |
+| Physics | Spring & Mass Oscillator | Stretch a spring, tune stiffness, mass, damping and driving force, and watch resonance in real time |
+| Physics | Collision Lab | Crash balls together with elastic or sticky collisions and check that momentum is conserved |
+| Physics | Ideal Gas Simulator | Heat, squeeze and fill a box of gas particles and watch pressure, temperature and speeds change |
+| Physics | Wave Interference Ripple Tank | Drag wave sources around a ripple tank and watch interference fringes form in real time |
+| Physics | Standing Waves on a String | Vibrate a string at its harmonics, hear the tone and see nodes, antinodes and each frequency |
+| Physics | Orbit & Gravity Simulator | Fling planets and moons around a star and watch gravity bend their paths into elliptical orbits |
+| Physics | Doppler Effect Visualizer | Move a sound source and watch wavefronts bunch up, the pitch shift and a sonic boom past Mach 1 |
+| Physics | Lens & Mirror Ray Tracer | Drag an object past a lens or mirror and watch the principal rays form a real or virtual image |
+| Physics | Snell's Law Refraction | Aim a laser across two materials and see refraction, partial reflection and total internal reflection |
+| Physics | Electric Field Simulator | Drag positive and negative charges and see field lines, equipotentials and a test charge move |
+| Physics | Charged Particle in a Magnetic Field | Fire charged particles through magnetic and electric fields and watch them spiral and drift |
+| Physics | Fluid & Smoke Simulator | Stir a real-time fluid with your mouse or finger and watch swirling colored smoke follow the flow |
+| Physics | Cloth Simulation | Pull, blow and tear a sheet of cloth made of springs, with gravity and gusting wind |
+| Physics | Newton's Cradle | Lift balls of a Newton's cradle and watch momentum and energy travel through the row |
+| Physics | Inclined Plane & Friction | Slide a block down a ramp, change the angle and friction, and see force vectors and acceleration |
+| Physics | RC Circuit Simulator | Charge and discharge a capacitor through a resistor and watch voltage, current and the time constant |
+| Physics | Heat Diffusion Simulator | Paint hot and cold spots on a metal plate and watch heat spread and even out over time |
+| Math | Fourier Epicycle Drawing | Draw any shape and watch spinning Fourier circles trace it back, one frequency at a time |
+| Math | Fourier Series Wave Builder | Build square, sawtooth and triangle waves from rotating circles and watch each harmonic add up |
+| Math | Lissajous Curve Generator | Draw animated Lissajous figures from two oscillations with any frequency ratio and phase shift |
+| Math | Spirograph | Roll gears inside and outside a ring to draw spirograph patterns, then save them as PNG |
+| Math | Mandelbrot & Julia Set Explorer | Zoom deep into the Mandelbrot set and preview the Julia set that belongs to any point |
+| Math | Animated Function Grapher | Plot functions of x with sliders and a time variable t, and watch the graphs morph live |
+| Math | Unit Circle & Trig Visualizer | Spin an angle around the unit circle and watch sine, cosine and tangent unroll into waves |
+| Math | Monte Carlo Pi Estimator | Throw random darts at a square and watch the estimate of π converge as they land in the circle |
+| Math | Galton Board | Drop balls through a pegboard and watch the bell curve of the binomial distribution build up |
+| Math | Central Limit Theorem Simulator | Draw samples from skewed distributions and watch their averages settle into a normal curve |
+| Math | Random Walk & Brownian Motion | Release random walkers in 1D, 2D or on a lattice and compare how far they spread with √n |
+| Math | Vector Field Visualizer | Type a 2D vector field and watch particles stream along it, with arrows, curl and divergence |
+| Math | 2D Matrix Transformation Visualizer | Watch a 2×2 matrix warp the plane, with its determinant, eigenvectors and a morphing grid |
+| Math | Bézier Curve Construction | Drag control points and watch de Casteljau's algorithm build a Bézier curve step by step |
+| Math | Taylor Series Approximation | Add Taylor polynomial terms one by one and watch them hug sin, cos, eˣ and ln around a point |
+| Math | Riemann Sum Visualizer | Approximate the area under a curve with left, right, midpoint and trapezoid sums as n grows |
+| Math | Prime Number Spiral | Watch prime numbers light up on the Ulam and Sacks spirals as the integers wind outward |
+| Math | Fractal Tree Generator | Grow a recursive fractal tree, bend its branches with sliders and let it sway in the wind |
+| Math | Chaos Game Fractals | Play the chaos game with 3 to 8 corners and watch the Sierpinski triangle and more appear |
+| Math | Collatz Conjecture Visualizer | Follow the 3n + 1 sequence for any number and grow the branching Collatz tree of many values |
+| Algorithms | Sorting Algorithm Visualizer | Watch bubble, quick, merge, heap, radix and more sorts animate with sound, compares and swaps |
+| Algorithms | Sorting Algorithm Race | Race sorting algorithms side by side on the same shuffled data and see which one finishes first |
+| Algorithms | Pathfinding Visualizer | Draw walls and weights, then watch A*, Dijkstra, BFS and DFS search a grid for the shortest path |
+| Algorithms | Maze Generator & Solver | Generate mazes with backtracking, Prim's or Kruskal's algorithm, then watch them get solved |
+| Algorithms | Binary Search Visualizer | Step through binary search next to linear search on a sorted array and count every comparison |
+| Algorithms | Binary Search Tree Visualizer | Insert, delete and find keys in a binary search tree or AVL tree, with animated traversals |
+| Algorithms | Heap & Priority Queue Visualizer | Push and pop a binary heap and watch items sift up and down in both the tree and the array |
+| Algorithms | Graph BFS & DFS Visualizer | Build a graph by clicking, drag its nodes around and watch breadth-first and depth-first search run |
+| Algorithms | Minimum Spanning Tree Visualizer | Watch Kruskal's and Prim's algorithms pick the cheapest edges that connect every node |
+| Algorithms | Hash Table Visualizer | Insert keys into a hash table with chaining or open addressing and watch collisions and resizing |
+| Algorithms | Stack & Queue Visualizer | Push, pop, enqueue and dequeue items and see how LIFO stacks and FIFO queues behave |
+| Algorithms | Tower of Hanoi | Play the Tower of Hanoi yourself or watch the recursive solution move up to 10 disks |
+| Algorithms | N-Queens Solver | Watch backtracking place N queens on a chessboard so that no two queens attack each other |
+| Algorithms | Sudoku Solver | Type in a Sudoku or load one, then watch backtracking with constraint checks fill it in |
+| Algorithms | Conway's Game of Life | Draw cells or drop in gliders and guns, then run Conway's Game of Life at any speed |
+| Algorithms | Elementary Cellular Automata | Explore all 256 Wolfram rules, like Rule 30 and Rule 110, as they grow line by line |
+| Algorithms | Langton's Ant | Watch Langton's ant and multi-color turmites build chaos and highways from simple rules |
+| Algorithms | Convex Hull Visualizer | Scatter points and watch gift wrapping, Graham scan or monotone chain wrap them in a hull |
+| Algorithms | Traveling Salesman Solver | Place cities and watch nearest neighbor, 2-opt and simulated annealing shorten the tour |
+| Algorithms | K-Means Clustering | Scatter points and watch k-means move its centroids and recolor clusters until it converges |
+| Science | Epidemic Simulator (SIR) | Watch an outbreak spread through a moving crowd and flatten the curve with distancing and vaccines |
+| Science | Predator–Prey Simulator | Watch rabbits and foxes rise and crash in the Lotka–Volterra model, with a live phase plot |
+| Science | Flocking Birds (Boids) | Tune separation, alignment and cohesion and watch a flock of boids swarm and flee a hawk |
+| Science | Ant Colony Simulator | Watch ants find food by laying and following pheromone trails, and draw walls to block them |
+| Science | Natural Selection Simulator | Watch creatures with random speed, size and sense evolve over generations as they compete for food |
+| Science | Genetic Algorithm Phrase Evolver | Evolve random letters into a target phrase with selection, crossover and mutation |
+| Science | Neural Network Playground | Train a small neural network in your browser and watch its decision boundary learn 2D data |
+| Science | Solar System Orrery | Watch the planets circle the Sun at their true relative speeds, jump to any date and speed up time |
+| Science | Moon Phases Simulator | Move the Moon around Earth and see how sunlight creates each phase, from new moon to full moon |
+| Science | Seasons & Daylight Simulator | Orbit a tilted Earth around the Sun to see why seasons happen and how day length changes with latitude |
+| Science | Radioactive Decay & Half-Life | Watch atoms decay at random and see the exponential half-life curve emerge from pure chance |
+| Science | Diffusion & Osmosis Simulator | Watch particles diffuse through a semipermeable membrane until the concentrations even out |
+| Science | Chemical Equilibrium Simulator | Collide molecules in A + B ⇌ C + D and watch the reaction settle into equilibrium as you heat it |
+| Science | Atom Builder | Add protons, neutrons and electrons to build any element, ion or isotope on an animated Bohr model |
+| Science | 3D Molecule Viewer | Rotate 3D ball-and-stick models of water, methane, caffeine and more, with bond angles |
+| Science | DNA Transcription & Translation | Type a DNA strand and watch it unzip, transcribe into mRNA and translate into amino acids |
+| Science | Punnett Square & Genetics | Cross two parents for one or two genes and watch offspring appear in the expected ratios |
+| Science | Forest Fire Simulator | Grow a forest, strike lightning and watch fires spread, with tree density, wind and regrowth |
+| Science | Greenhouse Effect Simulator | Add greenhouse gases and watch infrared photons get trapped as the planet's temperature rises |
+| Science | Reaction–Diffusion Patterns | Grow Turing patterns like spots, stripes and coral with the Gray–Scott reaction–diffusion model |
+| Art | Flow Field Art Generator | Let thousands of particles trace a Perlin noise flow field into generative art, then save a PNG |
+| Art | Kaleidoscope Drawing Pad | Draw with mirrored symmetry in 2 to 24 slices to make mandalas and kaleidoscope patterns |
+| Art | Voronoi Diagram Generator | Drag seeds and watch Voronoi cells and the Delaunay triangulation update as the seeds drift |
+| Art | Times Table Circle | Connect points around a circle by multiplying mod n and watch cardioids and nephroids morph |
+| Art | Phyllotaxis Sunflower Pattern | Grow sunflower and pinecone spirals from the golden angle and see what other angles do instead |
+| Art | Particle Playground | Spray particles from fountains, place attractors and repellers, and tweak gravity and color |
+| Art | Harmonograph | Simulate a pendulum drawing machine whose decaying swings draw delicate harmonograph figures |
+| Art | Audio Visualizer | See your microphone or a test tone as spectrum bars, a waveform or a radial visual in real time |
+| Art | Metaballs Lava Lamp | Watch blobby metaballs merge and split like a lava lamp, drag them around and pick the colors |
+| Art | L-System Plant Generator | Grow ferns, bushes, snowflakes and dragon curves from L-system rules with an animated turtle |
+| Art | Falling Sand Game | Pour sand, water, stone, fire and plants into a pixel sandbox and watch them interact |
+| Art | Truchet Tile Pattern Generator | Generate Truchet tile patterns with arcs, diagonals and triangles that flip in rippling waves |
+| Art | Text Particle Effect | Turn any word into particles that scatter away from your cursor and spring back into place |
+| Art | Water Ripple Pond | Touch a pond to make ripples that spread, bounce and interfere, with rain and drag trails |
+| Art | 3D Terrain Flyover | Fly over endless procedural terrain made from Perlin noise, as a neon wireframe or shaded hills |
+| Art | Polar Rose Curve Generator | Trace animated rose curves r = cos(kθ) and other polar patterns with adjustable petals |
+| Art | Space-Filling Curve Drawer | Draw Hilbert, Peano, Moore and Z-order curves level by level with an animated pen |
+| Art | Circle Packing Generator | Grow non-overlapping circles until they fill the canvas or a word, then save the pattern as PNG |
+| Art | Fireworks Simulator | Tap the sky to launch fireworks with peonies, rings and willows, or let an automatic show run |
+| Art | Matrix Digital Rain | Make falling green code rain with your own characters, colors, speed and density |
 
 ## Run it locally
 
@@ -139,6 +239,8 @@ Each folder in `src/tools/` is one tool. The folder name becomes its URL, and th
 
 2. Create `src/tools/my-tool/Tool.tsx` with a default-exported React component.
 3. Put any pure logic in its own file (like `format.ts`) and test it in `src/tools/my-tool/my-tool.test.ts`. Tool-specific styles can go in `src/tools/my-tool/tool.css`, imported from `Tool.tsx`, with class names prefixed to avoid clashes.
+
+   For an animated or interactive simulation, build on the kit in `src/sim/`: `Stage` is a canvas that runs an animation loop in fixed world units (sized for the screen's pixel ratio, paused while scrolled away, with pointer events mapped into world coordinates), `controls.tsx` has the play bar, sliders, toggles and readouts, and `draw.ts`, `math.ts` (RK4, seeded random numbers, Perlin noise) and `theme.ts` (light and dark colors) cover the rest. Simulations start paused when the visitor prefers reduced motion. `src/tools/pendulum-lab` is a small example.
 4. Add a row to the table above.
 
 The tool is now live at `/my-tool` and shows up in the sidebar, on the home page and in the sitemap. Its search title and description come from `meta.ts`, so keep the description to one clear sentence. Each tool is loaded only when it's opened, so adding more doesn't slow down the home page.

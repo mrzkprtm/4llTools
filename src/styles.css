@@ -65,6 +65,11 @@
 [data-cat='image'] { --h: 125; }
 [data-cat='network'] { --h: 285; }
 [data-cat='utility'] { --h: 60; }
+[data-cat='physics'] { --h: 230; }
+[data-cat='math'] { --h: 20; }
+[data-cat='algorithms'] { --h: 175; }
+[data-cat='science'] { --h: 105; }
+[data-cat='art'] { --h: 340; }
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.5; font-size: 1rem; }
