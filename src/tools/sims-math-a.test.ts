@@ -9,6 +9,7 @@ import { exactTrig, quadrant, snapToSpecial, specialAngleLabel } from './unit-ci
 import { estimatePi, standardError, throwDarts } from './monte-carlo-pi/montecarlo'
 import { rng } from '../sim/math'
 import { binStats, binomialPmf, simulateBins, theory } from './galton-board/galton'
+import { BINS, RunningStats, histogramSource, makeSource, sampleMean } from './central-limit/clt'
 
 describe('fourier-drawing', () => {
   it('resamples a closed path evenly by arc length', () => {
@@ -273,5 +274,46 @@ describe('galton-board', () => {
     expect(Math.abs(st.mean - 3)).toBeLessThan(0.05)
     expect(Math.abs(st.sd - Math.sqrt(2.1))).toBeLessThan(0.05)
     expect(binStats([0, 2, 0]).mean).toBe(1)
+  })
+})
+
+describe('central-limit', () => {
+  it('knows the population mean and spread of each source', () => {
+    const u = makeSource('uniform')
+    expect(u.mean).toBeCloseTo(5, 3)
+    expect(u.sd).toBeCloseTo(10 / Math.sqrt(12), 3)
+    const dice = makeSource('dice')
+    expect(dice.mean).toBe(3.5)
+    const one = new Array(BINS).fill(0)
+    one[10] = 1
+    const spike = histogramSource(one)
+    expect(spike.mean).toBeCloseTo(2.625)
+    const random = rng(5)
+    for (let i = 0; i < 100; i++) {
+      const v = spike.sample(random)
+      expect(v).toBeGreaterThanOrEqual(2.5)
+      expect(v).toBeLessThan(2.75)
+    }
+  })
+
+  it('samplers match their stated mean and sd', () => {
+    const random = rng(11)
+    for (const kind of ['uniform', 'exponential', 'dice', 'bimodal'] as const) {
+      const src = makeSource(kind)
+      const st = new RunningStats()
+      for (let i = 0; i < 40000; i++) st.push(src.sample(random))
+      expect(Math.abs(st.mean - src.mean), kind).toBeLessThan(0.05)
+      expect(Math.abs(st.sd - src.sd) / src.sd, kind).toBeLessThan(0.03)
+    }
+  })
+
+  it('sample means centre on μ with spread σ/√n', () => {
+    const src = makeSource('exponential')
+    const random = rng(21)
+    const n = 25
+    const st = new RunningStats()
+    for (let i = 0; i < 8000; i++) st.push(sampleMean(src, n, random).mean)
+    expect(Math.abs(st.mean - src.mean)).toBeLessThan(0.03)
+    expect(Math.abs(st.sd - src.sd / Math.sqrt(n)) / (src.sd / Math.sqrt(n))).toBeLessThan(0.05)
   })
 })
