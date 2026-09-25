@@ -9,6 +9,7 @@ import { ecaStep, guessClass, ruleFromTable, ruleTable, singleCell } from './cel
 import { HIGHWAY_PERIOD, antStep, highwayDetector, makeAnt, parseTurmite } from './langtons-ant/ant'
 import { convexHull, type Pt } from './convex-hull/hull'
 import { anneal, bruteForce, finish, nearestNeighbour, tourLength, twoOpt, type City } from './traveling-salesman/tsp'
+import { blobs, inertia, initCentroids, kmeans, lloyd } from './k-means-clustering/kmeans'
 
 describe('stack-queue', () => {
   it('circular queue wraps round and keeps FIFO order', () => {
@@ -315,6 +316,39 @@ describe('traveling-salesman', () => {
       expect(best).toBeLessThanOrEqual(finish(twoOpt(c, c.map((_, i) => i)))!.len + 1e-9)
       expect(best).toBeLessThanOrEqual(finish(nearestNeighbour(c))!.len + 1e-9)
       expect(finish(anneal(c, c.map((_, i) => i), { T0: 50, cooling: 0.999 }, rng(seed)))!.bestLen).toBeGreaterThanOrEqual(best - 1e-9)
+    }
+  })
+})
+
+describe('k-means-clustering', () => {
+  it('converges on well-separated seeded blobs, one cluster per blob', () => {
+    for (const seed of [1, 2, 3]) {
+      const r = rng(seed)
+      // Three tight blobs far apart; blobs() deals points round-robin, so blob = index % 3.
+      const pts = blobs(300, 3, 8, r, { x: 0, y: 0, w: 1000, h: 1000 })
+      const res = kmeans(pts, 3, 'plusplus', r)
+      expect(res.iterations).toBeLessThan(20)
+      for (let b = 0; b < 3; b++) {
+        const labels = new Set(pts.map((_, i) => i).filter((i) => i % 3 === b).map((i) => res.labels[i]))
+        expect(labels.size).toBe(1)
+      }
+      expect(new Set(res.labels).size).toBe(3)
+    }
+  })
+
+  it('inertia never increases across assignment and update steps', () => {
+    const r = rng(5)
+    const pts = blobs(500, 5, 60, r, { x: 0, y: 0, w: 800, h: 500 })
+    for (const how of ['random', 'plusplus'] as const) {
+      let prev = Infinity
+      let steps = 0
+      for (const s of lloyd(pts, initCentroids(pts, 6, how, r))) {
+        expect(s.inertia).toBeLessThanOrEqual(prev + 1e-6)
+        expect(s.inertia).toBeCloseTo(inertia(pts, s.centroids, s.labels), 6)
+        prev = s.inertia
+        steps++
+      }
+      expect(steps).toBeGreaterThan(2)
     }
   })
 })

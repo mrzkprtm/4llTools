@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { rk4, rng } from '../sim/math'
+import { SYNODIC, daysToFull, illumination, moonAge, moonUp, phaseName, riseSet, terminatorK } from './moon-phases/moon'
 import { PLANETS, dateFromDay, dayNumber, meanLongitude, position, solveKepler } from './solar-system/orrery'
 import { createNet, evaluate, gradients, makeData, predict, trainEpoch, type Net, type Point } from './neural-network/nn'
 import { createPopulation, crossover, fitness as gaFitness, mutate as gaMutate, nextGeneration, sanitize } from './genetic-algorithm/ga'
@@ -300,5 +301,38 @@ describe('solar-system', () => {
     expect(Math.abs(eq.lon - 180)).toBeLessThan(1)
     expect(eq.r).toBeGreaterThan(0.98)
     expect(eq.r).toBeLessThan(1.02)
+  })
+})
+
+describe('moon-phases', () => {
+  it('names the eight phases around the orbit', () => {
+    expect(phaseName(0)).toBe('New moon')
+    expect(phaseName(Math.PI / 4)).toBe('Waxing crescent')
+    expect(phaseName(Math.PI / 2)).toBe('First quarter')
+    expect(phaseName(Math.PI)).toBe('Full moon')
+    expect(phaseName((3 * Math.PI) / 2)).toBe('Last quarter')
+    expect(phaseName(2 * Math.PI - 0.1)).toBe('New moon')
+    expect(phaseName(-Math.PI / 4)).toBe('Waning crescent')
+  })
+
+  it('illumination is (1 − cos θ)/2 and the terminator matches it', () => {
+    expect(illumination(0)).toBe(0)
+    expect(illumination(Math.PI)).toBe(1)
+    expect(illumination(Math.PI / 2)).toBeCloseTo(0.5, 12)
+    // The lit area of the drawn disc, (1 − k)/2 of it when waxing, equals the illumination.
+    for (const th of [0.3, 1.2, 2.5]) expect((1 - terminatorK(th)) / 2).toBeCloseTo(illumination(th), 12)
+    for (const th of [3.5, 4.4, 6]) expect((1 + terminatorK(th)) / 2).toBeCloseTo(illumination(th), 12)
+  })
+
+  it('ages, days to full, and rise/set times follow the synodic month', () => {
+    expect(moonAge(Math.PI)).toBeCloseTo(SYNODIC / 2, 9)
+    expect(daysToFull(0)).toBeCloseTo(SYNODIC / 2, 9)
+    expect(daysToFull(Math.PI)).toBeCloseTo(0, 9)
+    const full = riseSet(Math.PI)
+    expect(full.rise).toBeCloseTo(18, 9)
+    expect(full.set).toBeCloseTo(6, 9)
+    expect(riseSet(Math.PI / 2).rise).toBeCloseTo(12, 9)
+    expect(moonUp(Math.PI, 0)).toBe(true)
+    expect(moonUp(Math.PI, 12)).toBe(false)
   })
 })

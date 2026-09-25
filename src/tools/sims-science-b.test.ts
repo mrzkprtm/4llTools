@@ -5,6 +5,7 @@ import { configString, element, isStable, shellCounts } from './atom-builder/ato
 import { angleAt, apply, mul, rotation, type Vec3 } from './molecule-viewer/geometry'
 import { MOLECULES, hillFormula } from './molecule-viewer/molecules'
 import { cleanDNA, codonToAmino, complement, gcContent, proteinString, randomCoding, transcribe, translate } from './dna-transcription/genetics'
+import { chiSquare, chiSquareP, gametes, parseGenotype, phenotypeKey, punnett, simplestRatio, tally } from './punnett-square/mendel'
 import { barriers, collisionEnergy, equilibriumK, predictedK, reacts } from './reaction-equilibrium/equilibrium'
 import { concentration, fitsPore, passesMembrane, poreCentres, waterActivity } from './diffusion-membrane/membrane'
 
@@ -171,5 +172,39 @@ describe('dna-transcription', () => {
     expect(gene.aminos[0]).toBe('M')
     expect(gene.aminos.at(-1)).toBe('*')
     expect(gene.aminos.length).toBe(12)
+  })
+})
+
+describe('punnett-square', () => {
+  const ratio = (a: string, b: string, dom: ('complete' | 'incomplete' | 'codominant')[] = ['complete', 'complete']) => {
+    const sq = punnett(parseGenotype(a)!, parseGenotype(b)!)
+    const t = tally(sq.cells.flat().map((g) => phenotypeKey(g, dom)))
+    return simplestRatio([...t.entries()].sort().map(([, n]) => n))
+  }
+
+  it('makes gametes with one allele per gene', () => {
+    expect(gametes(parseGenotype('Aa')!)).toEqual(['A', 'a'])
+    expect(gametes(parseGenotype('AaBb')!)).toEqual(['AB', 'Ab', 'aB', 'ab'])
+    expect(gametes(parseGenotype('AABb')!)).toEqual(['AB', 'Ab', 'AB', 'Ab'])
+    expect(parseGenotype('Ab')).toBeNull()
+    expect(parseGenotype('AaAa')).toBeNull()
+  })
+
+  it('gives 3:1, 1:2:1 and 9:3:3:1', () => {
+    expect(ratio('Aa', 'Aa')).toEqual([3, 1])
+    expect(ratio('Aa', 'Aa', ['incomplete'])).toEqual([1, 2, 1])
+    expect(ratio('Aa', 'aa')).toEqual([1, 1])
+    // Sorted keys: dom|dom, dom|rec, rec|dom, rec|rec.
+    expect(ratio('AaBb', 'AaBb')).toEqual([9, 3, 3, 1])
+    const geno = tally(punnett(parseGenotype('Aa')!, parseGenotype('aA')!).cells.flat())
+    expect(Object.fromEntries(geno)).toEqual({ AA: 1, Aa: 2, aa: 1 })
+  })
+
+  it('computes chi-square and its p-value', () => {
+    expect(chiSquare([75, 25], [75, 25])).toBe(0)
+    expect(chiSquare([60, 40], [75, 25])).toBeCloseTo(12, 10)
+    expect(chiSquareP(3.841, 1)).toBeCloseTo(0.05, 3)
+    expect(chiSquareP(7.815, 3)).toBeCloseTo(0.05, 3)
+    expect(chiSquareP(0, 2)).toBe(1)
   })
 })

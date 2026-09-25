@@ -8,6 +8,7 @@ import { apply, emptyTree, inorder as bstInorder, insert as bstInsert, isBalance
 import { heapSort as heapSortSteps, heapify, isHeap, pop as heapPop, push as heapPush, run as runHeap } from './heap-visualizer/heap'
 import { preset as graphPreset, traverse, type Graph } from './graph-traversal/graph'
 import { UnionFind, buildEdges, mst, scatterPoints } from './minimum-spanning-tree/mst'
+import { build as buildTable, hashString, insert as tableInsert, keysOf, makeTable, nextPrime, remove as tableRemove, run as runTable, search as tableSearch, type Strategy } from './hash-table/hash'
 import { WALL, WEIGHT, makeGrid, pathCost, scatter, solve, divisionMaze, neighbours } from './pathfinding-visualizer/path'
 
 function drain<T>(g: Generator<unknown, T, undefined>): T {
@@ -363,5 +364,59 @@ describe('minimum-spanning-tree (small exact case)', () => {
     ]
     expect(mst(4, edges, 'kruskal')).toEqual({ weight: 6, count: 3 })
     expect(mst(4, edges, 'prim', 3)).toEqual({ weight: 6, count: 3 })
+  })
+})
+
+describe('hash-table', () => {
+  const strategies: Strategy[] = ['chaining', 'linear', 'quadratic', 'double']
+  const words = Array.from({ length: 40 }, (_, i) => `key${i * 7}`)
+
+  it('hash functions match known values', () => {
+    expect(hashString('abc', 'sum')).toBe(294)
+    expect(hashString('lemon', 'sum')).toBe(hashString('melon', 'sum'))
+    expect(hashString('', 'djb2')).toBe(5381)
+    expect(hashString('a', 'djb2')).toBe(177670)
+    expect(hashString('', 'fnv')).toBe(0x811c9dc5)
+    expect(hashString('a', 'fnv')).toBe(0xe40c292c)
+  })
+
+  it('insert, search and delete work for every strategy and hash function', () => {
+    for (const strategy of strategies)
+      for (const fn of ['sum', 'djb2', 'fnv'] as const) {
+        const t = makeTable(11, fn, strategy)
+        for (const w of words) expect(runTable(tableInsert(t, w, 0.75))).toBe(true)
+        expect(runTable(tableInsert(t, words[3], 0.75))).toBe(false)
+        expect(t.size).toBe(words.length)
+        expect(t.size / t.m).toBeLessThanOrEqual(0.75)
+        for (const w of words) expect(runTable(tableSearch(t, w))).not.toBeNull()
+        expect(runTable(tableSearch(t, 'nope'))).toBeNull()
+        // Delete every other key; the rest must still be found past any tombstones.
+        words.forEach((w, i) => i % 2 === 0 && expect(runTable(tableRemove(t, w))).toBe(true))
+        expect(runTable(tableRemove(t, words[0]))).toBe(false)
+        words.forEach((w, i) => expect(runTable(tableSearch(t, w)) !== null, `${strategy} ${fn} ${w}`).toBe(i % 2 === 1))
+        expect(t.size).toBe(words.length / 2)
+        if (strategy !== 'chaining') expect(t.tombs).toBeGreaterThan(0)
+        // Re-inserting reuses tombstones.
+        for (const w of words) runTable(tableInsert(t, w, 0.75))
+        expect(keysOf(t).sort()).toEqual([...words].sort())
+      }
+  })
+
+  it('resizing keeps every key and grows to a prime at least twice as big', () => {
+    for (const strategy of strategies) {
+      const t = makeTable(5, 'djb2', strategy)
+      const sizes = [t.m]
+      for (const w of words) {
+        runTable(tableInsert(t, w, 0.6))
+        if (t.m !== sizes[sizes.length - 1]) sizes.push(t.m)
+      }
+      expect(sizes.length).toBeGreaterThan(2)
+      for (let k = 1; k < sizes.length; k++) expect(sizes[k]).toBe(nextPrime(sizes[k - 1] * 2))
+      expect(keysOf(t).sort()).toEqual([...words].sort())
+    }
+    // Open addressing with no resize threshold still finds room when the table is full.
+    const full = buildTable(words.slice(0, 12), 7, 'fnv', 'quadratic')
+    expect(full.m).toBeGreaterThanOrEqual(12)
+    expect(keysOf(full).length).toBe(12)
   })
 })

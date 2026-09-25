@@ -4,7 +4,7 @@ import { Choice, Hint, PlayBar, Readout, Select, SimLayout, useRunning } from '.
 import { circle, clear, rrect, text } from '../../sim/draw'
 import { fmt } from '../../sim/math'
 import { alpha, useTheme } from '../../sim/theme'
-import { chiSquare, chiSquareP, gametes, parseGenotype, phenotypeKey, punnett, simplestRatio, tally, type Dominance, type GeneState } from './mendel'
+import { chiSquare, chiSquareP, parseGenotype, phenotypeKey, punnett, simplestRatio, tally, type Dominance, type GeneState } from './mendel'
 
 const W = 800
 const H = 540
@@ -49,7 +49,6 @@ export default function PunnettSquare() {
   const [traitIds, setTraitIds] = useState(['flower', 'seed'])
   const [bred, setBred] = useState<{ cell: number; x: number; y: number; key: string; t: number }[]>([])
   const anim = useRef({ t: 0, key: '', queue: 0 })
-  const [, force] = useState(0)
 
   const p1Parsed = parseGenotype(p1Text)
   const p2Parsed = parseGenotype(p2Text)
@@ -66,7 +65,8 @@ export default function PunnettSquare() {
   const genoTally = tally([...flat].sort())
   const phenoOf = (g: string) => phenotypeKey(g, dom)
   const phenoTally = tally(flat.map(phenoOf))
-  const phenoKeys = [...phenoTally.keys()].sort()
+  const rank = (k: string) => k.split('|').reduce((acc, st) => acc * 3 + (st === 'dom' ? 0 : st === 'rec' ? 2 : 1), 0)
+  const phenoKeys = [...phenoTally.keys()].sort((x, y) => rank(x) - rank(y))
   const total = flat.length
   const a = anim.current
   const key = `${JSON.stringify(sq.cells)}|${dom.join()}`
@@ -136,7 +136,6 @@ export default function PunnettSquare() {
                 }
                 setBred((prev) => [...prev, ...add])
               }
-              if (f.frame % 5 === 0) force((v) => v + 1)
 
               clear(ctx, W, H, theme.sunken)
               const n = sq.cols.length
@@ -154,22 +153,23 @@ export default function PunnettSquare() {
                 const e = Math.min(1, Math.max(0, (a.t - i * 0.08) / 0.7))
                 return 1 - (1 - e) ** 3
               }
+              const mid = SQ.size / 2
               sq.cols.forEach((g, i) => {
                 const e = slide(i)
-                const x = SQ.x + cell * (i + 0.5)
-                const y = 30 + e * (SQ.y - 30 - 30)
+                const x = SQ.x + mid + (cell * (i + 0.5) - mid) * e
+                const y = 44 + e * (SQ.y - 26 - 44)
                 ctx.globalAlpha = e
-                circle(ctx, SQ.x + SQ.size / 2 + (x - SQ.x - SQ.size / 2) * e, y + 18, 20, alpha('#1c7ed6', 0.18), '#1c7ed6', 1.5)
-                text(ctx, g, SQ.x + SQ.size / 2 + (x - SQ.x - SQ.size / 2) * e, y + 23, { color: theme.text, size: 14, weight: 700, align: 'center' })
+                circle(ctx, x, y, 20, alpha('#1c7ed6', 0.18), '#1c7ed6', 1.5)
+                text(ctx, g, x, y + 5, { color: theme.text, size: 14, weight: 700, align: 'center' })
                 ctx.globalAlpha = 1
               })
               sq.rows.forEach((g, i) => {
                 const e = slide(i)
-                const y = SQ.y + cell * (i + 0.5)
-                const x = 34 + e * (SQ.x - 34 - 30)
+                const y = SQ.y + mid + (cell * (i + 0.5) - mid) * e
+                const x = 50 + e * (SQ.x - 26 - 50)
                 ctx.globalAlpha = e
-                circle(ctx, x + 12, SQ.y + SQ.size / 2 + (y - SQ.y - SQ.size / 2) * e, 20, alpha('#e8590c', 0.18), '#e8590c', 1.5)
-                text(ctx, g, x + 12, SQ.y + SQ.size / 2 + (y - SQ.y - SQ.size / 2) * e + 5, { color: theme.text, size: 14, weight: 700, align: 'center' })
+                circle(ctx, x, y, 20, alpha('#e8590c', 0.18), '#e8590c', 1.5)
+                text(ctx, g, x, y + 5, { color: theme.text, size: 14, weight: 700, align: 'center' })
                 ctx.globalAlpha = 1
               })
 
@@ -196,7 +196,7 @@ export default function PunnettSquare() {
                 const c = b.cell % n
                 const age = Math.min(1, (a.t - b.t) / 0.3)
                 const x = SQ.x + c * cell + b.x * cell
-                const y = SQ.y + r * cell + (nGenes === 1 ? b.y : 0.78 + (b.y - 0.52) * 0.45) * cell - (1 - age) * 20
+                const y = SQ.y + r * cell + (0.77 + (b.y - 0.52) * 0.45) * cell - (1 - age) * 20
                 ctx.globalAlpha = 0.3 + 0.7 * age
                 icon(ctx, x, y, nGenes === 1 ? 5 : 3.5, b.key)
                 ctx.globalAlpha = 1
@@ -226,11 +226,11 @@ export default function PunnettSquare() {
                 const exp = (phenoTally.get(k) ?? 0) / total
                 icon(ctx, PX + 10, y + pRow / 2 + 4, 9, k)
                 text(ctx, phenoName(k), PX + 26, y + pRow / 2, { color: theme.text, size: 12 })
-                const bw = 200
+                const bw = 150
                 rrect(ctx, PX + 26, y + pRow / 2 + 4, bw, 6, 2, alpha(theme.muted, 0.18))
                 if (pShown.get(k)) rrect(ctx, PX + 26, y + pRow / 2 + 4, (bw * (pShown.get(k) ?? 0)) / total, 6, 2, alpha(theme.accent, 0.5))
                 if (bred.length) rrect(ctx, PX + 26, y + pRow / 2 + 12, (bw * counts[i]) / bred.length, 6, 2, theme.accent)
-                text(ctx, bred.length ? `${fmt(exp * 100, 1)}% | ${counts[i]}` : `${fmt(exp * 100, 1)}%`, PX + 234, y + pRow / 2 + 12, { color: theme.muted, size: 12 })
+                text(ctx, bred.length ? `${fmt(exp * 100, 1)}% | ${counts[i]}` : `${fmt(exp * 100, 1)}%`, PX + 182, y + pRow / 2 + 12, { color: theme.muted, size: 12 })
                 y += pRow
               })
               y += 18
@@ -277,16 +277,15 @@ export default function PunnettSquare() {
           setP2Text(y)
         }}
       />
-      <div className="row" style={{ margin: 0, gap: 8 }}>
-        {[
-          ['Parent 1', p1Text, setP1Text],
-          ['Parent 2', p2Text, setP2Text],
-        ].map(([label, value, set]) => (
-          <label key={label as string} className="sim-field" style={{ flex: 1 }}>
-            <span className="sim-label">{label as string}</span>
-            <input className="sim-text sim-mono" value={value as string} maxLength={4} spellCheck={false} onChange={(e) => (set as (v: string) => void)(e.target.value)} />
-          </label>
-        ))}
+      <div className="row" style={{ margin: 0, gap: 8, flexWrap: 'nowrap' }}>
+        <label className="sim-field" style={{ flex: 1 }}>
+          <span className="sim-label">Parent 1</span>
+          <input className="sim-text sim-mono" value={p1Text} maxLength={4} spellCheck={false} onChange={(e) => setP1Text(e.target.value)} />
+        </label>
+        <label className="sim-field" style={{ flex: 1 }}>
+          <span className="sim-label">Parent 2</span>
+          <input className="sim-text sim-mono" value={p2Text} maxLength={4} spellCheck={false} onChange={(e) => setP2Text(e.target.value)} />
+        </label>
       </div>
       {!compatible && <p className="sim-hint" style={{ color: 'var(--danger)' }}>Use pairs like Aa or AaBb, with the same genes for both parents.</p>}
       {letters.map((letter, i) => (
@@ -305,4 +304,3 @@ export default function PunnettSquare() {
   )
 }
 
-export { gametes }
