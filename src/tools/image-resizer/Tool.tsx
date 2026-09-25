@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Busy from '../../components/Busy'
 
 type Format = 'image/jpeg' | 'image/png' | 'image/webp'
 const EXT: Record<Format, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
@@ -15,6 +16,7 @@ export default function ImageResizer() {
   const [quality, setQuality] = useState(0.8)
   const [result, setResult] = useState<{ url: string; size: number } | null>(null)
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
 
   async function open(f: File) {
     setError('')
@@ -42,10 +44,13 @@ export default function ImageResizer() {
     }
     ctx.imageSmoothingQuality = 'high'
     ctx.drawImage(bitmap, 0, 0, width, height)
+    setBusy(true)
     const timer = setTimeout(() => {
       canvas.toBlob(
         (blob) => {
-          if (cancelled || !blob) return
+          if (cancelled) return
+          setBusy(false)
+          if (!blob) return
           setResult((old) => {
             if (old) URL.revokeObjectURL(old.url)
             return { url: URL.createObjectURL(blob), size: blob.size }
@@ -101,6 +106,7 @@ export default function ImageResizer() {
               </>
             )}
           </div>
+          {busy && <Busy label="Compressing…" />}
           {result && (
             <>
               <p>

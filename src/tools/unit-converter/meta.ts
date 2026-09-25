@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Convert',
   keywords: ['konversi', 'satuan', 'meter', 'kg', 'celsius', 'mb'],
   symbol: 'Un',
+  icon: 'ruler-2',
 }

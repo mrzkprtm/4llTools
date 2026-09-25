@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Text',
   keywords: ['url', 'permalink', 'seo'],
   symbol: 'Sl',
+  icon: 'link',
 }

@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Security',
   keywords: ['sha', 'sha256', 'checksum', 'hash'],
   symbol: 'Sh',
+  icon: 'scan-fingerprint',
 }

@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['guid', 'id', 'random'],
   symbol: 'Id',
+  icon: 'tag',
 }

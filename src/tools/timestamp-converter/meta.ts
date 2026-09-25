@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['unix', 'epoch', 'date', 'tanggal'],
   symbol: 'Ts',
+  icon: 'clock',
 }

@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Design',
   keywords: ['colour', 'warna', 'hex', 'rgb', 'hsl', 'picker'],
   symbol: 'Hx',
+  icon: 'lidquid-drop-waves-2',
 }

@@ -18,6 +18,9 @@
   --tile-l: 91%;
   --tile-c: 0.055;
   --tile-ink-l: 38%;
+  --tile-fill-l: 80%;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --radius: 10px;
   --radius-sm: 6px;
   --font: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
@@ -46,6 +49,7 @@
     --tile-l: 27%;
     --tile-c: 0.045;
     --tile-ink-l: 86%;
+    --tile-fill-l: 50%;
     color-scheme: dark;
   }
 }
@@ -140,26 +144,45 @@ input.search::-webkit-search-cancel-button { cursor: pointer; }
 .nav-link:hover { background: var(--sunken); }
 .nav-link.active { background: var(--surface); box-shadow: inset 3px 0 0 var(--accent), 0 0 0 1px var(--border); font-weight: 600; }
 .nav-home { font-weight: 600; padding: 7px 8px; }
+.nav-link .tile { transition: transform 0.3s var(--spring); }
+.nav-link:hover .tile { transform: scale(1.1) rotate(-4deg); }
+.nav-link.active { animation: nav-in 0.3s var(--ease-out); }
 .nav-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .nav-empty { padding: 0 8px; font-size: 0.9rem; }
 
-/* ---------- Tool tile (the "element" block) ---------- */
+/* ---------- Duotone icons ---------- */
+
+/* Line layer on top in --icon-1, solid layer behind in --icon-2. Outside a tile,
+   icons follow the text colour with an orange fill. */
+.mj { flex: none; display: block; overflow: visible; }
+.mj-line { color: var(--icon-1, currentColor); }
+.mj-back {
+  color: var(--icon-2, var(--accent)); opacity: var(--icon-2-o, 0.28);
+  transform-box: fill-box; transform-origin: center; transition: transform 0.35s var(--spring), opacity 0.2s;
+}
+
+/* ---------- Tool tile ---------- */
 
 .tile {
-  flex: none; position: relative; display: grid; place-items: center; border-radius: 5px;
+  flex: none; position: relative; display: grid; place-items: center; border-radius: 6px;
   background: oklch(var(--tile-l) var(--tile-c) var(--h, 60));
-  color: oklch(var(--tile-ink-l) 0.13 var(--h, 60));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 16%, transparent);
+  box-shadow: inset 0 0 0 1px oklch(var(--tile-ink-l) 0.12 var(--h, 60) / 0.16);
+  --icon-1: oklch(var(--tile-ink-l) 0.14 var(--h, 60));
+  --icon-2: oklch(var(--tile-fill-l) 0.17 var(--h, 60));
+  --icon-2-o: 1;
+  color: var(--icon-1);
+  transition: transform 0.35s var(--spring), box-shadow 0.2s;
 }
-.tile-sym { font-weight: 700; letter-spacing: -0.03em; line-height: 1; white-space: nowrap; }
-.tile-num { position: absolute; top: 4px; left: 5px; font-family: var(--mono); font-size: 0.58rem; font-weight: 500; opacity: 0.75; line-height: 1; }
-.tile-sm { width: 28px; height: 22px; border-radius: 4px; }
-.tile-sm .tile-sym { font-family: var(--mono); font-size: 0.66rem; letter-spacing: -0.02em; }
+.tile-sym {
+  position: absolute; top: 4px; left: 5px; font-family: var(--mono); font-size: 0.56rem; font-weight: 600;
+  letter-spacing: -0.02em; line-height: 1; white-space: nowrap; opacity: 0.8;
+}
+.tile-sm { width: 26px; height: 26px; border-radius: 5px; }
 .tile-md { width: 52px; height: 52px; }
-.tile-md .tile-sym { font-size: 1.3rem; margin-top: 8px; }
-.tile-lg { width: 84px; height: 84px; border-radius: 8px; }
-.tile-lg .tile-sym { font-size: 2.1rem; margin-top: 10px; }
-.tile-lg .tile-num { top: 7px; left: 8px; font-size: 0.7rem; }
+.tile-md .mj { margin-top: 5px; }
+.tile-lg { width: 84px; height: 84px; border-radius: 10px; }
+.tile-lg .mj { margin-top: 6px; }
+.tile-lg .tile-sym { top: 7px; left: 8px; font-size: 0.72rem; }
 
 /* ---------- Home ---------- */
 
@@ -187,6 +210,11 @@ input.search::-webkit-search-cancel-button { cursor: pointer; }
 }
 .card:hover { position: relative; z-index: 1; border-color: var(--accent); background: color-mix(in srgb, var(--surface), var(--accent) 5%); }
 .card:hover .card-name { color: var(--accent); }
+.card:hover .tile { transform: translateY(-2px) rotate(-3deg); box-shadow: inset 0 0 0 1px oklch(var(--tile-ink-l) 0.12 var(--h, 60) / 0.3), 0 6px 14px -8px oklch(40% 0.12 var(--h, 60) / 0.6); }
+.card:hover .mj-back { transform: translate(1.5px, 1.5px) scale(1.06); }
+.card { position: relative; }
+.card-arrow { position: absolute; right: 14px; bottom: 14px; color: var(--accent); opacity: 0; transform: translateX(-6px); transition: opacity 0.2s, transform 0.3s var(--ease-out); }
+.card:hover .card-arrow, .card:focus-visible .card-arrow { opacity: 1; transform: none; }
 .card:focus-visible { position: relative; z-index: 2; outline-offset: -2px; }
 .card-body { display: flex; flex-direction: column; gap: 3px; min-width: 0; padding-top: 2px; }
 .card-name { font-weight: 650; line-height: 1.25; transition: color 0.15s; }
@@ -202,8 +230,8 @@ input.search::-webkit-search-cancel-button { cursor: pointer; }
 .panel > :first-child { margin-top: 0; }
 .panel > :last-child { margin-bottom: 0; }
 .panel label:first-child { margin-top: 0; }
-.loading { margin: 0; font-family: var(--mono); font-size: 0.85rem; }
 .not-found { padding: 48px 0; }
+.not-found-icon { margin-bottom: 20px; --icon-2-o: 0.35; animation: wobble 2.4s var(--ease-out) infinite; transform-origin: center; }
 .not-found h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); max-width: 22ch; margin: 0 0 24px; letter-spacing: -0.03em; }
 
 /* ---------- Form controls shared by every tool ---------- */
@@ -231,14 +259,19 @@ label { display: block; font-weight: 600; font-size: 0.92rem; margin: 16px 0 6px
 .btn {
   font: inherit; font-size: 0.93rem; font-weight: 550; line-height: 1.2; padding: 9px 15px; border-radius: var(--radius-sm);
   border: 1px solid var(--border-strong); background: var(--surface); color: var(--text); cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s, transform 0.05s;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.12s var(--ease-out);
 }
 .btn:hover:not(:disabled) { border-color: var(--text); }
-.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:active:not(:disabled) { transform: scale(0.96); }
+.btn-icon { display: inline-flex; align-items: center; gap: 6px; padding-left: 11px; }
+.btn-icon .mj { animation: pop-in 0.35s var(--spring); }
+.btn.is-done { border-color: var(--ok); color: var(--ok); --icon-2: var(--ok); }
 .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
 .btn.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
-a.btn { text-decoration: none; display: inline-block; }
+a.btn { text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn-arrow { transition: transform 0.25s var(--ease-out); }
+a.btn:hover .btn-arrow { transform: translateX(3px); }
 
 .error { color: var(--danger); }
 .ok { color: var(--ok); }
@@ -274,6 +307,59 @@ table.simple { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-v
 table.simple th { font-family: var(--mono); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 table.simple td, table.simple th { border-bottom: 1px solid var(--border); padding: 7px 8px; text-align: left; }
 
+/* ---------- Motion: entrances, loading and processing ---------- */
+
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } }
+@keyframes pop-in { 0% { opacity: 0; transform: scale(0.4) rotate(-20deg); } 100% { opacity: 1; transform: none; } }
+@keyframes shake { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes bounce-dot { 0%, 80%, 100% { transform: scale(0.5); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+@keyframes scan { 0% { top: 4%; } 50% { top: 92%; } 100% { top: 4%; } }
+@keyframes wobble { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-12deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-4deg); } }
+@keyframes nav-in { from { box-shadow: inset 0 0 0 var(--accent), 0 0 0 1px var(--border); } }
+
+.hero > * { animation: rise 0.6s var(--ease-out) both; }
+.hero > :nth-child(2) { animation-delay: 60ms; }
+.hero > :nth-child(3) { animation-delay: 120ms; }
+.hero > :nth-child(4) { animation-delay: 180ms; }
+.card { animation: rise 0.45s var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 10) * 35ms); }
+.tool-page .tool-head { animation: rise 0.45s var(--ease-out) both; }
+.tool-page .panel { animation: rise 0.5s var(--ease-out) 80ms both; }
+.tool-head .tile { animation: pop-in 0.5s var(--spring) 120ms both; }
+.swap-in { animation: pop-in 0.3s var(--spring); }
+.backdrop { animation: fade 0.2s; }
+
+/* Results fade in as they appear; errors give a small shake. */
+.panel .output, .panel .stats, .panel .ok, .panel .swatch, .panel table.simple, .panel .qr-preview { animation: rise 0.3s var(--ease-out) both; }
+.panel .error { animation: shake 0.35s ease-in-out; }
+
+/* Skeleton while a tool's code downloads. */
+.skeleton { display: grid; gap: 12px; }
+.sk {
+  display: block; border-radius: var(--radius-sm);
+  background: linear-gradient(90deg, var(--sunken) 30%, color-mix(in srgb, var(--sunken), var(--surface) 70%) 50%, var(--sunken) 70%);
+  background-size: 200% 100%; animation: shimmer 1.2s linear infinite;
+}
+.sk-label { width: 90px; height: 14px; }
+.sk-box { height: 150px; }
+.sk-row { display: flex; gap: 8px; }
+.sk-btn { width: 88px; height: 38px; }
+
+/* "Working…" line for tools that take a moment. */
+.busy { display: inline-flex; align-items: center; gap: 10px; margin: 12px 0; font-family: var(--mono); font-size: 0.82rem; color: var(--muted); animation: fade 0.2s 0.1s both; }
+.busy-dots { display: inline-flex; gap: 4px; }
+.busy-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: bounce-dot 1s infinite ease-in-out both; }
+.busy-dots i:nth-child(2) { animation-delay: 0.15s; }
+.busy-dots i:nth-child(3) { animation-delay: 0.3s; }
+
+/* A scan line sweeps the QR camera frame while it looks for a code. */
+.video-wrap .frame { overflow: hidden; }
+.video-wrap .frame::after {
+  content: ''; position: absolute; left: 6%; right: 6%; height: 2px; border-radius: 2px;
+  background: var(--accent); box-shadow: 0 0 12px 2px var(--accent); animation: scan 2.4s ease-in-out infinite;
+}
+
 /* ---------- Phones and small tablets ---------- */
 
 @media (max-width: 860px) {
@@ -298,12 +384,13 @@ table.simple td, table.simple th { border-bottom: 1px solid var(--border); paddi
   .grid { grid-template-columns: minmax(0, 1fr); }
   .card { padding: 14px; }
   .tool-head { gap: 14px; margin-bottom: 20px; }
-  .tile-lg { width: 60px; height: 60px; }
-  .tile-lg .tile-sym { font-size: 1.5rem; margin-top: 8px; }
-  .tile-lg .tile-num { top: 5px; left: 6px; font-size: 0.6rem; }
+  .tile-lg { width: 64px; height: 64px; }
+  .tile-lg .mj { width: 34px; height: 34px; }
+  .tile-lg .tile-sym { top: 5px; left: 6px; font-size: 0.6rem; }
   .panel { padding: 16px; border-radius: var(--radius-sm); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .sk { background: var(--sunken); }
 }

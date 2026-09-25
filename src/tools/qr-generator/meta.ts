@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Scan & Code',
   keywords: ['make', 'create', 'buat', 'png'],
   symbol: 'Qg',
+  icon: 'qr-code',
 }

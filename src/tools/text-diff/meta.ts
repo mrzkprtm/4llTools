@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Text',
   keywords: ['compare', 'difference', 'bandingkan', 'perbedaan'],
   symbol: 'Df',
+  icon: 'git-compare',
 }

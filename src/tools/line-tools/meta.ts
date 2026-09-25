@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Text',
   keywords: ['sort', 'unique', 'duplicate', 'urutkan', 'hapus duplikat'],
   symbol: 'Ln',
+  icon: 'list-box',
 }

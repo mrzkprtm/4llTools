@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Calculator',
   keywords: ['age', 'umur', 'usia', 'days between', 'selisih hari'],
   symbol: 'Dt',
+  icon: 'calendar',
 }

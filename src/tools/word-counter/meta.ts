@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Text',
   keywords: ['characters', 'karakter', 'kata', 'hitung', 'count'],
   symbol: 'Wc',
+  icon: 'text',
 }

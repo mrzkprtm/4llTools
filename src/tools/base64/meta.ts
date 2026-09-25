@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['encode', 'decode', 'b64'],
   symbol: 'B64',
+  icon: 'code-block',
 }

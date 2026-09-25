@@ -6,4 +6,5 @@ export const meta: ToolMeta = {
   category: 'Developer',
   keywords: ['percent', 'uri', 'link', 'query'],
   symbol: 'Ur',
+  icon: 'link-circle',
 }
