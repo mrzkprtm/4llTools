@@ -70,9 +70,9 @@ export default function TravelingSalesman() {
   }
 
   function advance(): boolean {
+    if (!run.current.gen) start()
     const r = run.current
-    if (!r.gen) start()
-    const res = run.current.gen!.next()
+    const res = r.gen!.next()
     if (res.done) return false
     const s = res.value
     r.step = s
@@ -128,8 +128,8 @@ export default function TravelingSalesman() {
             onPointer={onPointer}
             label={`${n} cities; ${method} tour length ${st ? fmt(st.len, 0) : 'not started'}.`}
             onFrame={(ctx, f) => {
+              if (!run.current.gen) start()
               const r = run.current
-              if (!r.gen) start()
               if (f.dt > 0 && drag.current === null && !r.step?.done && !tooMany) {
                 r.acc += (f.dt * sps) / WEIGHT[method]
                 let k = Math.min(100000, Math.floor(r.acc))

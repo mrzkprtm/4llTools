@@ -56,6 +56,7 @@ export function initCentroids(points: readonly Pt[], k: number, method: 'random'
 /** Assigns every point to its nearest centroid; returns how many labels changed. */
 export function assign(points: readonly Pt[], centroids: readonly Pt[], labels: Int32Array): number {
   let changed = 0
+  if (!centroids.length) return 0
   for (let i = 0; i < points.length; i++) {
     let best = 0
     let bd = Infinity
@@ -93,7 +94,7 @@ export function updateCentroids(points: readonly Pt[], labels: Int32Array, old: 
 /** Sum of squared distances from each point to its centroid. */
 export function inertia(points: readonly Pt[], centroids: readonly Pt[], labels: Int32Array): number {
   let s = 0
-  for (let i = 0; i < points.length; i++) if (labels[i] >= 0) s += d2(points[i], centroids[labels[i]])
+  for (let i = 0; i < points.length; i++) if (labels[i] >= 0 && centroids[labels[i]]) s += d2(points[i], centroids[labels[i]])
   return s
 }
 

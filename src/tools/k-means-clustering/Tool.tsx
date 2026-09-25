@@ -90,10 +90,11 @@ export default function KMeansClustering() {
       spray.current = null
       // Keep the centroids but let Lloyd's algorithm continue with the new points.
       const s = sim.current
+      setElbowData(null)
+      if (s.centroids.length < Math.min(k, s.points.length)) return reset(s.points)
       const labels = new Int32Array(s.points.length).fill(-1)
       const c = s.step?.centroids ?? s.centroids
-      Object.assign(s, { labels, gen: lloyd(s.points, c, labels), step: null, converged: false, t: 1, shown: c.map((q) => ({ ...q })) })
-      setElbowData(null)
+      Object.assign(s, { labels, centroids: c, gen: lloyd(s.points, c, labels), step: null, converged: false, t: 1, shown: c.map((q) => ({ ...q })) })
       bump()
     }
   }

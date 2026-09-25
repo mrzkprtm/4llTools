@@ -71,14 +71,13 @@ export default function GameOfLife() {
   const [ruleText, setRuleText] = useState('B3/S23')
   const [stats, setStats] = useState({ gen: 0, pop: 0 })
   const ruleId = useId()
-  const world = useRef(
-    (() => {
-      const w = makeWorld(100)
-      stamp(w.cells, w.cols, w.rows, patternCells(PATTERNS.gun), 4, 4)
-      stamp(w.cells, w.cols, w.rows, patternCells(PATTERNS.acorn), 70, 38)
-      return w
-    })(),
-  )
+  const [initial] = useState(() => {
+    const w = makeWorld(100)
+    stamp(w.cells, w.cols, w.rows, patternCells(PATTERNS.gun), 4, 4)
+    stamp(w.cells, w.cols, w.rows, patternCells(PATTERNS.acorn), 70, 38)
+    return w
+  })
+  const world = useRef(initial)
   const rule = useRef<Rule>(parseRule('B3/S23')!)
   const gen = useRef({ n: 0, acc: 0, history: [] as number[] })
   const buf = useRef<ReturnType<typeof makeBuffer> | null>(null)

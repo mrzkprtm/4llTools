@@ -108,7 +108,7 @@ export default function Fireworks() {
 
   function launch(tx: number, ty: number) {
     const x0 = tx + (Math.random() - 0.5) * 120
-    const [vx, vy] = launchVelocity(x0, GROUND, tx, ty, gravity)
+    const [vx, vy] = launchVelocity(x0, GROUND, tx, ty, Math.max(40, gravity))
     const kind = type === 'mix' ? BURSTS[Math.floor(Math.random() * BURSTS.length)] : type
     const color = kind === 'willow' ? GOLD : Math.floor(Math.random() * COLORS.length)
     rockets.current.push({ x: x0, y: GROUND, vx, vy, type: kind, color })
@@ -153,10 +153,10 @@ export default function Fireworks() {
                   launch(80 + Math.random() * (W - 160), 70 + Math.random() * 190)
                 }
                 rockets.current = rockets.current.filter((r) => {
-                  r.vy += gravity * dt
+                  r.vy += Math.max(40, gravity) * dt
                   r.x += r.vx * dt
                   r.y += r.vy * dt
-                  addParticle(p, r.x, r.y, (Math.random() - 0.5) * 20, 20 + Math.random() * 20, 0.35 + Math.random() * 0.3, 2.5, GOLD, SPARK)
+                  if (p.n < CAP * 0.9) addParticle(p, r.x, r.y, (Math.random() - 0.5) * 20, 20 + Math.random() * 20, 0.35 + Math.random() * 0.3, 2.5, GOLD, SPARK)
                   if (r.vy >= 0) {
                     explode(r)
                     return false

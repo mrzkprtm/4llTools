@@ -7,6 +7,7 @@ import { makeNoise, rng } from '../sim/math'
 import { maurer, polar, rosePeriod, rosePetals } from './rose-curves/rose'
 import { buildCurve, hilbertD2xy, hilbertXy2d, mortonD2xy } from './space-filling-curves/curves'
 import { coverage, makePacker, stepPacker } from './circle-packing/packing'
+import { BURSTS, SPLIT, addParticle, burstVelocities, launchVelocity, makeParticles, stepParticles } from './fireworks/fireworks'
 import { arcPoint, cornerColor, orientations, tileArcs } from './truchet-tiles/truchet'
 
 describe('falling-sand', () => {
@@ -321,5 +322,51 @@ describe('circle-packing', () => {
   it('computes coverage as circle area over total area', () => {
     expect(coverage([{ r: 1 }, { r: 2 }], 5 * Math.PI)).toBeCloseTo(1)
     expect(coverage([], 100)).toBe(0)
+  })
+})
+
+describe('fireworks', () => {
+  it('makes the requested number of stars with speeds in range, and rings at one exact speed', () => {
+    const random = rng(4)
+    for (const type of BURSTS) {
+      const v = burstVelocities(type, 64, 150, random)
+      expect(v.length).toBe(128)
+      expect(v.every(Number.isFinite)).toBe(true)
+    }
+    const peony = burstVelocities('peony', 500, 150, random)
+    for (let i = 0; i < 500; i++) expect(Math.hypot(peony[2 * i], peony[2 * i + 1])).toBeLessThanOrEqual(150 + 1e-6)
+    const ring = burstVelocities('ring', 90, 160, random)
+    for (let i = 0; i < 90; i++) expect(Math.hypot(ring[2 * i], ring[2 * i + 1])).toBeCloseTo(160, 3)
+    // A ring's stars are spread evenly, so their velocities cancel out.
+    let sx = 0
+    let sy = 0
+    for (let i = 0; i < 90; i++) {
+      sx += ring[2 * i]
+      sy += ring[2 * i + 1]
+    }
+    expect(Math.hypot(sx, sy)).toBeLessThan(1e-3)
+  })
+
+  it('launches rockets that peak at the target point', () => {
+    const g = 90
+    const [vx, vy] = launchVelocity(100, 500, 300, 120, g)
+    let x = 100
+    let y = 500
+    let v = vy
+    const dt = 1e-4
+    while (v < 0) {
+      v += g * dt
+      x += vx * dt
+      y += v * dt
+    }
+    expect(x).toBeCloseTo(300, 0)
+    expect(y).toBeCloseTo(120, 0)
+  })
+
+  it('splits crossette stars into four when they burn out', () => {
+    const p = makeParticles(100)
+    addParticle(p, 0, 0, 10, 0, 0.05, 0, 1, SPLIT)
+    stepParticles(p, 0.1, 0, 1, rng(1))
+    expect(p.n).toBe(4)
   })
 })

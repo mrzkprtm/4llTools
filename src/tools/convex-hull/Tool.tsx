@@ -99,8 +99,8 @@ export default function ConvexHull() {
             onPointer={onPointer}
             label={`${P.length} points; ${NAMES[algo]} ${st?.done ? `found a hull of ${st.hull.length} points` : 'is running'}.`}
             onFrame={(ctx, f) => {
+              if (!run.current.gen) restart()
               const r = run.current
-              if (!r.gen) restart()
               if (drag.current !== null) {
                 // While dragging, show the finished hull live.
                 while (advance()) void 0

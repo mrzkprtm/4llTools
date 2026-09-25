@@ -108,7 +108,8 @@ export function stepParticles(p: Particles, dt: number, g: number, dragScale: nu
     x[i] += vx[i] * dt
     y[i] += vy[i] * dt
     life[i] -= dt
-    if (flags[i] & TRAIL && random() < 0.3) born.push(x[i], y[i], p.color[i])
+    // Trailing stars shed sparks, but never crowd out room for new shells.
+    if (flags[i] & TRAIL && p.n + born.length / 3 < p.cap * 0.7 && random() < 0.15) born.push(x[i], y[i], p.color[i])
     if (life[i] <= 0 && flags[i] & SPLIT) {
       const a = Math.atan2(vy[i], vx[i])
       for (let s = 0; s < 4; s++) {
