@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Write Markdown and see it rendered live.',
   category: 'Text',
   keywords: ['md', 'render', 'preview'],
-  icon: '📑',
+  symbol: 'Md',
 }

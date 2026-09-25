@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Create strong random passwords right in your browser.',
   category: 'Security',
   keywords: ['random', 'secure', 'kata sandi', 'sandi'],
-  icon: '🔑',
+  symbol: 'Pw',
 }

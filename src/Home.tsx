@@ -1,28 +1,55 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { groupByCategory } from './tools/grouping'
-import { tools } from './tools/registry'
+import { SearchIcon } from './components/Icons'
+import ToolTile from './components/ToolTile'
+import { categoryKey, groupByCategory } from './tools/grouping'
+import { searchTools, tools } from './tools/registry'
 
 export default function Home() {
+  const [query, setQuery] = useState('')
+  const groups = groupByCategory(searchTools(tools, query))
+
   return (
     <>
-      <div className="hero">
-        <h1>All your handy tools in one place</h1>
-        <p className="muted">
-          {tools.length} tools, all running in your browser. Nothing you type leaves your device.
+      <section className="hero">
+        <p className="eyebrow">A pocket workbench · {tools.length} tools</p>
+        <h1>
+          Small tools for everyday jobs. <em>Nothing you type leaves this tab.</em>
+        </h1>
+        <p className="hero-sub">
+          Scan a QR code, tidy some JSON, work out a loan or resize a photo. Every tool runs in your browser, with no
+          sign-up and no upload.
         </p>
-      </div>
+        <div className="search-box search-box-lg">
+          <SearchIcon />
+          <input
+            className="search"
+            type="search"
+            placeholder="What do you need to do?"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="Filter tools"
+          />
+        </div>
+      </section>
 
-      {groupByCategory(tools).map(([category, list]) => (
-        <section key={category} className="category">
-          <h2>{category}</h2>
+      {groups.length === 0 && <p className="muted">No tool matches “{query}”. Try a shorter word.</p>}
+
+      {groups.map(([category, list]) => (
+        <section key={category} className="category" data-cat={categoryKey(category)}>
+          <h2>
+            <span className="cat-dot" aria-hidden="true" />
+            {category}
+            <span className="cat-count">{list.length}</span>
+          </h2>
           <div className="grid">
             {list.map((t) => (
               <Link key={t.slug} to={`/${t.slug}`} className="card">
-                <span className="card-icon" aria-hidden="true">
-                  {t.icon}
+                <ToolTile tool={t} />
+                <span className="card-body">
+                  <span className="card-name">{t.name}</span>
+                  <span className="card-desc">{t.description}</span>
                 </span>
-                <span className="card-name">{t.name}</span>
-                <span className="card-desc">{t.description}</span>
               </Link>
             ))}
           </div>

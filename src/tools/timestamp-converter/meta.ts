@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Convert Unix timestamps to dates and back.',
   category: 'Developer',
   keywords: ['unix', 'epoch', 'date', 'tanggal'],
-  icon: '🕒',
+  symbol: 'Ts',
 }

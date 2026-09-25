@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Count words, characters, sentences and reading time.',
   category: 'Text',
   keywords: ['characters', 'karakter', 'kata', 'hitung', 'count'],
-  icon: '📝',
+  symbol: 'Wc',
 }

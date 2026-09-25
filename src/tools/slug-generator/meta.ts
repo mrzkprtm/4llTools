@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'Turn a title into a clean URL slug.',
   category: 'Text',
   keywords: ['url', 'permalink', 'seo'],
-  icon: '🐌',
+  symbol: 'Sl',
 }

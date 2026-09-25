@@ -5,5 +5,5 @@ export const meta: ToolMeta = {
   description: 'A stopwatch with laps and a countdown timer with an alarm.',
   category: 'Utility',
   keywords: ['stopwatch', 'countdown', 'timer', 'waktu'],
-  icon: '⏱️',
+  symbol: 'St',
 }
