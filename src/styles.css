@@ -63,6 +63,7 @@
 [data-cat='calculator'] { --h: 85; }
 [data-cat='design'] { --h: 315; }
 [data-cat='image'] { --h: 125; }
+[data-cat='network'] { --h: 285; }
 [data-cat='utility'] { --h: 60; }
 
 * { box-sizing: border-box; }

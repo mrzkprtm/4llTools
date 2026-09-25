@@ -24,15 +24,35 @@ A growing collection of small, handy web tools. Every tool runs entirely in the 
 | Developer | Timestamp Converter | Unix timestamps to dates and back |
 | Developer | URL Encode / Decode | Percent-encode or decode text for links |
 | Developer | UUID Generator | Random UUID v4s in bulk |
+| Developer | CRON Expression Generator & Parser | Build, validate and explain cron schedules, with the next run times |
+| Developer | CSS ↔ Tailwind Converter | Turn plain CSS into Tailwind classes and back |
+| Developer | Minifier / Beautifier (JS & CSS) | Minify or pretty-print JavaScript and CSS |
+| Developer | Mock Data Generator | Fake names, emails, addresses and more as JSON, CSV or SQL |
+| Developer | Regex Visualizer & Explainer | Draw a regular expression as a diagram and explain it |
+| Developer | SemVer Calculator | Next versions, comparisons and range checks |
+| Developer | SQL Formatter & Query Checker | Tidy SQL and flag risky or broken queries |
+| Security | Bcrypt Hash Generator & Checker | Hash passwords with bcrypt and verify them |
+| Security | HMAC Generator & Verifier | Sign and verify messages and webhooks with HMAC-SHA |
+| Security | RSA Key Pair Generator | PEM and OpenSSH RSA keys generated in your browser |
 | Security | Hash Generator | SHA-1/256/384/512 of text or files |
 | Security | Password Generator | Strong random passwords using the Web Crypto API |
 | Convert | CSV ↔ JSON | Convert CSV to JSON and back, with download |
 | Convert | Unit Converter | Length, weight, temperature, data size and more |
+| Convert | YAML ↔ JSON ↔ TOML Converter | Convert config files between YAML, JSON and TOML |
+| Calculator | CHMOD Permission Calculator | Octal and symbolic Unix file permissions |
 | Calculator | Date Calculator | Age, days between dates, add or subtract days |
 | Calculator | Loan Calculator | Monthly installments, total interest and a payment schedule |
 | Calculator | Percentage Calculator | Percent of, percent change and discounts |
+| Design | Aspect Ratio & Screen Calculator | Ratios, screen PPI and px ↔ rem ↔ em |
+| Design | Box-Shadow & Gradient Generator | Design shadows and gradients, copy the CSS |
 | Design | Color Converter | HEX, RGB and HSL with a contrast check |
+| Design | SVG Optimizer | Shrink SVG files and clean up their markup |
+| Image | EXIF / Metadata Remover | Strip GPS location, camera and date info from photos |
 | Image | Image Resizer & Compressor | Resize, compress and convert to JPG, PNG or WebP |
+| Network | cURL to Code Converter | Turn a curl command into JavaScript, Python, PHP, Go or Rust |
+| Network | CORS & Security Header Checker | Check CORS rules and security headers like CSP and HSTS |
+| Network | HTTP Status Code Reference | Every HTTP status code explained, with a live URL check |
+| Network | Subnet & CIDR Calculator | IP ranges, masks, broadcast and host counts |
 | Utility | Stopwatch & Timer | Stopwatch with laps, countdown timer with alarm |
 
 ## Run it locally
