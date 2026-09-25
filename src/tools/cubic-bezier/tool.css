@@ -1,0 +1,57 @@
+.cb-layout { display: grid; grid-template-columns: minmax(180px, 250px) minmax(0, 1fr); gap: 24px; align-items: start; }
+.cb-editor-wrap { background: var(--sunken); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; }
+.cb-editor { display: block; width: 100%; height: auto; max-height: 520px; touch-action: none; user-select: none; -webkit-user-select: none; overflow: visible; }
+.cb-square { fill: var(--surface); stroke: var(--border); }
+.cb-grid line { stroke: var(--border); stroke-dasharray: 2 4; }
+.cb-axis { font: 11px var(--mono); fill: var(--muted); }
+.cb-diag { stroke: var(--border); stroke-dasharray: 4 4; }
+.cb-arm { stroke-width: 2; }
+.cb-arm-0 { stroke: #ec4899; }
+.cb-arm-1 { stroke: #0ea5e9; }
+.cb-curve { fill: none; stroke: var(--text); stroke-width: 3.5; stroke-linecap: round; }
+.cb-handle { cursor: grab; outline: none; }
+.cb-handle .cb-hit { fill: transparent; }
+.cb-handle .cb-dot { stroke: var(--surface); stroke-width: 3; transition: r 0.2s var(--ease-out); }
+.cb-handle-0 .cb-dot { fill: #ec4899; }
+.cb-handle-1 .cb-dot { fill: #0ea5e9; }
+.cb-handle:hover .cb-dot, .cb-handle:focus-visible .cb-dot, .cb-handle.is-active .cb-dot { r: 12; }
+.cb-handle:focus-visible .cb-hit { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 4 3; }
+.cb-editor.is-dragging, .cb-editor.is-dragging .cb-handle { cursor: grabbing; }
+.cb-mono { font-family: var(--mono); }
+.cb-small { font-size: 0.84rem; margin: 6px 0 0; }
+.cb-nums { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.cb-nums input { padding: 8px; font-family: var(--mono); font-size: 0.86rem; }
+.cb-num-label { margin: 0 0 4px; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.cb-tracks { display: grid; gap: 10px; margin-top: 18px; }
+.cb-track-row { display: grid; grid-template-columns: 52px minmax(0, 1fr); align-items: center; gap: 10px; }
+.cb-track-label { font-size: 0.8rem; font-family: var(--mono); color: var(--muted); }
+.cb-track { position: relative; height: 32px; border-radius: 16px; background: var(--sunken); border: 1px solid var(--border); padding: 3px; }
+.cb-track-sm { height: 28px; margin: 8px 0; }
+.cb-ball { position: absolute; left: 3px; top: 3px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); box-shadow: 0 2px 6px -2px var(--accent); }
+.cb-track-sm .cb-ball { width: 20px; height: 20px; }
+.cb-ghost { position: absolute; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 11px; border-radius: 50%; background: var(--muted); opacity: 0.35; transition: left var(--spring-snap-ms) var(--spring-snap); }
+.cb-dur { display: inline-flex; gap: 6px; align-items: center; font-weight: 500; font-size: 0.86rem; }
+.cb-dur-range { flex: 1 1 120px; min-width: 0; }
+.cb-presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 6px; }
+.cb-preset {
+  display: flex; align-items: center; gap: 6px; padding: 4px 8px 4px 4px; font: inherit; font-size: 0.76rem; color: var(--text); text-align: left;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; min-width: 0;
+  transition: border-color 0.15s, background-color 0.15s, transform 0.15s var(--ease-out);
+}
+.cb-preset span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cb-preset:hover { border-color: var(--text); }
+.cb-preset:active { transform: scale(0.96); }
+.cb-preset.is-on { border-color: var(--accent); background: var(--accent-soft); }
+.cb-preset.is-on .cb-mini path:last-child { stroke-dasharray: 1; animation: draw 0.5s var(--ease-out) both; }
+.cb-mini { flex: none; color: var(--accent); }
+.cb-select { width: auto; }
+.cb-h { margin: 26px 0 4px; font-size: 1.05rem; }
+.cb-springs { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 12px; }
+.cb-spring { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; background: var(--surface); min-width: 0; }
+.cb-spring-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cb-spring-head > div { flex: 1 1 60px; }
+.cb-linear { font-size: 0.7rem; max-height: 72px; overflow: auto; }
+@media (max-width: 640px) {
+  .cb-layout { grid-template-columns: minmax(0, 1fr); }
+  .cb-editor-wrap { max-width: 240px; justify-self: center; width: 100%; }
+}

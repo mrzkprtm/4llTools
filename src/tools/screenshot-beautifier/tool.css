@@ -1,0 +1,28 @@
+.sb-drop {
+  border: 2px dashed var(--border); background: var(--sunken); border-radius: var(--radius-sm); padding: 14px 16px; position: relative;
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; text-align: center;
+  transition: border-color 0.15s, background-color 0.15s, transform var(--spring-snap-ms) var(--spring-snap);
+}
+.sb-drop.is-over { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.015); animation: breathe 1.2s ease-in-out infinite; }
+.sb-hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.sb-stage { margin-top: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); padding: 12px; background: repeating-conic-gradient(var(--sunken) 0 25%, var(--surface) 0 50%) 50% / 16px 16px; display: flex; justify-content: center; }
+.sb-stage canvas { display: block; max-width: 100%; max-height: 70vh; width: auto; height: auto; border-radius: 4px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); transition: aspect-ratio var(--spring-soft-ms) var(--spring-soft); }
+.sb-stage canvas.sb-new { animation: sb-in 0.55s var(--spring-soft) both; }
+@keyframes sb-in { from { opacity: 0; transform: scale(0.96) translateY(6px); } }
+
+.sb-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 4px 18px; }
+.sb-controls label { font-weight: 500; }
+.sb-grads { display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 6px; margin-top: 6px; }
+.sb-grad {
+  appearance: none; height: 38px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; padding: 0;
+  transition: transform var(--spring-snap-ms) var(--spring-snap), border-color 0.15s, box-shadow 0.15s;
+}
+.sb-grad:hover { transform: translateY(-2px) scale(1.05); }
+.sb-grad[aria-pressed='true'] { border-color: var(--text); box-shadow: 0 0 0 2px var(--surface) inset; transform: scale(1.08); }
+.sb-grad:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sb-ratio { display: flex; flex-wrap: wrap; gap: 6px; }
+.sb-ratio .btn { padding: 6px 10px; font-size: 0.85rem; }
+.sb-select { display: flex; gap: 8px; align-items: center; }
+.sb-select input[type='color'] { width: 42px; height: 34px; padding: 0; border: none; background: none; cursor: pointer; flex: none; }
+.sb-h { font-weight: 600; font-size: 0.92rem; margin: 16px 0 6px; }

@@ -1,0 +1,14 @@
+.jp-expr { font-family: var(--mono); font-size: 1.05rem; flex: 1; min-width: 0; }
+.jp-results { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 420px; overflow: auto; }
+.jp-results li { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); padding: 8px 10px; min-width: 0; animation: jp-in 0.3s var(--ease-out) backwards; }
+.jp-path { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
+.jp-path code { word-break: break-all; }
+.jp-val { margin: 6px 0 0; font-family: var(--mono); font-size: 0.84rem; white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow: auto; }
+.jp-cheats { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 6px; }
+.jp-cheat { text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); font: inherit; cursor: pointer; transition: border-color 0.2s, transform 0.2s var(--spring-snap), background-color 0.2s; }
+.jp-cheat:hover { border-color: var(--accent); transform: translateY(-1px); }
+.jp-cheat:active { transform: scale(0.98); }
+.jp-cheat.is-on { border-color: var(--accent); background: var(--accent-soft); }
+.jp-cheat code { font-family: var(--mono); font-size: 0.82rem; word-break: break-all; }
+.jp-cheat span { font-size: 0.8rem; color: var(--muted); }
+@keyframes jp-in { from { opacity: 0; transform: translateY(6px); } }

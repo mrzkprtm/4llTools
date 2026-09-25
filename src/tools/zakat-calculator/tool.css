@@ -1,0 +1,21 @@
+.zk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 14px; }
+.zk-price { padding: 12px 14px; border: 1px dashed var(--border-strong, var(--border)); border-radius: var(--radius-sm); background: var(--sunken); margin-top: 14px; transition: border-color 0.3s, background-color 0.3s; }
+.zk-price.ok { border-style: solid; border-color: color-mix(in srgb, var(--ok) 45%, transparent); background: color-mix(in srgb, var(--ok) 6%, var(--sunken)); }
+.zk-price label:first-child { margin-top: 0; }
+.zk-check { display: flex; gap: 8px; align-items: flex-start; font-weight: 500; font-size: 0.9rem; margin: 10px 0 0; cursor: pointer; }
+.zk-check input { margin-top: 3px; }
+.zk-result { margin-top: 16px; padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--sunken); }
+.zk-result.due { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 7%, var(--sunken)); }
+.zk-big { font-family: var(--mono); font-size: clamp(1.7rem, 7vw, 2.4rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin: 6px 0 2px; }
+.zk-line { display: flex; justify-content: space-between; gap: 12px; font-size: 0.9rem; padding: 5px 0; border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.zk-line:last-child { border-bottom: 0; }
+.zk-line span:first-child { color: var(--muted); }
+.zk-line span:last-child { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+.zk-meter { margin: 12px 0 4px; }
+.zk-meter .bar > i { transition: transform var(--spring-soft-ms) var(--spring-soft), background-color 0.3s; }
+.zk-meter.reached .bar > i { background: var(--ok); }
+.zk-sub { font-weight: 400; color: var(--muted); font-size: 0.82rem; }
+.zk-stepper { display: inline-flex; align-items: center; gap: 6px; }
+.zk-stepper input { width: 84px; text-align: center; }
+.zk-stepper .btn { width: 40px; padding-left: 0; padding-right: 0; }
+.zk-warn { display: inline-block; margin-top: 8px; }

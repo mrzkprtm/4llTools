@@ -1,0 +1,15 @@
+.ul-opts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 12px 0; }
+.ul-opts label { font-weight: 400; margin: 0; }
+.ul-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ul-list li { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding: 6px 6px 6px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); min-width: 0; }
+.ul-list code { font-family: var(--mono); font-size: 0.88rem; word-break: break-all; }
+.ul-list .btn-icon { padding: 6px 8px; flex: none; }
+.ul-time { color: var(--accent); }
+.ul-hint { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.88rem; }
+.ul-decode { margin-top: 26px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); }
+.ul-facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; margin-top: 10px; }
+.ul-fact { padding: 8px 10px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); animation: ul-rise 0.3s var(--ease-out) backwards; min-width: 0; }
+.ul-fact b { display: block; font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+.ul-fact span { font-family: var(--mono); font-size: 0.86rem; word-break: break-all; }
+.ul-regen .ul-spin { display: inline-block; transition: transform var(--spring-snap-ms) var(--spring-snap); }
+@keyframes ul-rise { from { opacity: 0; transform: translateY(6px); } }

@@ -1,0 +1,35 @@
+.rw-wheel-wrap { position: relative; width: min(360px, 100%); margin: 8px auto 0; }
+.rw-wheel { display: block; width: 100%; height: auto; cursor: pointer; filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.12)); -webkit-tap-highlight-color: transparent; }
+.rw-wheel:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 50%; }
+.rw-wheel text { font-size: 11px; font-weight: 600; fill: #1b1a17; pointer-events: none; }
+.rw-wheel .rw-seg { stroke: var(--surface); stroke-width: 1.5; }
+.rw-hub { fill: var(--surface); stroke: var(--border); stroke-width: 2; }
+.rw-hub-text { font-size: 12px !important; font-weight: 750 !important; fill: var(--text) !important; letter-spacing: 0.06em; }
+.rw-pointer { fill: var(--text); stroke: var(--surface); stroke-width: 2; transform-box: fill-box; transform-origin: 50% 0; }
+.rw-pointer.tick { animation: rw-flick 0.12s ease-out; }
+.rw-wheel-wrap.idle .rw-rot { animation: rw-idle 6s ease-in-out infinite; transform-box: view-box; transform-origin: 150px 150px; }
+.rw-winner { text-align: center; margin: 12px 0 4px; min-height: 2.6em; }
+.rw-winner .chip { font-size: 1.15rem; padding: 6px 16px; }
+.rw-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.rw-chips .chip { font-size: 0.95rem; padding: 5px 12px; }
+.rw-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 4px; counter-reset: rw; }
+.rw-list li { display: flex; gap: 10px; padding: 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); counter-increment: rw; overflow-wrap: anywhere; }
+.rw-list li::before { content: counter(rw); font-family: var(--mono); font-size: 0.8rem; color: var(--muted); min-width: 1.6em; }
+.rw-teams { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: 10px; margin-top: 12px; }
+.rw-team { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); padding: 10px 12px; animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) backwards; }
+.rw-team h3 { margin: 0 0 6px; font-size: 0.92rem; }
+.rw-team ul { margin: 0; padding-left: 18px; font-size: 0.9rem; }
+.rw-dice { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 16px 0 8px; perspective: 400px; }
+.rw-die { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 12px; background: var(--surface); border: 2px solid var(--border-strong, var(--border)); font-family: var(--mono); font-size: 1.4rem; font-weight: 700; box-shadow: 0 3px 0 var(--border); animation: rw-tumble 0.6s var(--spring-bouncy) backwards; }
+.rw-total { text-align: center; font-family: var(--mono); font-size: 2.4rem; font-weight: 700; }
+.rw-coin-stage { display: grid; place-items: center; perspective: 600px; margin: 18px 0 8px; }
+.rw-coin { width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 1.05rem; letter-spacing: 0.04em; color: #5b3a00; background: radial-gradient(circle at 35% 30%, #fde68a, #f59e0b 70%, #b45309); box-shadow: inset 0 0 0 6px rgba(255, 255, 255, 0.35), 0 8px 18px -8px rgba(0, 0, 0, 0.4); }
+.rw-coin.flip { animation: rw-coin 0.9s cubic-bezier(0.22, 1, 0.36, 1); }
+.rw-quick { display: flex; flex-wrap: wrap; gap: 6px; }
+.rw-quick .btn { padding: 6px 10px; font-family: var(--mono); font-size: 0.85rem; }
+.rw-history { font-size: 0.85rem; color: var(--muted); margin-top: 8px; overflow-wrap: anywhere; }
+.rw-history b { color: var(--text); font-weight: 600; }
+@keyframes rw-flick { 0% { transform: rotate(0); } 40% { transform: rotate(-14deg); } 100% { transform: rotate(0); } }
+@keyframes rw-idle { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(4deg); } }
+@keyframes rw-tumble { 0% { opacity: 0; transform: translateY(-30px) rotate(-200deg) scale(0.6); } 100% { opacity: 1; transform: none; } }
+@keyframes rw-coin { 0% { transform: translateY(0) rotateY(0) scale(1); } 45% { transform: translateY(-60px) rotateY(900deg) scale(1.1); } 100% { transform: translateY(0) rotateY(1800deg) scale(1); } }

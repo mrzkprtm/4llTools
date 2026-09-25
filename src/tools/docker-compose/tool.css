@@ -1,0 +1,8 @@
+.dc-cols { align-items: start; }
+.dc-ex { padding: 5px 10px; font-size: 0.84rem; }
+.dc-error { padding: 12px; border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--danger) 8%, transparent); margin: 0; }
+.dc-services { gap: 6px; }
+.dc-notes { border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius-sm); background: var(--sunken); padding: 10px 14px; font-size: 0.88rem; animation: dc-rise 0.35s var(--ease-out) both; }
+.dc-notes ul { margin: 6px 0 0; padding-left: 20px; }
+.dc-notes li { margin: 3px 0; overflow-wrap: anywhere; }
+@keyframes dc-rise { from { opacity: 0; transform: translateY(6px); } }

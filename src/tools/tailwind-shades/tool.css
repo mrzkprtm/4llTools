@@ -1,0 +1,27 @@
+.tws-picker { width: 44px; height: 40px; padding: 0; border: none; background: none; cursor: pointer; flex: none; }
+.tws-small { font-size: 0.84rem; margin: 6px 0 0; }
+.tws-scale { display: grid; grid-template-columns: repeat(auto-fit, minmax(84px, 1fr)); gap: 6px; margin: 18px 0 8px; }
+.tws-shade {
+  all: unset; box-sizing: border-box; position: relative; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+  min-height: 108px; padding: 10px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  animation: tws-in var(--spring-snap-ms) var(--spring-snap) both; animation-delay: calc(var(--i, 0) * 28ms);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+}
+.tws-shade:hover { transform: translateY(-3px); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.5); }
+.tws-shade:active { transform: scale(0.96); }
+.tws-shade:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tws-shade.is-input { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--text); }
+.tws-step { font-weight: 700; font-size: 1rem; }
+.tws-hex { font-family: var(--mono); font-size: 0.78rem; }
+.tws-copied { animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; display: inline-block; font-weight: 700; }
+.tws-aa { font-size: 0.7rem; font-weight: 600; opacity: 0.85; white-space: nowrap; }
+.tws-aa.fail { text-decoration: underline wavy; }
+.tws-you {
+  position: absolute; top: -9px; right: 6px; font-size: 0.64rem; font-weight: 700; padding: 1px 6px; border-radius: 999px;
+  background: var(--text); color: var(--surface); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) 0.3s both;
+}
+@keyframes tws-in { from { opacity: 0; transform: translateY(10px) scale(0.94); } to { opacity: 1; transform: none; } }
+@media (max-width: 560px) {
+  .tws-scale { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tws-shade { min-height: 84px; }
+}

@@ -1,0 +1,28 @@
+.bmi-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 18px; align-items: start; }
+.bmi-gauge { width: 100%; max-width: 320px; display: block; margin: 0 auto; overflow: visible; }
+.bmi-seg { fill: none; stroke-width: 18; stroke-dasharray: 1; animation: bmi-draw 0.6s var(--ease-out) backwards; }
+.bmi-seg.low { stroke: #60a5fa; }
+.bmi-seg.good { stroke: #22c55e; }
+.bmi-seg.warn { stroke: #f59e0b; }
+.bmi-seg.high { stroke: #ef4444; }
+.bmi-seg.dim { opacity: 0.28; transition: opacity 0.3s; }
+.bmi-needle { transform-box: view-box; transform-origin: 120px 120px; transition: transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.bmi-needle line { stroke: var(--text); stroke-width: 3.5; stroke-linecap: round; }
+.bmi-needle circle { fill: var(--text); }
+.bmi-tick { font-family: var(--mono); font-size: 9px; fill: var(--muted); }
+.bmi-readout { text-align: center; margin-top: -6px; }
+.bmi-value { font-family: var(--mono); font-size: clamp(2.2rem, 9vw, 3rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+.bmi-value.low { color: #2563eb; }
+.bmi-value.good { color: var(--ok); }
+.bmi-value.warn { color: #d97706; }
+.bmi-value.high { color: var(--danger); }
+.bmi-chip.low { color: #2563eb; border-color: color-mix(in srgb, #2563eb 40%, transparent); background: color-mix(in srgb, #2563eb 10%, transparent); }
+.bmi-chip.warn { color: #b45309; border-color: color-mix(in srgb, #d97706 40%, transparent); background: color-mix(in srgb, #d97706 12%, transparent); }
+.bmi-legend { display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: center; font-size: 0.8rem; color: var(--muted); margin-top: 10px; }
+.bmi-legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: 0; }
+.bmi-legend b { font-weight: 600; color: var(--text); }
+.bmi-inline { display: flex; gap: 8px; }
+.bmi-inline > * { flex: 1; min-width: 0; }
+.bmi-note { font-size: 0.85rem; }
+@keyframes bmi-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.bmi-lab { display: block; font-weight: 600; font-size: 0.92rem; margin: 16px 0 6px; }
