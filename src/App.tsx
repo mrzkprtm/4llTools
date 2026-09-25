@@ -6,6 +6,7 @@ import ToolTile from './components/ToolTile'
 import ToolGrid from './components/ToolGrid'
 import CategoryPage, { findCategory } from './CategoryPage'
 import Home from './Home'
+import { infoPages, SiteFooter } from './legal/LegalPages'
 import Sidebar from './Sidebar'
 import { applyPageMeta, categoryMeta, categoryPath, homeMeta, notFoundMeta, relatedTools, toolFaq, toolMeta, type PageMeta } from './seo'
 import { getTool, getToolComponent, tools } from './tools/registry'
@@ -54,8 +55,12 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/category/:category" element={<CategoryOrNotFound />} />
+            {Object.entries(infoPages).map(([path, { Component }]) => (
+              <Route key={path} path={path} element={<Component />} />
+            ))}
             <Route path="/:slug" element={<ToolPage />} />
           </Routes>
+          <SiteFooter />
         </main>
       </div>
     </div>
@@ -65,6 +70,7 @@ export default function App() {
 /** The title, description and share image for whatever page is at `pathname`. */
 function pageMetaFor(pathname: string): PageMeta {
   if (pathname === '/') return homeMeta(tools)
+  if (infoPages[pathname]) return infoPages[pathname].meta
   const category = pathname.startsWith('/category/') ? findCategory(pathname.slice('/category/'.length)) : undefined
   if (category) return categoryMeta(...category)
   const tool = getTool(pathname.slice(1))

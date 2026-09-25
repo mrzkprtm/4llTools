@@ -258,6 +258,31 @@ input.search::-webkit-search-cancel-button { cursor: pointer; }
 .not-found-icon { margin-bottom: 20px; --icon-2-o: 0.35; animation: wobble 2.4s var(--ease-out) infinite; transform-origin: center; }
 .not-found h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); max-width: 22ch; margin: 0 0 24px; letter-spacing: -0.03em; }
 
+/* ---------- Site information pages and footer ---------- */
+
+.info-page { max-width: 72ch; }
+.info-updated { margin: 8px 0 0; font-size: 0.9rem; }
+.info-body { margin-top: 28px; line-height: 1.65; }
+.info-body h2 { margin: 36px 0 10px; font-size: 1.15rem; letter-spacing: -0.01em; }
+.info-body p, .info-body li { color: var(--text); }
+.info-body ul { padding-left: 1.2em; }
+.info-body li { margin: 4px 0; }
+.info-body a { color: var(--accent); }
+.info-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; display: block; overflow-x: auto; }
+.info-table th, .info-table td { text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--border); overflow-wrap: anywhere; }
+.info-table th { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.info-table td:nth-child(2) { font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+
+.site-footer {
+  margin-top: 72px; padding-top: 20px; border-top: 1px solid var(--border);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px;
+  font-size: 0.88rem; color: var(--muted);
+}
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 6px 20px; }
+.site-footer a { color: var(--muted); text-decoration: none; }
+.site-footer a:hover { color: var(--accent); text-decoration: underline; }
+.site-footer p { margin: 0; }
+
 /* ---------- Form controls shared by every tool ---------- */
 
 textarea, input[type='text'], input[type='number'], input[type='date'], input[type='datetime-local'], input[type='url'], select {
