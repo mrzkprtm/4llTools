@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { createServer, defineConfig, type Plugin } from 'vite'
@@ -6,7 +6,7 @@ import react from '@vitejs/plugin-react'
 import { renderShareCard, writeFavicons, type ShareCard } from './build/seo-assets.ts'
 
 export default defineConfig({
-  plugins: [react(), majesticons(), prerender()],
+  plugins: [react(), majesticons(), licenses(), prerender()],
 })
 
 /**
@@ -28,7 +28,7 @@ function prerender(): Plugin {
     async closeBundle() {
       const server = await createServer({
         configFile: false,
-        plugins: [react(), majesticons()],
+        plugins: [react(), majesticons(), licenses()],
         server: { middlewareMode: true, hmr: false },
         appType: 'custom',
         logLevel: 'error',
@@ -57,6 +57,8 @@ function prerender(): Plugin {
           [home.image, { eyebrow: `A pocket workbench · ${tools.length} tools`, title: 'Free online tools that run in your browser', description: 'QR codes, JSON, PDFs, images, calculators, and physics, math and algorithm simulations.' }],
         ]
 
+        for (const { meta } of Object.values(mod.infoPages)) await write(`${meta.path}.html`, page(meta, []))
+
         const groups = mod.groupByCategory(tools)
         for (const [category, list] of groups) {
           const meta = mod.categoryMeta(category, list)
@@ -81,7 +83,7 @@ function prerender(): Plugin {
           await Promise.all(cards.slice(i, i + 8).map(async ([path, card]) => write(path, await renderShareCard(card))))
         await writeFavicons(outDir)
 
-        const urls = [home.path, ...groups.map(([c]) => mod.categoryPath(c)), ...tools.map((t) => `/${t.slug}`)]
+        const urls = [home.path, ...groups.map(([c]) => mod.categoryPath(c)), ...tools.map((t) => `/${t.slug}`), ...Object.keys(mod.infoPages)]
         await write(
           '/sitemap.xml',
           `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
@@ -172,6 +174,62 @@ function majesticons(): Plugin {
       if (!file.startsWith(src)) return
       const mod = server.moduleGraph.getModuleById('\0' + id)
       if (mod) server.moduleGraph.invalidateModule(mod)
+    },
+  }
+}
+
+/**
+ * Serves `virtual:licenses`, the list of third-party packages shown on the
+ * licences page, and writes third-party-licenses.txt with each package's full
+ * licence text. Packages come from package-lock.json: everything the app
+ * depends on at runtime, plus the dev packages whose files are bundled
+ * (icons, and the font drawn into share images).
+ */
+function licenses(): Plugin {
+  const id = 'virtual:licenses'
+  const bundledDev = new Set(['majesticons', '@fontsource/bricolage-grotesque'])
+  let root = ''
+
+  function list() {
+    const lock = JSON.parse(readFileSync(resolve(root, 'package-lock.json'), 'utf8')) as {
+      packages: Record<string, { version?: string; license?: string; dev?: boolean; devOptional?: boolean }>
+    }
+    const seen = new Map<string, { name: string; version: string; license: string; dir: string; url?: string }>()
+    for (const [path, info] of Object.entries(lock.packages)) {
+      if (!path) continue
+      const name = path.slice(path.lastIndexOf('node_modules/') + 'node_modules/'.length)
+      if ((info.dev || info.devOptional) && !bundledDev.has(name)) continue
+      const dir = resolve(root, path)
+      const pkg = existsSync(resolve(dir, 'package.json')) ? JSON.parse(readFileSync(resolve(dir, 'package.json'), 'utf8')) : {}
+      const repo = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository?.url
+      const url = pkg.homepage || (repo && repo.replace(/^git\+/, '').replace(/^git:/, 'https:').replace(/\.git$/, ''))
+      const version = info.version ?? pkg.version ?? ''
+      seen.set(`${name}@${version}`, { name, version, license: info.license ?? pkg.license ?? 'See package', dir, url: /^https?:/.test(url ?? '') ? url : undefined })
+    }
+    return [...seen.values()].sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version))
+  }
+
+  return {
+    name: '4lltools-licenses',
+    configResolved(config) {
+      root = config.root
+    },
+    resolveId: (source) => (source === id ? '\0' + id : undefined),
+    load(resolved) {
+      if (resolved !== '\0' + id) return
+      return `export default ${JSON.stringify(list().map(({ dir: _, ...p }) => p))}`
+    },
+    generateBundle() {
+      const sections = list().map((p) => {
+        const file = existsSync(p.dir) && readdirSync(p.dir).find((f) => /^(licen[cs]e|copying|notice)/i.test(f))
+        const text = file ? readFileSync(resolve(p.dir, file), 'utf8').trim() : `Licensed under ${p.license}.`
+        return `${p.name}@${p.version} (${p.license})\n${p.url ?? ''}\n\n${text}`
+      })
+      this.emitFile({
+        type: 'asset',
+        fileName: 'third-party-licenses.txt',
+        source: `Third-party software used by 4llTools\n\n${sections.join(`\n\n${'-'.repeat(72)}\n\n`)}\n`,
+      })
     },
   }
 }
