@@ -76,7 +76,8 @@ export default function MatrixRain() {
             label={`Digital rain of ${glyphs.length} different characters falling in ${cols} columns.`}
             onFrame={(ctx, f) => {
               const cs = columns.current
-              if (cs.length !== cols) return
+              // Wait for the columns to be rebuilt after the grid size changes.
+              if (cs.length !== cols || cs[0]?.glyphs.length !== rows) return
               const b = boost.current
               const p = pointer.current
               // Columns near the pointer slow down and light up.

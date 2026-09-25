@@ -7,6 +7,10 @@ import { fieldAt, potentialAt, traceLine } from './electric-field/field'
 import { borisStep, cyclotronPeriod, driftSpeed, larmorRadius } from './lorentz-force/lorentz'
 import { Fluid } from './fluid-smoke/fluid'
 import { Cloth } from './cloth-simulation/cloth'
+import { energy, momentum, resolveContacts, stepPendulums, type Ball, type Rig } from './newtons-cradle/cradle'
+import { inclineAcceleration, stepIncline } from './inclined-plane/incline'
+import { rcStep, vcCharge, vcDischarge } from './rc-circuit/rc'
+import { diffuseStep, stats, subSteps } from './heat-diffusion/heat'
 
 describe('doppler effect', () => {
   it('raises the pitch ahead and lowers it behind', () => {
@@ -225,5 +229,124 @@ describe('cloth', () => {
     t.x[15] += 200
     t.satisfy(1, 2)
     expect(Array.from(t.alive).some((a) => a === 0)).toBe(true)
+  })
+})
+
+describe("newton's cradle", () => {
+  const rig: Rig = { L: 0.3, r: 0.025, g: 9.81, m: 0.1 }
+  const row = (n: number, moving: number[]): Ball[] => Array.from({ length: n }, (_, i) => ({ th: 0, w: moving.includes(i) ? 2 : 0 }))
+
+  it('sends one ball out for one ball in', () => {
+    const balls = row(5, [0])
+    const { hits } = resolveContacts(balls, rig, 1)
+    expect(hits).toBe(4)
+    expect(balls.map((b) => b.w)).toEqual([0, 0, 0, 0, 2])
+  })
+
+  it('sends two out for two in, conserving momentum and energy', () => {
+    const balls = row(5, [0, 1])
+    const p = momentum(balls, rig)
+    const e = energy(balls, rig)
+    resolveContacts(balls, rig, 1)
+    expect(balls.map((b) => b.w)).toEqual([0, 0, 0, 2, 2])
+    expect(momentum(balls, rig)).toBeCloseTo(p, 12)
+    expect(energy(balls, rig)).toBeCloseTo(e, 12)
+  })
+
+  it('keeps momentum but loses energy when collisions are inelastic', () => {
+    const balls = row(5, [0])
+    const p = momentum(balls, rig)
+    const e = energy(balls, rig)
+    resolveContacts(balls, rig, 0.9)
+    expect(momentum(balls, rig)).toBeCloseTo(p, 12)
+    expect(energy(balls, rig)).toBeLessThan(e)
+    expect(balls.slice(1).every((b) => b.w > 0)).toBe(true)
+  })
+
+  it('swings a lone pendulum with the small-angle period', () => {
+    const b = [{ th: 0.05, w: 0 }]
+    let t = 0
+    const dt = 1e-4
+    while (b[0].th > 0) (stepPendulums(b, dt, rig), (t += dt))
+    expect(4 * t).toBeCloseTo(2 * Math.PI * Math.sqrt(rig.L / rig.g), 2)
+  })
+})
+
+describe('inclined plane', () => {
+  const base = { m: 2, g: 9.81, mus: 0.5, muk: 0.3, F: 0, v: 0 }
+
+  it('stays put while tan θ < μs, with static friction balancing gravity', () => {
+    const r = inclineAcceleration({ ...base, angle: 20 })
+    expect(r.holds).toBe(true)
+    expect(r.a).toBe(0)
+    expect(r.friction).toBeCloseTo(-2 * 9.81 * Math.sin(rad(20)))
+    expect(r.normal).toBeCloseTo(2 * 9.81 * Math.cos(rad(20)))
+  })
+
+  it('slides at g(sin θ − μk cos θ) once static friction gives way', () => {
+    const r = inclineAcceleration({ ...base, angle: 40 })
+    expect(r.holds).toBe(false)
+    expect(r.a).toBeCloseTo(9.81 * (Math.sin(rad(40)) - 0.3 * Math.cos(rad(40))))
+    // A block already moving keeps kinetic friction even on a gentle slope, and slows down.
+    const slow = inclineAcceleration({ ...base, angle: 10, v: 1 })
+    expect(slow.a).toBeLessThan(0)
+  })
+
+  it('can be pushed up the slope and stops instead of reversing', () => {
+    const up = inclineAcceleration({ ...base, angle: 10, F: 40 })
+    expect(up.a).toBeLessThan(0)
+    const r = stepIncline(1, 0.01, 0.1, { ...base, angle: 10 })
+    expect(r.v).toBe(0)
+  })
+})
+
+describe('rc circuit', () => {
+  it('reaches 63.2% after one time constant', () => {
+    const R = 10e3
+    const C = 100e-6
+    expect(vcCharge(R * C, 9, R, C) / 9).toBeCloseTo(0.632, 3)
+    expect(vcDischarge(R * C, 9, R, C) / 9).toBeCloseTo(0.368, 3)
+  })
+
+  it('steps exactly, whatever the step size', () => {
+    const R = 2e3
+    const C = 470e-6
+    let s = { vc: 0, i: 0 }
+    for (let k = 0; k < 1000; k++) s = rcStep(s, 0.001, R, C, 12, true)
+    expect(s.vc).toBeCloseTo(vcCharge(1, 12, R, C), 10)
+    expect(s.i).toBeCloseTo((12 - s.vc) / R, 12)
+    const d = rcStep(s, 0.5, R, C, 12, false)
+    expect(d.vc).toBeCloseTo(vcDischarge(0.5, s.vc, R, C), 10)
+    expect(d.i).toBeLessThan(0)
+  })
+})
+
+describe('heat diffusion', () => {
+  const w = 40
+  const h = 25
+  const random = rng(5)
+  const start = (): Float64Array => Float64Array.from({ length: w * h }, () => random() * 100)
+
+  it('conserves total heat with insulated edges', () => {
+    let g = start()
+    const total = stats(g).sum
+    for (let s = 0; s < 300; s++) g = diffuseStep(g, w, h, 0.24, 'insulated')
+    expect(stats(g).sum).toBeCloseTo(total, 6)
+    // And it evens out without overshooting (maximum principle).
+    expect(stats(g).max - stats(g).min).toBeLessThan(40)
+    expect(stats(g).max).toBeLessThanOrEqual(100)
+  })
+
+  it('leaks heat through cold edges', () => {
+    let g = start()
+    const total = stats(g).sum
+    for (let s = 0; s < 300; s++) g = diffuseStep(g, w, h, 0.24, 'cold')
+    expect(stats(g).sum).toBeLessThan(total * 0.7)
+  })
+
+  it('splits a frame into stable sub-steps', () => {
+    const { n, k } = subSteps(200, 1 / 60)
+    expect(k).toBeLessThanOrEqual(0.24)
+    expect(n * k).toBeCloseTo(200 / 60)
   })
 })

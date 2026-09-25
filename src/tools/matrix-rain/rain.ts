@@ -18,7 +18,7 @@ export function parseGlyphs(set: GlyphSet, custom = ''): string[] {
   if (set === 'binary') return ['0', '1']
   const out: string[] = []
   for (const ch of Array.from(custom)) {
-    if (/\s|\p{Cc}|\p{Extended_Pictographic}|\p{M}|‍|️/u.test(ch)) continue
+    if (/\s|\p{Cc}|\p{Extended_Pictographic}|\p{Emoji_Modifier}|\p{Regional_Indicator}|\p{M}|\u200d|[\u{e0020}-\u{e007f}]/u.test(ch)) continue
     if (!out.includes(ch)) out.push(ch)
   }
   return out.length ? out : ['0', '1']

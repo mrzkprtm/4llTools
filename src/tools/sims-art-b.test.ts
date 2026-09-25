@@ -8,6 +8,7 @@ import { maurer, polar, rosePeriod, rosePetals } from './rose-curves/rose'
 import { buildCurve, hilbertD2xy, hilbertXy2d, mortonD2xy } from './space-filling-curves/curves'
 import { coverage, makePacker, stepPacker } from './circle-packing/packing'
 import { BURSTS, SPLIT, addParticle, burstVelocities, launchVelocity, makeParticles, stepParticles } from './fireworks/fireworks'
+import { makeColumn, parseGlyphs, restart, spell, stepColumn } from './matrix-rain/rain'
 import { arcPoint, cornerColor, orientations, tileArcs } from './truchet-tiles/truchet'
 
 describe('falling-sand', () => {
@@ -368,5 +369,45 @@ describe('fireworks', () => {
     addParticle(p, 0, 0, 10, 0, 0.05, 0, 1, SPLIT)
     stepParticles(p, 0.1, 0, 1, rng(1))
     expect(p.n).toBe(4)
+  })
+})
+
+describe('matrix-rain', () => {
+  it('parses glyph sets and cleans custom strings', () => {
+    expect(parseGlyphs('binary')).toEqual(['0', '1'])
+    expect(parseGlyphs('digits')).toHaveLength(10)
+    expect(parseGlyphs('latin')[25]).toBe('Z')
+    const kata = parseGlyphs('katakana')
+    expect(kata).toContain('ｱ')
+    expect(kata.length).toBeGreaterThan(50)
+    expect(parseGlyphs('custom', 'ab 😀c\taé👍🏽b')).toEqual(['a', 'b', 'c', 'é'])
+    expect(parseGlyphs('custom', '  🎉 ')).toEqual(['0', '1'])
+  })
+
+  it('moves the head down by speed × dt and queues a new drop after it leaves the screen', () => {
+    const random = rng(3)
+    const c = makeColumn(30, ['x'], random)
+    restart(c, 30, random, 1)
+    c.wait = 0
+    c.y = 5
+    c.speed = 10
+    expect(stepColumn(c, 0.5, 30, random, 1)).toBe(false)
+    expect(c.y).toBeCloseTo(10)
+    c.y = 30 + c.len - 0.1
+    expect(stepColumn(c, 0.1, 30, random, 1)).toBe(true)
+    expect(c.y).toBeLessThanOrEqual(0)
+    // At low density the next drop waits before it starts.
+    restart(c, 30, () => 0.9, 0.2)
+    expect(c.wait).toBeGreaterThan(0)
+    const y = c.y
+    stepColumn(c, 0.1, 30, random, 0.2)
+    expect(c.y).toBe(y)
+  })
+
+  it('writes a message word into the column', () => {
+    const c = makeColumn(20, ['x'], rng(1))
+    spell(c, 'NEO', 20)
+    expect(c.glyphs.slice(c.msgRow, c.msgRow + 3).join('')).toBe('NEO')
+    expect(c.len).toBeGreaterThanOrEqual(3)
   })
 })
