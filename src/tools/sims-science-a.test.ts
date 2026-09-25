@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { rk4, rng } from '../sim/math'
+import { YEAR, dayLength, declination, noonElevation, season } from './earth-seasons/seasons'
 import { SYNODIC, daysToFull, illumination, moonAge, moonUp, phaseName, riseSet, terminatorK } from './moon-phases/moon'
 import { PLANETS, dateFromDay, dayNumber, meanLongitude, position, solveKepler } from './solar-system/orrery'
 import { createNet, evaluate, gradients, makeData, predict, trainEpoch, type Net, type Point } from './neural-network/nn'
@@ -334,5 +335,35 @@ describe('moon-phases', () => {
     expect(riseSet(Math.PI / 2).rise).toBeCloseTo(12, 9)
     expect(moonUp(Math.PI, 0)).toBe(true)
     expect(moonUp(Math.PI, 12)).toBe(false)
+  })
+})
+
+describe('earth-seasons', () => {
+  it('declination follows the tilt through the year', () => {
+    expect(declination(80, 23.44)).toBeCloseTo(0, 6)
+    expect(declination(80 + YEAR / 4, 23.44)).toBeCloseTo(23.44, 6)
+    expect(declination(80 + (3 * YEAR) / 4, 23.44)).toBeCloseTo(-23.44, 6)
+    expect(declination(172, 0)).toBe(0)
+  })
+
+  it('the equator always gets about 12 h, and at an equinox everywhere does', () => {
+    for (const d of [-23.44, -10, 0, 15, 23.44]) expect(dayLength(0, d)).toBeCloseTo(12, 9)
+    for (const lat of [-70, -45, 0, 30, 60, 89]) expect(dayLength(lat, 0)).toBeCloseTo(12, 9)
+    // Longer days in the northern summer, shorter in the southern one.
+    expect(dayLength(51.5, 23.44)).toBeGreaterThan(16)
+    expect(dayLength(51.5, 23.44)).toBeLessThan(17)
+    expect(dayLength(-51.5, 23.44)).toBeCloseTo(24 - dayLength(51.5, 23.44), 9)
+  })
+
+  it('handles polar day and polar night', () => {
+    expect(dayLength(80, -23.44)).toBe(0)
+    expect(dayLength(80, 23.44)).toBe(24)
+    expect(dayLength(-80, 23.44)).toBe(0)
+    expect(dayLength(90, 0.5)).toBe(24)
+    expect(noonElevation(0, 0)).toBe(90)
+    expect(noonElevation(80, -23.44)).toBeLessThan(0)
+    expect(season(172, true, 23.44)).toBe('summer')
+    expect(season(172, false, 23.44)).toBe('winter')
+    expect(season(172, true, 0)).toBe('none')
   })
 })

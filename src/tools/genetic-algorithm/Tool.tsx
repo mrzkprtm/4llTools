@@ -92,7 +92,7 @@ export default function GeneticAlgorithm() {
               for (let i = 0; i < target.length; i++) {
                 const ok = best[i] === target[i]
                 rrect(ctx, x0 + i * cw + 1, 38, cw - 2, 46, 5, ok ? alpha(theme.ok, 0.85) : theme.surface, ok ? undefined : theme.border)
-                text(ctx, best[i] === ' ' ? '·' : best[i], x0 + i * cw + cw / 2, 69, { color: ok ? '#fff' : theme.text, size: Math.min(22, cw * 0.95), align: 'center', weight: 700 })
+                text(ctx, best[i] === ' ' ? '·' : (best[i] ?? ''), x0 + i * cw + cw / 2, 69, { color: ok ? '#fff' : theme.text, size: Math.min(22, cw * 0.95), align: 'center', weight: 700 })
                 text(ctx, target[i] === ' ' ? '·' : target[i], x0 + i * cw + cw / 2, 102, { color: theme.muted, size: Math.min(13, cw * 0.8), align: 'center' })
               }
               text(ctx, 'target', x0 - 8, 102, { color: theme.muted, size: 12, align: 'right' })
@@ -108,7 +108,7 @@ export default function GeneticAlgorithm() {
                 text(ctx, `${Math.round(p.scores[r] * 100)}%`.padStart(4), 22, y, { color: theme.muted, size: 12 })
                 const cx = 64
                 const step = fs * 0.62
-                for (let i = 0; i < m.length; i++) text(ctx, m[i], cx + i * step, y, { color: m[i] === target[i] ? theme.ok : alpha(theme.text, 0.55), size: fs, weight: m[i] === target[i] ? 700 : 400 })
+                for (let i = 0; i < Math.min(m.length, target.length); i++) text(ctx, m[i], cx + i * step, y, { color: m[i] === target[i] ? theme.ok : alpha(theme.text, 0.55), size: fs, weight: m[i] === target[i] ? 700 : 400 })
               }
 
               // Fitness chart.
