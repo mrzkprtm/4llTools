@@ -3,9 +3,11 @@ import { Link, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import Icon from './components/Icon'
 import Skeleton from './components/Skeleton'
 import ToolTile from './components/ToolTile'
+import ToolGrid from './components/ToolGrid'
+import CategoryPage, { findCategory } from './CategoryPage'
 import Home from './Home'
 import Sidebar from './Sidebar'
-import { applyPageMeta, homeMeta, notFoundMeta, toolMeta } from './seo'
+import { applyPageMeta, categoryMeta, categoryPath, homeMeta, notFoundMeta, relatedTools, toolFaq, toolMeta, type PageMeta } from './seo'
 import { getTool, getToolComponent, tools } from './tools/registry'
 
 export default function App() {
@@ -16,8 +18,7 @@ export default function App() {
   useEffect(() => {
     setMenuOpen(false)
     window.scrollTo(0, 0)
-    const tool = getTool(pathname.slice(1))
-    applyPageMeta(pathname === '/' ? homeMeta : tool ? toolMeta(tool) : notFoundMeta)
+    applyPageMeta(pageMetaFor(pathname))
   }, [pathname])
 
   useEffect(() => {
@@ -52,6 +53,7 @@ export default function App() {
         <main className="content">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/category/:category" element={<CategoryOrNotFound />} />
             <Route path="/:slug" element={<ToolPage />} />
           </Routes>
         </main>
@@ -60,26 +62,43 @@ export default function App() {
   )
 }
 
+/** The title, description and share image for whatever page is at `pathname`. */
+function pageMetaFor(pathname: string): PageMeta {
+  if (pathname === '/') return homeMeta(tools)
+  const category = pathname.startsWith('/category/') ? findCategory(pathname.slice('/category/'.length)) : undefined
+  if (category) return categoryMeta(...category)
+  const tool = getTool(pathname.slice(1))
+  return tool ? toolMeta(tool) : notFoundMeta
+}
+
+function CategoryOrNotFound() {
+  const { category = '' } = useParams()
+  return findCategory(category) ? <CategoryPage /> : <NotFound name={category} />
+}
+
+function NotFound({ name }: { name: string }) {
+  return (
+    <section className="not-found">
+      <Icon name="compass-2" size={56} className="not-found-icon" />
+      <p className="eyebrow">404</p>
+      <h1>There's no tool called “{name}”.</h1>
+      <p>
+        <Link to="/" className="btn primary">
+          Browse all tools
+          <Icon name="arrow-right" size={18} className="btn-arrow" />
+        </Link>
+      </p>
+    </section>
+  )
+}
+
 function ToolPage() {
   const { slug = '' } = useParams()
   const tool = getTool(slug)
   const Component = getToolComponent(slug)
 
-  if (!tool || !Component) {
-    return (
-      <section className="not-found">
-        <Icon name="compass-2" size={56} className="not-found-icon" />
-        <p className="eyebrow">404</p>
-        <h1>There's no tool called “{slug}”.</h1>
-        <p>
-          <Link to="/" className="btn primary">
-            Browse all tools
-            <Icon name="arrow-right" size={18} className="btn-arrow" />
-          </Link>
-        </p>
-      </section>
-    )
-  }
+  if (!tool || !Component) return <NotFound name={slug} />
+  const related = relatedTools(tool, tools)
 
   return (
     <article className="tool-page" key={tool.slug}>
@@ -87,7 +106,7 @@ function ToolPage() {
         <ToolTile tool={tool} size="lg" />
         <div>
           <p className="eyebrow">
-            <Link to="/">All tools</Link> / {tool.category}
+            <Link to="/">All tools</Link> / <Link to={categoryPath(tool.category)}>{tool.category}</Link>
           </p>
           <h1 className="tool-title">{tool.name}</h1>
           <p className="tool-desc">{tool.description}</p>
@@ -98,6 +117,21 @@ function ToolPage() {
           <Component />
         </Suspense>
       </div>
+      <section className="tool-faq" aria-labelledby="faq-title">
+        <h2 id="faq-title">Questions about the {tool.name}</h2>
+        {toolFaq(tool).map((f) => (
+          <details key={f.q}>
+            <summary>{f.q}</summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </section>
+      {related.length > 0 && (
+        <section className="tool-related" aria-labelledby="related-title">
+          <h2 id="related-title">Related tools</h2>
+          <ToolGrid tools={related} />
+        </section>
+      )}
     </article>
   )
 }
