@@ -2,6 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { EMPTY, SAND, STONE, WATER, makeGrid, place, step } from './falling-sand/sand'
 import { makeSwarm, retarget, sampleText, stepSwarm } from './text-particles/particles'
 import { addDrop, stepWave, waveEnergy } from './water-ripples/ripples'
+import { fbm, project } from './terrain-generator/terrain'
+import { makeNoise } from '../sim/math'
+import { maurer, polar, rosePeriod, rosePetals } from './rose-curves/rose'
 import { arcPoint, cornerColor, orientations, tileArcs } from './truchet-tiles/truchet'
 
 describe('falling-sand', () => {
@@ -158,5 +161,77 @@ describe('water-ripples', () => {
       expect(c[y * w + w - 1]).toBe(0)
     }
     expect(c.every(Number.isFinite)).toBe(true)
+  })
+})
+
+describe('terrain-generator', () => {
+  const opts = { octaves: 6, persistence: 0.55, lacunarity: 2.1 }
+
+  it('makes the same terrain from the same seed and different terrain from another', () => {
+    const a = makeNoise(99)
+    const b = makeNoise(99)
+    const c = makeNoise(100)
+    const pts = Array.from({ length: 50 }, (_, i) => [i * 0.37, i * 0.21 - 3] as const)
+    expect(pts.map(([x, y]) => fbm(a, x, y, opts))).toEqual(pts.map(([x, y]) => fbm(b, x, y, opts)))
+    expect(pts.map(([x, y]) => fbm(a, x, y, opts))).not.toEqual(pts.map(([x, y]) => fbm(c, x, y, opts)))
+  })
+
+  it('stays within [-1, 1] for any octave settings', () => {
+    const n = makeNoise(5)
+    let lo = Infinity
+    let hi = -Infinity
+    for (const o of [opts, { octaves: 1, persistence: 0.5, lacunarity: 2 }, { octaves: 8, persistence: 0.8, lacunarity: 3 }])
+      for (let i = 0; i < 4000; i++) {
+        const v = fbm(n, (i % 71) * 0.173, Math.floor(i / 71) * 0.191, o)
+        lo = Math.min(lo, v)
+        hi = Math.max(hi, v)
+      }
+    expect(lo).toBeGreaterThanOrEqual(-1)
+    expect(hi).toBeLessThanOrEqual(1)
+    expect(hi - lo).toBeGreaterThan(0.5)
+  })
+
+  it('projects farther points closer to the horizon', () => {
+    const cam = { x: 0, y: 50, z: 0, f: 400, cx: 400, horizon: 200 }
+    const near = project(cam, 0, 0, 100)!
+    const far = project(cam, 0, 0, 1000)!
+    expect(near[1]).toBeGreaterThan(far[1])
+    expect(far[1]).toBeGreaterThan(200)
+    expect(project(cam, 0, 0, -5)).toBeNull()
+  })
+})
+
+describe('rose-curves', () => {
+  it('counts petals: k odd gives k, k even gives 2k, and n/d follows the same parity rule', () => {
+    expect(rosePetals(3, 1)).toBe(3)
+    expect(rosePetals(5, 1)).toBe(5)
+    expect(rosePetals(2, 1)).toBe(4)
+    expect(rosePetals(4, 1)).toBe(8)
+    expect(rosePetals(4, 2)).toBe(4) // 4/2 reduces to 2
+    expect(rosePetals(5, 4)).toBe(10)
+    expect(rosePetals(7, 3)).toBe(7)
+  })
+
+  it('closes after exactly the reported period and not before', () => {
+    const at = (n: number, d: number, t: number) => [Math.cos((n / d) * t) * Math.cos(t), Math.cos((n / d) * t) * Math.sin(t)]
+    const same = (a: number[], b: number[]) => Math.hypot(a[0] - b[0], a[1] - b[1]) < 1e-9
+    for (const [n, d] of [[1, 1], [2, 1], [3, 1], [5, 4], [7, 3], [2, 3], [1, 2]]) {
+      const m = rosePeriod(n, d)
+      const e = 0.01
+      expect(same(at(n, d, m * Math.PI), at(n, d, 0)) && same(at(n, d, m * Math.PI + e), at(n, d, e))).toBe(true)
+      for (let k = 1; k < m; k++) expect(same(at(n, d, k * Math.PI), at(n, d, 0)) && same(at(n, d, k * Math.PI + e), at(n, d, e))).toBe(false)
+    }
+    expect(rosePeriod(3, 1)).toBe(1)
+    expect(rosePeriod(5, 4)).toBe(8)
+    expect(polar('rose', 5, 4).span).toBeCloseTo(8 * Math.PI)
+  })
+
+  it('builds a Maurer rose from one point per degree step', () => {
+    const pts = maurer(polar('rose', 2, 1), 39)
+    expect(pts.length / 2).toBe(361)
+    expect(pts[0]).toBeCloseTo(1)
+    expect(pts[1]).toBeCloseTo(0)
+    const t = (39 * Math.PI) / 180
+    expect(pts[2]).toBeCloseTo(Math.cos(2 * t) * Math.cos(t))
   })
 })

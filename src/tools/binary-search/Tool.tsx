@@ -7,9 +7,6 @@ import { binarySearch, halvingGuesses, linearSearch, sortedData, worstCase, type
 
 const W = 800
 const H = 520
-const PER_LINE = 32
-const CELL_H = 28
-const LINE_H = 54
 
 interface Run {
   bin: Generator<BinaryStep, number, undefined>
@@ -108,9 +105,13 @@ export default function BinarySearch() {
   }
 
   const s = r.current
-  const per = Math.min(n, PER_LINE)
+  // Up to 16 cells per line for small arrays (bigger cells), 32 for large ones.
+  const per = n <= 16 ? n : n <= 64 ? 16 : 32
   const lines = Math.ceil(n / per)
-  const cw = Math.min(56, (W - 40) / per)
+  const CELL_H = lines === 1 ? 44 : lines === 2 ? 38 : 28
+  const LINE_H = CELL_H + 24
+  const fontSize = CELL_H >= 38 ? 14 : 12
+  const cw = Math.min(64, (W - 40) / per)
   const x0 = (W - cw * per) / 2
   const sectionH = 40 + lines * LINE_H
   const top0 = Math.max(8, (H - 2 * sectionH - 16) / 2)
@@ -193,7 +194,7 @@ export default function BinarySearch() {
                     }
                   } else if (cur.lDone) dim = true
                   rrect(ctx, x + 1.5, y, cw - 3, CELL_H, 5, dim ? alpha(theme.text, 0.05) : fill, dim ? alpha(theme.border, 0.5) : theme.border)
-                  text(ctx, String(data[i]), x + cw / 2, y + CELL_H / 2 + 1, { color: dim ? alpha(theme.muted, 0.55) : ink, size: 12, align: 'center', baseline: 'middle', weight: 600 })
+                  text(ctx, String(data[i]), x + cw / 2, y + CELL_H / 2 + 1, { color: dim ? alpha(theme.muted, 0.55) : ink, size: fontSize, align: 'center', baseline: 'middle', weight: 600 })
                 }
                 if (isBin && cur.b) {
                   // Probed positions get a dot; the live range [lo, hi] gets a bracket underneath.
@@ -228,7 +229,7 @@ export default function BinarySearch() {
             items={[
               ['Binary comparisons', s.bCount],
               ['Linear comparisons', s.lCount],
-              ['Binary worst case', `⌈log₂(${n}+1)⌉ = ${worstCase(n)}`],
+              ['Binary worst case ⌈log₂(n+1)⌉', worstCase(n)],
               ['Linear worst case', n],
             ]}
           />

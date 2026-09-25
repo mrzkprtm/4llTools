@@ -103,9 +103,10 @@ export function makeFloor(kind: Floor, w: number, h: number, seed = 3): Uint8Cla
         const dome = 1 - Math.min(1, Math.sqrt(d1) / 16) * 0.25
         const f = (0.25 + 0.75 * rim) * dome
         const o = (y * w + x) * 3
-        out[o] = col[best * 3] * f
-        out[o + 1] = col[best * 3 + 1] * f
-        out[o + 2] = col[best * 3 + 2] * f
+        // A cool aqua tint, as if seen through a little depth of water.
+        out[o] = col[best * 3] * f * 0.78
+        out[o + 1] = col[best * 3 + 1] * f * 0.92 + 14
+        out[o + 2] = col[best * 3 + 2] * f * 0.95 + 26
       }
     return out
   }

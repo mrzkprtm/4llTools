@@ -16,24 +16,38 @@ export interface FluidParams {
   iterations?: number
 }
 
+const clampTo = (x: number, n: number) => (x < 0.5 ? 0.5 : x > n + 0.5 ? n + 0.5 : x)
+
+/** Bilinear sample of a (nx+2)-wide grid at fractional cell coordinates. */
+function sample(d: Float64Array, x: number, y: number, W: number) {
+  const i0 = Math.floor(x)
+  const j0 = Math.floor(y)
+  const s = x - i0
+  const t = y - j0
+  const k = i0 + W * j0
+  return (1 - s) * ((1 - t) * d[k] + t * d[k + W]) + s * ((1 - t) * d[k + 1] + t * d[k + 1 + W])
+}
+
 export class Fluid {
   readonly nx: number
   readonly ny: number
   readonly size: number
-  u: Float32Array
-  v: Float32Array
-  u0: Float32Array
-  v0: Float32Array
+  u: Float64Array
+  v: Float64Array
+  u0: Float64Array
+  v0: Float64Array
   /** Three dye channels (red, green, blue). */
-  dye: Float32Array[]
-  private tmp: Float32Array
-  private curl: Float32Array
+  dye: Float64Array[]
+  private tmp: Float64Array
+  private curl: Float64Array
+  private bx: Float64Array
+  private by: Float64Array
 
   constructor(nx: number, ny: number) {
     this.nx = nx
     this.ny = ny
     this.size = (nx + 2) * (ny + 2)
-    const f = () => new Float32Array(this.size)
+    const f = () => new Float64Array(this.size)
     this.u = f()
     this.v = f()
     this.u0 = f()
@@ -41,6 +55,8 @@ export class Fluid {
     this.dye = [f(), f(), f()]
     this.tmp = f()
     this.curl = f()
+    this.bx = f()
+    this.by = f()
   }
 
   IX(i: number, j: number) {
@@ -56,6 +72,14 @@ export class Fluid {
     this.splat(x, y, radius, (k, w) => {
       this.u[k] += du * w
       this.v[k] += dv * w
+    })
+  }
+
+  /** Pulls the velocity in a soft disc towards (tu, tv), like a nozzle; `rate` is the fraction per call. */
+  nudgeVelocity(x: number, y: number, tu: number, tv: number, radius = 3, rate = 0.3) {
+    this.splat(x, y, radius, (k, w) => {
+      this.u[k] += (tu - this.u[k]) * w * rate
+      this.v[k] += (tv - this.v[k]) * w * rate
     })
   }
 
@@ -93,15 +117,25 @@ export class Fluid {
     this.diffuse(2, this.v, this.v0, visc, dt, iterations)
     this.project(iterations)
     this.swapVel()
-    this.advect(1, this.u, this.u0, this.u0, this.v0, dt)
-    this.advect(2, this.v, this.v0, this.u0, this.v0, dt)
+    this.backtrace(this.u0, this.v0, dt)
+    this.advect(1, this.u, this.u0)
+    this.advect(2, this.v, this.v0)
     this.project(iterations)
 
     // Dye rides along the flow.
     const keep = fade > 0 ? Math.max(0, 1 - fade * dt) : 1
+    this.backtrace(this.u, this.v, dt)
     for (let c = 0; c < 3; c++) {
       this.tmp.set(this.dye[c])
-      this.advect(0, this.dye[c], this.tmp, this.u, this.v, dt)
+      const before = this.interiorSum(this.tmp)
+      this.advect(0, this.dye[c], this.tmp)
+      // Semi-Lagrangian advection is not conservative; the box is closed, so put back what the interpolation lost or gained.
+      const after = this.interiorSum(this.dye[c])
+      if (after > 1e-9 && before > 0) {
+        const k = before / after
+        const d = this.dye[c]
+        for (let q = 0; q < this.size; q++) d[q] *= k
+      }
       if (keep !== 1) {
         const d = this.dye[c]
         for (let k = 0; k < this.size; k++) d[k] *= keep
@@ -123,7 +157,8 @@ export class Fluid {
       }
     this.bound(0, div)
     this.bound(0, p)
-    this.linSolve(0, p, div, 1, 4, iterations)
+    // Over-relaxed Gauss–Seidel (SOR) settles the smooth pressure modes far faster than plain sweeps.
+    this.linSolve(0, p, div, 1, 4, iterations, 1.8)
     for (let j = 1; j <= ny; j++)
       for (let i = 1; i <= nx; i++) {
         const k = i + W * j
@@ -149,8 +184,13 @@ export class Fluid {
 
   /** Total dye in the interior across all three channels. */
   totalDye(): number {
+    return this.dye.reduce((s, d) => s + this.interiorSum(d), 0)
+  }
+
+  private interiorSum(d: Float64Array) {
+    const W = this.nx + 2
     let s = 0
-    for (let j = 1; j <= this.ny; j++) for (let i = 1; i <= this.nx; i++) for (const d of this.dye) s += d[this.IX(i, j)]
+    for (let j = 1; j <= this.ny; j++) for (let i = 1, k = 1 + W * j; i <= this.nx; i++, k++) s += d[k]
     return s
   }
 
@@ -159,7 +199,7 @@ export class Fluid {
     ;[this.v, this.v0] = [this.v0, this.v]
   }
 
-  private diffuse(b: number, x: Float32Array, x0: Float32Array, diff: number, dt: number, iterations: number) {
+  private diffuse(b: number, x: Float64Array, x0: Float64Array, diff: number, dt: number, iterations: number) {
     if (diff <= 0) {
       x.set(x0)
       this.bound(b, x)
@@ -169,37 +209,46 @@ export class Fluid {
     this.linSolve(b, x, x0, a, 1 + 4 * a, iterations)
   }
 
-  private linSolve(b: number, x: Float32Array, x0: Float32Array, a: number, c: number, iterations: number) {
+  private linSolve(b: number, x: Float64Array, x0: Float64Array, a: number, c: number, iterations: number, omega = 1) {
     const { nx, ny } = this
     const W = nx + 2
     const inv = 1 / c
     for (let it = 0; it < iterations; it++) {
       for (let j = 1; j <= ny; j++) {
         let k = 1 + W * j
-        for (let i = 1; i <= nx; i++, k++) x[k] = (x0[k] + a * (x[k - 1] + x[k + 1] + x[k - W] + x[k + W])) * inv
+        // Carry the freshly updated left neighbour in a local: same maths, fewer memory reads.
+        let left = x[k - 1]
+        for (let i = 1; i <= nx; i++, k++) {
+          const gs = (x0[k] + a * (left + x[k + 1] + x[k - W] + x[k + W])) * inv
+          left = x[k] = omega === 1 ? gs : x[k] + omega * (gs - x[k])
+        }
       }
       this.bound(b, x)
     }
   }
 
-  private advect(b: number, d: Float32Array, d0: Float32Array, u: Float32Array, v: Float32Array, dt: number) {
-    const { nx, ny } = this
+  /** Where each cell's contents came from one step ago: a midpoint (RK2) trace back along the flow. */
+  private backtrace(u: Float64Array, v: Float64Array, dt: number) {
+    const { nx, ny, bx, by } = this
     const W = nx + 2
     for (let j = 1; j <= ny; j++)
       for (let i = 1; i <= nx; i++) {
         const k = i + W * j
-        let x = i - dt * u[k]
-        let y = j - dt * v[k]
-        if (x < 0.5) x = 0.5
-        if (x > nx + 0.5) x = nx + 0.5
-        if (y < 0.5) y = 0.5
-        if (y > ny + 0.5) y = ny + 0.5
-        const i0 = Math.floor(x)
-        const j0 = Math.floor(y)
-        const s1 = x - i0
-        const t1 = y - j0
-        const k0 = i0 + W * j0
-        d[k] = (1 - s1) * ((1 - t1) * d0[k0] + t1 * d0[k0 + W]) + s1 * ((1 - t1) * d0[k0 + 1] + t1 * d0[k0 + 1 + W])
+        const mx = clampTo(i - 0.5 * dt * u[k], nx)
+        const my = clampTo(j - 0.5 * dt * v[k], ny)
+        bx[k] = clampTo(i - dt * sample(u, mx, my, W), nx)
+        by[k] = clampTo(j - dt * sample(v, mx, my, W), ny)
+      }
+  }
+
+  /** Semi-Lagrangian advection using the positions from the last backtrace. */
+  private advect(b: number, d: Float64Array, d0: Float64Array) {
+    const { nx, ny, bx, by } = this
+    const W = nx + 2
+    for (let j = 1; j <= ny; j++)
+      for (let i = 1; i <= nx; i++) {
+        const k = i + W * j
+        d[k] = sample(d0, bx[k], by[k], W)
       }
     this.bound(b, d)
   }
@@ -225,7 +274,7 @@ export class Fluid {
   }
 
   /** Walls: velocity components normal to a wall are mirrored, everything else is copied. */
-  private bound(b: number, x: Float32Array) {
+  private bound(b: number, x: Float64Array) {
     const { nx, ny } = this
     const W = nx + 2
     for (let i = 1; i <= nx; i++) {

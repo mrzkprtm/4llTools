@@ -4,6 +4,11 @@ import { coefficients, partialSum, peak, target } from './fourier-series/series'
 import { closedPeriod, gcd, lcm, lissajousPoint, piLabel, ratioLabel } from './lissajous-curves/lissajous'
 import { closingTurns, gearCentre, petals, spiroPoint } from './spirograph/spiro'
 import { buildLut, escapeTime, inMainBulbs, julia } from './mandelbrot-explorer/fractal'
+import { compile, evaluate, tryCompile } from './function-grapher/expr'
+import { exactTrig, quadrant, snapToSpecial, specialAngleLabel } from './unit-circle/trig'
+import { estimatePi, standardError, throwDarts } from './monte-carlo-pi/montecarlo'
+import { rng } from '../sim/math'
+import { binStats, binomialPmf, simulateBins, theory } from './galton-board/galton'
 
 describe('fourier-drawing', () => {
   it('resamples a closed path evenly by arc length', () => {
@@ -145,5 +150,128 @@ describe('mandelbrot-explorer', () => {
     const lut = buildLut(['#000000', '#ffffff'], 4)
     expect(Array.from(lut.slice(0, 3))).toEqual([0, 0, 0])
     expect(lut[6]).toBe(255)
+  })
+})
+
+describe('function-grapher', () => {
+  it('follows operator precedence and associativity', () => {
+    expect(evaluate('2 + 3 * 4')).toBe(14)
+    expect(evaluate('(2 + 3) * 4')).toBe(20)
+    expect(evaluate('2^3^2')).toBe(512)
+    expect(evaluate('-x^2', { x: 3 })).toBe(-9)
+    expect(evaluate('2^-1')).toBe(0.5)
+    expect(evaluate('10 / 4 / 5')).toBe(0.5)
+    expect(evaluate('--2')).toBe(2)
+    expect(evaluate('1.5e2 + .5')).toBe(150.5)
+  })
+
+  it('knows functions, constants, variables and implicit multiplication', () => {
+    expect(evaluate('sin(pi/2)')).toBeCloseTo(1)
+    expect(evaluate('ln(e^2) + log(1000) + sqrt(16) + abs(-2) + floor(2.7)')).toBeCloseTo(2 + 3 + 4 + 2 + 2)
+    expect(evaluate('a*x^2 + b', { x: 3, a: 2, b: 1 })).toBe(19)
+    expect(evaluate('2x', { x: 3 })).toBe(6)
+    expect(evaluate('3sin(x)', { x: Math.PI / 2 })).toBeCloseTo(3)
+    expect(evaluate('(x+1)(x-1)', { x: 4 })).toBe(15)
+    expect(evaluate('2pi')).toBeCloseTo(2 * Math.PI)
+    expect(evaluate('max(x, t)', { x: 2, t: 5 })).toBe(5)
+    const f = compile('sin(x - t)')
+    expect(f({ x: 1, t: 1, a: 0, b: 0 })).toBe(0)
+  })
+
+  it('reports errors instead of running arbitrary code', () => {
+    for (const bad of ['2 +', '(1 + 2', 'foo(1)', 'alert(1)', 'eval(x)', 'x; 1', 'sin x', '', 'max(1)', '1 2 +'])
+      expect(tryCompile(bad).error, bad).not.toBeNull()
+    const r = tryCompile('(1 + 2')
+    expect(r.error).toMatch(/Missing/)
+  })
+})
+
+describe('unit-circle', () => {
+  it('labels special angles as fractions of π', () => {
+    expect(specialAngleLabel(0)).toBe('0')
+    expect(specialAngleLabel(30)).toBe('π/6')
+    expect(specialAngleLabel(90)).toBe('π/2')
+    expect(specialAngleLabel(135)).toBe('3π/4')
+    expect(specialAngleLabel(180)).toBe('π')
+    expect(specialAngleLabel(330)).toBe('11π/6')
+    expect(specialAngleLabel(360)).toBe('2π')
+    expect(specialAngleLabel(15)).toBe('π/12')
+    expect(specialAngleLabel(37)).toBeNull()
+  })
+
+  it('gives exact values with the right signs in every quadrant', () => {
+    expect(exactTrig(60)).toEqual({ sin: '√3/2', cos: '1/2', tan: '√3' })
+    expect(exactTrig(150)).toEqual({ sin: '1/2', cos: '−√3/2', tan: '−√3/3' })
+    expect(exactTrig(225)).toEqual({ sin: '−√2/2', cos: '−√2/2', tan: '1' })
+    expect(exactTrig(300)).toEqual({ sin: '−√3/2', cos: '1/2', tan: '−√3' })
+    expect(exactTrig(90)?.tan).toBe('undefined')
+    expect(exactTrig(180)).toEqual({ sin: '0', cos: '−1', tan: '0' })
+    expect(exactTrig(20)).toBeNull()
+    // The strings agree with the numbers.
+    const num = (s: string) => Number(s.replace('−', '-').replace('√3', String(Math.sqrt(3))).replace('√2', String(Math.SQRT2)).split('/').reduce((a, b) => String(Number(a) / Number(b))))
+    for (const d of [30, 45, 120, 210, 315]) {
+      const e = exactTrig(d)!
+      expect(num(e.sin)).toBeCloseTo(Math.sin((d * Math.PI) / 180))
+      expect(num(e.cos)).toBeCloseTo(Math.cos((d * Math.PI) / 180))
+    }
+  })
+
+  it('finds quadrants and snaps', () => {
+    expect(quadrant(45)).toBe('I')
+    expect(quadrant(100)).toBe('II')
+    expect(quadrant(200)).toBe('III')
+    expect(quadrant(-10)).toBe('IV')
+    expect(quadrant(90)).toBe('+y axis')
+    expect(snapToSpecial(43)).toBe(45)
+    expect(snapToSpecial(52)).toBe(52)
+    expect(snapToSpecial(58)).toBe(60)
+  })
+})
+
+describe('monte-carlo-pi', () => {
+  it('turns the inside fraction into an estimate of π', () => {
+    expect(estimatePi(0, 0)).toBe(0)
+    expect(estimatePi(785, 1000)).toBeCloseTo(3.14)
+    expect(standardError(100)).toBeCloseTo(0.164, 2)
+    expect(standardError(10000)).toBeCloseTo(standardError(100) / 10)
+  })
+
+  it('converges near π with a seeded sampler, for both targets', () => {
+    const n = 200000
+    for (const target of ['quarter', 'full'] as const) {
+      const est = estimatePi(throwDarts(n, rng(42), target), n)
+      expect(Math.abs(est - Math.PI)).toBeLessThan(5 * standardError(n))
+    }
+    // Same seed, same darts.
+    expect(throwDarts(1000, rng(7))).toBe(throwDarts(1000, rng(7)))
+  })
+})
+
+describe('galton-board', () => {
+  it('has a proper binomial pmf', () => {
+    expect(binomialPmf(4, 2, 0.5)).toBeCloseTo(6 / 16)
+    expect(binomialPmf(10, 0, 0.3)).toBeCloseTo(0.7 ** 10)
+    expect(binomialPmf(5, 6, 0.5)).toBe(0)
+    for (const [n, p] of [[12, 0.5], [16, 0.2], [4, 0.9]]) {
+      let sum = 0
+      let mean = 0
+      for (let k = 0; k <= n; k++) {
+        sum += binomialPmf(n, k, p)
+        mean += k * binomialPmf(n, k, p)
+      }
+      expect(sum).toBeCloseTo(1)
+      expect(mean).toBeCloseTo(theory(n, p).mean)
+    }
+    expect(theory(12, 0.5).sd).toBeCloseTo(Math.sqrt(3))
+  })
+
+  it('bins simulated balls around np with spread √(np(1−p))', () => {
+    const bins = simulateBins(10, 0.3, 20000, rng(3))
+    expect(bins).toHaveLength(11)
+    const st = binStats(bins)
+    expect(st.total).toBe(20000)
+    expect(Math.abs(st.mean - 3)).toBeLessThan(0.05)
+    expect(Math.abs(st.sd - Math.sqrt(2.1))).toBeLessThan(0.05)
+    expect(binStats([0, 2, 0]).mean).toBe(1)
   })
 })
