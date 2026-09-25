@@ -8,6 +8,7 @@ import { cleanDNA, codonToAmino, complement, gcContent, proteinString, randomCod
 import { chiSquare, chiSquareP, gametes, parseGenotype, phenotypeKey, punnett, simplestRatio, tally } from './punnett-square/mendel'
 import { FIRE, ASH, TREE, crossingProbability, igniteChance, makeGrid, percolates, randomForest, stepForest } from './forest-fire/forest'
 import { SOLAR, emissivityFromCO2, equilibriumTemp, outgoing, stepClimate, absorbedSolar } from './greenhouse-effect/climate'
+import { PRESETS, laplacian, seedField, stepGrayScott } from './reaction-diffusion/grayscott'
 import { barriers, collisionEnergy, equilibriumK, predictedK, reacts } from './reaction-equilibrium/equilibrium'
 import { concentration, fitsPore, passesMembrane, poreCentres, waterActivity } from './diffusion-membrane/membrane'
 
@@ -269,5 +270,40 @@ describe('greenhouse-effect', () => {
     for (let k = 0; k < 400; k++) s = stepClimate(s, 0.5, SOLAR, 0.3, eps)
     expect(s.ts).toBeCloseTo(equilibriumTemp(SOLAR, 0.3, eps), 2)
     expect(outgoing(s, eps)).toBeCloseTo(absorbedSolar(SOLAR, 0.3), 1)
+  })
+})
+
+describe('reaction-diffusion', () => {
+  it('has a zero Laplacian on a constant field, including at the wrapped edges', () => {
+    const f = new Float32Array(6 * 4).fill(0.7)
+    for (const [x, y] of [[0, 0], [5, 3], [2, 1]]) expect(laplacian(f, 6, 4, x, y)).toBeCloseTo(0, 6)
+    // A single spike spreads: negative at the spike, positive next to it.
+    const g = new Float32Array(25)
+    g[12] = 1
+    expect(laplacian(g, 5, 5, 2, 2)).toBeCloseTo(-1, 6)
+    expect(laplacian(g, 5, 5, 3, 2)).toBeCloseTo(0.2, 6)
+    expect(laplacian(g, 5, 5, 3, 3)).toBeCloseTo(0.05, 6)
+  })
+
+  it('keeps concentrations in [0, 1] and leaves the uniform state alone', () => {
+    const w = 40
+    const h = 30
+    const a = new Float32Array(w * h)
+    const b = new Float32Array(w * h)
+    const a2 = new Float32Array(w * h)
+    const b2 = new Float32Array(w * h)
+    seedField(a, b, w, h, 6, rng(5))
+    const coral = PRESETS.find((p) => p.id === 'coral')!
+    stepGrayScott(a, b, a2, b2, w, h, { Da: 1, Db: 0.5, F: coral.F, k: coral.k, dt: 1 })
+    for (let i = 0; i < w * h; i++) {
+      expect(a2[i]).toBeGreaterThanOrEqual(0)
+      expect(a2[i]).toBeLessThanOrEqual(1)
+      expect(b2[i]).toBeGreaterThanOrEqual(0)
+      expect(b2[i]).toBeLessThanOrEqual(1)
+    }
+    a.fill(1)
+    b.fill(0)
+    stepGrayScott(a, b, a2, b2, w, h, { Da: 1, Db: 0.5, F: 0.05, k: 0.06, dt: 1 })
+    expect(a2.every((v) => v === 1) && b2.every((v) => v === 0)).toBe(true)
   })
 })
