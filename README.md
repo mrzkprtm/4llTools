@@ -1,224 +1,615 @@
-# 4llTools
+<a href="https://4lltools.morizdigital.com">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/readme/banner-dark.svg">
+    <img alt="4llTools: 200 free tools and simulations that run in your browser" src="docs/readme/banner-light.svg" width="100%">
+  </picture>
+</a>
 
-A growing collection of small, handy web tools, plus interactive simulations of physics, math, algorithms, science and generative art. Every tool runs entirely in the browser, so nothing you type or scan is sent anywhere.
+<p align="center">
+  <a href="https://4lltools.morizdigital.com"><b>Open the site</b></a> ·
+  <a href="#-simulation-gallery">Gallery</a> ·
+  <a href="#-all-200-tools">All tools</a> ·
+  <a href="#-how-it-works">How it works</a> ·
+  <a href="#-the-simulation-kit">Simulation kit</a> ·
+  <a href="#-add-a-new-tool">Add a tool</a> ·
+  <a href="#-deploy">Deploy</a>
+</p>
 
-## Tools
+<p align="center">
+  <a href="https://github.com/mrzkprtm/4llTools/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/mrzkprtm/4llTools/actions/workflows/ci.yml/badge.svg"></a>
+  <img alt="200 tools" src="https://img.shields.io/badge/tools-200-c2410c">
+  <img alt="100 simulations" src="https://img.shields.io/badge/simulations-100-1c7ed6">
+  <img alt="0 uploads" src="https://img.shields.io/badge/uploads-0-17703a">
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white">
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-8-646cff?logo=vite&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white">
+</p>
 
-| Category | Tool | What it does |
-| --- | --- | --- |
-| Scan & Code | QR Code Reader | Scan a QR code with your camera, or read one from an image |
-| Scan & Code | QR Code Generator | Turn text or a link into a downloadable QR code |
-| Scan & Code | Barcode Generator | Create EAN-13, UPC-A, Code 128, Code 39 and ITF-14 barcodes with check digits as SVG or PNG |
-| Text | Case Converter | UPPER, lower, Title, camelCase, snake_case and more |
-| Text | Line Tools | Sort, dedupe, reverse, trim or shuffle lines |
-| Text | Lorem Ipsum Generator | Placeholder paragraphs, sentences or words |
-| Text | Markdown Preview | Live Markdown rendering, with copyable HTML |
-| Text | Slug Generator | Turn a title into a clean URL slug |
-| Text | Text Diff | Compare two texts line by line |
-| Text | Word Counter | Words, characters, sentences and reading time |
-| Text | AI Token Counter | Count GPT tokens exactly and estimate Claude, Gemini and Llama tokens for any prompt or document |
-| Text | Emoji Finder | Search every emoji by name or keyword, pick a skin tone and copy it with one tap |
-| Text | Fancy Text Generator | Turn text into bold, italic, script, bubble and other Unicode fonts for Instagram and TikTok bios |
-| Text | Find & Replace | Find and replace text in bulk with plain or regex rules, capture groups and a live preview |
-| Text | Invisible Character Remover | Reveal and remove zero-width spaces, hidden Unicode and smart quotes from AI or pasted text |
-| Text | Readability Checker | Score English text with Flesch, Gunning Fog and SMOG and highlight long sentences and passive voice |
-| Text | Speech to Text | Dictate and transcribe speech to text live in many languages, then copy or download it |
-| Text | Text to Speech | Read any text aloud with your device voices, adjustable speed and pitch, and word highlighting |
-| Developer | Base64 Encode / Decode | Text to Base64 and back, with full Unicode support |
-| Developer | HTML Entities | Escape or unescape HTML entities |
-| Developer | JSON Formatter | Prettify, minify and validate JSON |
-| Developer | JWT Decoder | Read a JSON Web Token's header, payload and expiry |
-| Developer | Number Base Converter | Binary, octal, decimal and hex, exact for big numbers |
-| Developer | Regex Tester | Highlight regular expression matches and groups |
-| Developer | Timestamp Converter | Unix timestamps to dates and back |
-| Developer | URL Encode / Decode | Percent-encode or decode text for links |
-| Developer | UUID Generator | Random UUID v4s in bulk |
-| Developer | CRON Expression Generator & Parser | Build, validate and explain cron schedules, with the next run times |
-| Developer | CSS ↔ Tailwind Converter | Turn plain CSS into Tailwind classes and back |
-| Developer | Minifier / Beautifier (JS & CSS) | Minify or pretty-print JavaScript and CSS |
-| Developer | Mock Data Generator | Fake names, emails, addresses and more as JSON, CSV or SQL |
-| Developer | Regex Visualizer & Explainer | Draw a regular expression as a diagram and explain it |
-| Developer | SemVer Calculator | Next versions, comparisons and range checks |
-| Developer | SQL Formatter & Query Checker | Tidy SQL and flag risky or broken queries |
-| Developer | Code Screenshot | Turn code into beautiful, shareable images with syntax themes, gradients and window chrome |
-| Developer | Docker Run to Compose | Convert docker run commands to a docker-compose.yml file, or compose services back to docker run |
-| Developer | Gitignore Generator | Build a .gitignore for Node, Python, Go, Java, Unity, IDEs and OS files in one click |
-| Developer | HTML to JSX Converter | Convert HTML and SVG markup to React JSX with className, style objects and camelCase props |
-| Developer | JSON Diff | Compare two JSON documents structurally and export the differences as a JSON Patch |
-| Developer | JSON to TypeScript & Zod | Turn sample JSON into TypeScript interfaces, Zod schemas or JSON Schema with inferred optional fields |
-| Developer | JSONPath Tester | Test JSONPath expressions and filters against your JSON and see every match with its path |
-| Developer | Mermaid Diagram Editor | Write Mermaid flowcharts, sequence, ER and Gantt diagrams with a live preview and SVG or PNG export |
-| Developer | Meta Tag & Open Graph Generator | Generate SEO meta, Open Graph and X card tags with live Google, Facebook and chat previews |
-| Developer | Schema Markup Generator | Create JSON-LD structured data for FAQ, Product, Article, Recipe, Event and more for rich results |
-| Developer | ULID, NanoID & UUID v7 Generator | Generate time-sortable UUID v7 and ULID, NanoID or UUID v4 ids in bulk and decode their timestamps |
-| Developer | XML Formatter & Converter | Beautify, minify and validate XML, or convert XML to JSON and JSON to XML with attributes |
-| Security | Bcrypt Hash Generator & Checker | Hash passwords with bcrypt and verify them |
-| Security | HMAC Generator & Verifier | Sign and verify messages and webhooks with HMAC-SHA |
-| Security | RSA Key Pair Generator | PEM and OpenSSH RSA keys generated in your browser |
-| Security | Hash Generator | SHA-1/256/384/512 of text or files |
-| Security | Password Generator | Strong random passwords using the Web Crypto API |
-| Security | 2FA / TOTP Code Generator | Generate live 2FA codes from a TOTP secret or otpauth link, plus QR codes for authenticator apps |
-| Security | JWT Generator & Signer | Create and sign JSON Web Tokens with HS256, RS256 or ES256 and verify any JWT signature |
-| Security | Password Strength Checker | Test how strong a password is with zxcvbn: score, crack time, weak patterns and tips, all offline |
-| Security | SSL Certificate Decoder | Decode SSL/TLS certificates and CSRs: expiry, SANs, issuer, key size, fingerprints and chain order |
-| Security | Text Encryption (AES-256) | Encrypt and decrypt text or files with a passphrase using AES-256-GCM and PBKDF2 |
-| Convert | CSV ↔ JSON | Convert CSV to JSON and back, with download |
-| Convert | Unit Converter | Length, weight, temperature, data size and more |
-| Convert | YAML ↔ JSON ↔ TOML Converter | Convert config files between YAML, JSON and TOML |
-| Convert | Images to PDF | Combine JPG, PNG and WebP images into one PDF with A4 or Letter pages, margins and ordering |
-| Convert | Number to Words | Spell out numbers in English words or Indonesian terbilang, with currency, ordinals and check style |
-| Convert | PDF Merge & Split | Merge PDFs, split by page ranges, extract, rotate or delete pages without uploading files |
-| Calculator | CHMOD Permission Calculator | Octal and symbolic Unix file permissions |
-| Calculator | Date Calculator | Age, days between dates, add or subtract days |
-| Calculator | Loan Calculator | Monthly installments, total interest and a payment schedule |
-| Calculator | Percentage Calculator | Percent of, percent change and discounts |
-| Calculator | BMI & Body Calculator | Calculate BMI with WHO and Asian cut-offs, healthy weight range, BMR and daily calories |
-| Calculator | Compound Interest Calculator | Project savings growth with compound interest, monthly deposits, inflation and a yearly chart |
-| Calculator | Time Zone Converter & Meeting Planner | Convert times between world time zones, WIB, WITA and WIT, and find overlapping work hours |
-| Calculator | Zakat Calculator | Hitung zakat mal, zakat penghasilan and zakat fitrah with gold or silver nisab (2.5%) |
-| Design | Aspect Ratio & Screen Calculator | Ratios, screen PPI and px ↔ rem ↔ em |
-| Design | Box-Shadow & Gradient Generator | Design shadows and gradients, copy the CSS |
-| Design | Color Converter | HEX, RGB and HSL with a contrast check |
-| Design | SVG Optimizer | Shrink SVG files and clean up their markup |
-| Design | CSS Clip-Path Maker | Make CSS clip-path polygons, circles and insets by dragging points on a live preview |
-| Design | Color Palette Generator | Generate harmonious OKLCH color palettes, lock swatches, shuffle with space, export CSS or Tailwind |
-| Design | Contrast Checker (WCAG & APCA) | Check color contrast against WCAG 2.2 AA/AAA and APCA Lc, and get a suggested passing color |
-| Design | Cubic Bezier Easing Editor | Drag a CSS cubic-bezier() easing curve, preview it against linear and copy the transition |
-| Design | Glassmorphism Generator | Design frosted-glass cards with backdrop blur, tint and border, then copy CSS or Tailwind |
-| Design | Tailwind Color Shades Generator | Turn one color into a Tailwind 50–950 OKLCH shade scale with contrast labels and @theme output |
-| Image | EXIF / Metadata Remover | Strip GPS location, camera and date info from photos |
-| Image | Image Resizer & Compressor | Resize, compress and convert to JPG, PNG or WebP |
-| Image | Favicon Generator | Create favicon.ico, Apple touch and maskable PWA icons plus a web manifest from an image or emoji |
-| Image | HEIC to JPG Converter | Convert iPhone HEIC and HEIF photos to JPG or PNG in bulk, privately in your browser |
-| Image | Image Color Extractor | Extract a color palette from any photo, pick exact pixel colors and export HEX as CSS or JSON |
-| Image | Screenshot Beautifier | Put screenshots on gradient backgrounds with padding, shadow and a macOS or browser window frame |
-| Image | Signature Maker | Draw or type an e-signature with mouse, finger or pen and save it as a transparent PNG or SVG |
-| Network | cURL to Code Converter | Turn a curl command into JavaScript, Python, PHP, Go or Rust |
-| Network | CORS & Security Header Checker | Check CORS rules and security headers like CSP and HSTS |
-| Network | HTTP Status Code Reference | Every HTTP status code explained, with a live URL check |
-| Network | Subnet & CIDR Calculator | IP ranges, masks, broadcast and host counts |
-| Network | DNS Lookup | Look up A, AAAA, MX, TXT, NS, CAA and PTR records and check SPF, DMARC and DKIM for email delivery |
-| Network | UTM Link Builder | Build UTM campaign links for Google Analytics with presets, bulk tagging, QR codes and a URL parser |
-| Network | User Agent Parser | Parse any user agent string into browser, engine, OS, device and CPU, with bot detection |
-| Utility | Stopwatch & Timer | Stopwatch with laps, countdown timer with alarm |
-| Utility | Pomodoro Timer | Focus timer with pomodoro work and break cycles, a task list, chimes and daily stats |
-| Utility | Random Picker Wheel | Spin a wheel of names, pick random winners, shuffle lists, split teams, roll dice or flip a coin |
-| Utility | Screen Recorder | Record your screen, a window or a tab with microphone audio and download the video |
-| Utility | Typing Speed Test | Test your typing speed in WPM and accuracy with English or Indonesian words |
-| Utility | Webcam & Mic Test | Check your webcam, microphone level and left/right speakers before a video call |
-| Physics | Projectile Motion Simulator | Launch projectiles at any angle and speed, add air drag and see range, height and flight time live |
-| Physics | Pendulum Lab | Swing a pendulum, change its length, gravity and damping, and watch its period and energy change |
-| Physics | Double Pendulum Chaos | Watch two nearly identical double pendulums drift apart into chaos, with glowing trails |
-| Physics | Spring & Mass Oscillator | Stretch a spring, tune stiffness, mass, damping and driving force, and watch resonance in real time |
-| Physics | Collision Lab | Crash balls together with elastic or sticky collisions and check that momentum is conserved |
-| Physics | Ideal Gas Simulator | Heat, squeeze and fill a box of gas particles and watch pressure, temperature and speeds change |
-| Physics | Wave Interference Ripple Tank | Drag wave sources around a ripple tank and watch interference fringes form in real time |
-| Physics | Standing Waves on a String | Vibrate a string at its harmonics, hear the tone and see nodes, antinodes and each frequency |
-| Physics | Orbit & Gravity Simulator | Fling planets and moons around a star and watch gravity bend their paths into elliptical orbits |
-| Physics | Doppler Effect Visualizer | Move a sound source and watch wavefronts bunch up, the pitch shift and a sonic boom past Mach 1 |
-| Physics | Lens & Mirror Ray Tracer | Drag an object past a lens or mirror and watch the principal rays form a real or virtual image |
-| Physics | Snell's Law Refraction | Aim a laser across two materials and see refraction, partial reflection and total internal reflection |
-| Physics | Electric Field Simulator | Drag positive and negative charges and see field lines, equipotentials and a test charge move |
-| Physics | Charged Particle in a Magnetic Field | Fire charged particles through magnetic and electric fields and watch them spiral and drift |
-| Physics | Fluid & Smoke Simulator | Stir a real-time fluid with your mouse or finger and watch swirling colored smoke follow the flow |
-| Physics | Cloth Simulation | Pull, blow and tear a sheet of cloth made of springs, with gravity and gusting wind |
-| Physics | Newton's Cradle | Lift balls of a Newton's cradle and watch momentum and energy travel through the row |
-| Physics | Inclined Plane & Friction | Slide a block down a ramp, change the angle and friction, and see force vectors and acceleration |
-| Physics | RC Circuit Simulator | Charge and discharge a capacitor through a resistor and watch voltage, current and the time constant |
-| Physics | Heat Diffusion Simulator | Paint hot and cold spots on a metal plate and watch heat spread and even out over time |
-| Math | Fourier Epicycle Drawing | Draw any shape and watch spinning Fourier circles trace it back, one frequency at a time |
-| Math | Fourier Series Wave Builder | Build square, sawtooth and triangle waves from rotating circles and watch each harmonic add up |
-| Math | Lissajous Curve Generator | Draw animated Lissajous figures from two oscillations with any frequency ratio and phase shift |
-| Math | Spirograph | Roll gears inside and outside a ring to draw spirograph patterns, then save them as PNG |
-| Math | Mandelbrot & Julia Set Explorer | Zoom deep into the Mandelbrot set and preview the Julia set that belongs to any point |
-| Math | Animated Function Grapher | Plot functions of x with sliders and a time variable t, and watch the graphs morph live |
-| Math | Unit Circle & Trig Visualizer | Spin an angle around the unit circle and watch sine, cosine and tangent unroll into waves |
-| Math | Monte Carlo Pi Estimator | Throw random darts at a square and watch the estimate of π converge as they land in the circle |
-| Math | Galton Board | Drop balls through a pegboard and watch the bell curve of the binomial distribution build up |
-| Math | Central Limit Theorem Simulator | Draw samples from skewed distributions and watch their averages settle into a normal curve |
-| Math | Random Walk & Brownian Motion | Release random walkers in 1D, 2D or on a lattice and compare how far they spread with √n |
-| Math | Vector Field Visualizer | Type a 2D vector field and watch particles stream along it, with arrows, curl and divergence |
-| Math | 2D Matrix Transformation Visualizer | Watch a 2×2 matrix warp the plane, with its determinant, eigenvectors and a morphing grid |
-| Math | Bézier Curve Construction | Drag control points and watch de Casteljau's algorithm build a Bézier curve step by step |
-| Math | Taylor Series Approximation | Add Taylor polynomial terms one by one and watch them hug sin, cos, eˣ and ln around a point |
-| Math | Riemann Sum Visualizer | Approximate the area under a curve with left, right, midpoint and trapezoid sums as n grows |
-| Math | Prime Number Spiral | Watch prime numbers light up on the Ulam and Sacks spirals as the integers wind outward |
-| Math | Fractal Tree Generator | Grow a recursive fractal tree, bend its branches with sliders and let it sway in the wind |
-| Math | Chaos Game Fractals | Play the chaos game with 3 to 8 corners and watch the Sierpinski triangle and more appear |
-| Math | Collatz Conjecture Visualizer | Follow the 3n + 1 sequence for any number and grow the branching Collatz tree of many values |
-| Algorithms | Sorting Algorithm Visualizer | Watch bubble, quick, merge, heap, radix and more sorts animate with sound, compares and swaps |
-| Algorithms | Sorting Algorithm Race | Race sorting algorithms side by side on the same shuffled data and see which one finishes first |
-| Algorithms | Pathfinding Visualizer | Draw walls and weights, then watch A*, Dijkstra, BFS and DFS search a grid for the shortest path |
-| Algorithms | Maze Generator & Solver | Generate mazes with backtracking, Prim's or Kruskal's algorithm, then watch them get solved |
-| Algorithms | Binary Search Visualizer | Step through binary search next to linear search on a sorted array and count every comparison |
-| Algorithms | Binary Search Tree Visualizer | Insert, delete and find keys in a binary search tree or AVL tree, with animated traversals |
-| Algorithms | Heap & Priority Queue Visualizer | Push and pop a binary heap and watch items sift up and down in both the tree and the array |
-| Algorithms | Graph BFS & DFS Visualizer | Build a graph by clicking, drag its nodes around and watch breadth-first and depth-first search run |
-| Algorithms | Minimum Spanning Tree Visualizer | Watch Kruskal's and Prim's algorithms pick the cheapest edges that connect every node |
-| Algorithms | Hash Table Visualizer | Insert keys into a hash table with chaining or open addressing and watch collisions and resizing |
-| Algorithms | Stack & Queue Visualizer | Push, pop, enqueue and dequeue items and see how LIFO stacks and FIFO queues behave |
-| Algorithms | Tower of Hanoi | Play the Tower of Hanoi yourself or watch the recursive solution move up to 10 disks |
-| Algorithms | N-Queens Solver | Watch backtracking place N queens on a chessboard so that no two queens attack each other |
-| Algorithms | Sudoku Solver | Type in a Sudoku or load one, then watch backtracking with constraint checks fill it in |
-| Algorithms | Conway's Game of Life | Draw cells or drop in gliders and guns, then run Conway's Game of Life at any speed |
-| Algorithms | Elementary Cellular Automata | Explore all 256 Wolfram rules, like Rule 30 and Rule 110, as they grow line by line |
-| Algorithms | Langton's Ant | Watch Langton's ant and multi-color turmites build chaos and highways from simple rules |
-| Algorithms | Convex Hull Visualizer | Scatter points and watch gift wrapping, Graham scan or monotone chain wrap them in a hull |
-| Algorithms | Traveling Salesman Solver | Place cities and watch nearest neighbor, 2-opt and simulated annealing shorten the tour |
-| Algorithms | K-Means Clustering | Scatter points and watch k-means move its centroids and recolor clusters until it converges |
-| Science | Epidemic Simulator (SIR) | Watch an outbreak spread through a moving crowd and flatten the curve with distancing and vaccines |
-| Science | Predator–Prey Simulator | Watch rabbits and foxes rise and crash in the Lotka–Volterra model, with a live phase plot |
-| Science | Flocking Birds (Boids) | Tune separation, alignment and cohesion and watch a flock of boids swarm and flee a hawk |
-| Science | Ant Colony Simulator | Watch ants find food by laying and following pheromone trails, and draw walls to block them |
-| Science | Natural Selection Simulator | Watch creatures with random speed, size and sense evolve over generations as they compete for food |
-| Science | Genetic Algorithm Phrase Evolver | Evolve random letters into a target phrase with selection, crossover and mutation |
-| Science | Neural Network Playground | Train a small neural network in your browser and watch its decision boundary learn 2D data |
-| Science | Solar System Orrery | Watch the planets circle the Sun at their true relative speeds, jump to any date and speed up time |
-| Science | Moon Phases Simulator | Move the Moon around Earth and see how sunlight creates each phase, from new moon to full moon |
-| Science | Seasons & Daylight Simulator | Orbit a tilted Earth around the Sun to see why seasons happen and how day length changes with latitude |
-| Science | Radioactive Decay & Half-Life | Watch atoms decay at random and see the exponential half-life curve emerge from pure chance |
-| Science | Diffusion & Osmosis Simulator | Watch particles diffuse through a semipermeable membrane until the concentrations even out |
-| Science | Chemical Equilibrium Simulator | Collide molecules in A + B ⇌ C + D and watch the reaction settle into equilibrium as you heat it |
-| Science | Atom Builder | Add protons, neutrons and electrons to build any element, ion or isotope on an animated Bohr model |
-| Science | 3D Molecule Viewer | Rotate 3D ball-and-stick models of water, methane, caffeine and more, with bond angles |
-| Science | DNA Transcription & Translation | Type a DNA strand and watch it unzip, transcribe into mRNA and translate into amino acids |
-| Science | Punnett Square & Genetics | Cross two parents for one or two genes and watch offspring appear in the expected ratios |
-| Science | Forest Fire Simulator | Grow a forest, strike lightning and watch fires spread, with tree density, wind and regrowth |
-| Science | Greenhouse Effect Simulator | Add greenhouse gases and watch infrared photons get trapped as the planet's temperature rises |
-| Science | Reaction–Diffusion Patterns | Grow Turing patterns like spots, stripes and coral with the Gray–Scott reaction–diffusion model |
-| Art | Flow Field Art Generator | Let thousands of particles trace a Perlin noise flow field into generative art, then save a PNG |
-| Art | Kaleidoscope Drawing Pad | Draw with mirrored symmetry in 2 to 24 slices to make mandalas and kaleidoscope patterns |
-| Art | Voronoi Diagram Generator | Drag seeds and watch Voronoi cells and the Delaunay triangulation update as the seeds drift |
-| Art | Times Table Circle | Connect points around a circle by multiplying mod n and watch cardioids and nephroids morph |
-| Art | Phyllotaxis Sunflower Pattern | Grow sunflower and pinecone spirals from the golden angle and see what other angles do instead |
-| Art | Particle Playground | Spray particles from fountains, place attractors and repellers, and tweak gravity and color |
-| Art | Harmonograph | Simulate a pendulum drawing machine whose decaying swings draw delicate harmonograph figures |
-| Art | Audio Visualizer | See your microphone or a test tone as spectrum bars, a waveform or a radial visual in real time |
-| Art | Metaballs Lava Lamp | Watch blobby metaballs merge and split like a lava lamp, drag them around and pick the colors |
-| Art | L-System Plant Generator | Grow ferns, bushes, snowflakes and dragon curves from L-system rules with an animated turtle |
-| Art | Falling Sand Game | Pour sand, water, stone, fire and plants into a pixel sandbox and watch them interact |
-| Art | Truchet Tile Pattern Generator | Generate Truchet tile patterns with arcs, diagonals and triangles that flip in rippling waves |
-| Art | Text Particle Effect | Turn any word into particles that scatter away from your cursor and spring back into place |
-| Art | Water Ripple Pond | Touch a pond to make ripples that spread, bounce and interfere, with rain and drag trails |
-| Art | 3D Terrain Flyover | Fly over endless procedural terrain made from Perlin noise, as a neon wireframe or shaded hills |
-| Art | Polar Rose Curve Generator | Trace animated rose curves r = cos(kθ) and other polar patterns with adjustable petals |
-| Art | Space-Filling Curve Drawer | Draw Hilbert, Peano, Moore and Z-order curves level by level with an animated pen |
-| Art | Circle Packing Generator | Grow non-overlapping circles until they fill the canvas or a word, then save the pattern as PNG |
-| Art | Fireworks Simulator | Tap the sky to launch fireworks with peonies, rings and willows, or let an automatic show run |
-| Art | Matrix Digital Rain | Make falling green code rain with your own characters, colors, speed and density |
+**4llTools** is a pocket workbench: **100 everyday tools** (QR codes, JSON, PDFs, images, passwords, calculators…) and **100 interactive simulations** of physics, math, algorithms, science and generative art. Every tool runs entirely in your browser. There's no sign-up, no upload, and nothing you type is sent anywhere.
 
-## Run it locally
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/readme/screens/home-dark.webp">
+  <img alt="The 4llTools home page: a sidebar of tools grouped by category and a search box" src="docs/readme/screens/home-light.webp" width="100%">
+</picture>
 
-Needs Node.js 20 or newer.
+## ✨ Highlights
 
-```bash
-npm install
-npm run dev      # start a dev server at http://localhost:5173
-npm test         # run the unit tests
-npm run build    # production build into dist/
+| | |
+| --- | --- |
+| 🔒 **Private by design** | Text, files, images, camera and microphone are processed on your device. The few tools that must use the network (DNS lookup, CORS checker, live URL check, speech to text) say exactly what they send, and to whom. |
+| 🎬 **Live simulations** | 100 canvas simulations you can poke at: drag pendulums, paint walls for A\*, fling planets, stir smoke, breed pea plants, train a neural network. |
+| ⚡ **Fast** | Each tool's code loads only when you open it, so 200 tools cost the home page nothing. Every page is prerendered to HTML at build time. |
+| 🌗 **Light & dark** | A warm-paper theme that follows your system setting, including every canvas. |
+| ♿ **Motion-aware** | Spring animations everywhere, but simulations start paused and effects stay still when you ask your system for reduced motion. |
+| 🔎 **Found by search** | Per-page titles, descriptions, share images, JSON-LD, FAQs, sitemap, `robots.txt` and `llms.txt`, all generated from each tool's metadata. |
+| 🧩 **Drop-in tools** | A tool is one folder. Add `meta.ts` and `Tool.tsx` and it appears in the sidebar, home page, search, sitemap and prerender with no central list to edit. |
+
+## 🎬 Simulation gallery
+
+Real recordings from the site. Click any one to open it.
+
+<table>
+  <tr>
+    <td width="25%" align="center"><a href="https://4lltools.morizdigital.com/double-pendulum"><img src="docs/readme/demos/double-pendulum.gif" alt="Double pendulums drifting apart into chaos" width="100%"></a><br><sub><b>Double Pendulum Chaos</b><br>Physics</sub></td>
+    <td width="25%" align="center"><a href="https://4lltools.morizdigital.com/wave-interference"><img src="docs/readme/demos/wave-interference.gif" alt="Two wave sources forming interference fringes" width="100%"></a><br><sub><b>Wave Interference</b><br>Physics</sub></td>
+    <td width="25%" align="center"><a href="https://4lltools.morizdigital.com/orbit-simulator"><img src="docs/readme/demos/orbit-simulator.gif" alt="Planets orbiting a star with trails" width="100%"></a><br><sub><b>Orbit & Gravity</b><br>Physics</sub></td>
+    <td width="25%" align="center"><a href="https://4lltools.morizdigital.com/fluid-smoke"><img src="docs/readme/demos/fluid-smoke.gif" alt="Coloured smoke swirling in a fluid simulation" width="100%"></a><br><sub><b>Fluid & Smoke</b><br>Physics</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://4lltools.morizdigital.com/fourier-drawing"><img src="docs/readme/demos/fourier-drawing.gif" alt="Fourier epicycles tracing a heart" width="100%"></a><br><sub><b>Fourier Epicycles</b><br>Math</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/galton-board"><img src="docs/readme/demos/galton-board.gif" alt="Balls falling through a Galton board into a bell curve" width="100%"></a><br><sub><b>Galton Board</b><br>Math</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/sorting-visualizer"><img src="docs/readme/demos/sorting-visualizer.gif" alt="Quicksort sorting bars" width="100%"></a><br><sub><b>Sorting Visualizer</b><br>Algorithms</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/pathfinding-visualizer"><img src="docs/readme/demos/pathfinding-visualizer.gif" alt="A* searching a grid around a wall" width="100%"></a><br><sub><b>Pathfinding (A*)</b><br>Algorithms</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://4lltools.morizdigital.com/maze-generator"><img src="docs/readme/demos/maze-generator.gif" alt="A maze being carved by a recursive backtracker" width="100%"></a><br><sub><b>Maze Generator</b><br>Algorithms</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/game-of-life"><img src="docs/readme/demos/game-of-life.gif" alt="Gliders in Conway's Game of Life" width="100%"></a><br><sub><b>Game of Life</b><br>Algorithms</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/flocking-boids"><img src="docs/readme/demos/flocking-boids.gif" alt="A flock of boids swarming" width="100%"></a><br><sub><b>Flocking Boids</b><br>Science</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/epidemic-simulator"><img src="docs/readme/demos/epidemic-simulator.gif" alt="An SIR epidemic spreading through a crowd" width="100%"></a><br><sub><b>Epidemic (SIR)</b><br>Science</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://4lltools.morizdigital.com/reaction-diffusion"><img src="docs/readme/demos/reaction-diffusion.gif" alt="Gray–Scott coral patterns growing" width="100%"></a><br><sub><b>Reaction–Diffusion</b><br>Science</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/flow-field-art"><img src="docs/readme/demos/flow-field-art.gif" alt="Particles painting a Perlin noise flow field" width="100%"></a><br><sub><b>Flow Field Art</b><br>Art</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/fireworks"><img src="docs/readme/demos/fireworks.gif" alt="Fireworks bursting over a city skyline" width="100%"></a><br><sub><b>Fireworks</b><br>Art</sub></td>
+    <td align="center"><a href="https://4lltools.morizdigital.com/matrix-rain"><img src="docs/readme/demos/matrix-rain.gif" alt="Green digital rain" width="100%"></a><br><sub><b>Digital Rain</b><br>Art</sub></td>
+  </tr>
+</table>
+
+## 🧰 All 200 tools
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/readme/categories-dark.svg">
+  <img alt="Number of tools in each category" src="docs/readme/categories-light.svg" width="100%">
+</picture>
+
+Click a category to expand it. Every name links to the live tool.
+
+<!-- tools:start -->
+#### Simulations (100)
+
+<details>
+<summary><b>🧮 Algorithms</b> · 20 tools · ★ interactive simulations</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Bst` | [Binary Search Tree Visualizer](https://4lltools.morizdigital.com/bst-visualizer) | Insert, delete and find keys in a binary search tree or AVL tree, with animated traversals |
+| `Bs` | [Binary Search Visualizer](https://4lltools.morizdigital.com/binary-search) | Step through binary search next to linear search on a sorted array and count every comparison |
+| `Cvh` | [Convex Hull Visualizer](https://4lltools.morizdigital.com/convex-hull) | Scatter points and watch gift wrapping, Graham scan or monotone chain wrap them in a hull |
+| `Gol` | [Conway's Game of Life](https://4lltools.morizdigital.com/game-of-life) | Draw cells or drop in gliders and guns, then run Conway's Game of Life at any speed |
+| `Ca` | [Elementary Cellular Automata](https://4lltools.morizdigital.com/cellular-automaton) | Explore all 256 Wolfram rules, like Rule 30 and Rule 110, as they grow line by line |
+| `Gt` | [Graph BFS & DFS Visualizer](https://4lltools.morizdigital.com/graph-traversal) | Build a graph by clicking, drag its nodes around and watch breadth-first and depth-first search run |
+| `Ht` | [Hash Table Visualizer](https://4lltools.morizdigital.com/hash-table) | Insert keys into a hash table with chaining or open addressing and watch collisions and resizing |
+| `Hp` | [Heap & Priority Queue Visualizer](https://4lltools.morizdigital.com/heap-visualizer) | Push and pop a binary heap and watch items sift up and down in both the tree and the array |
+| `Km` | [K-Means Clustering](https://4lltools.morizdigital.com/k-means-clustering) | Scatter points and watch k-means move its centroids and recolor clusters until it converges |
+| `La` | [Langton's Ant](https://4lltools.morizdigital.com/langtons-ant) | Watch Langton's ant and multi-color turmites build chaos and highways from simple rules |
+| `Mz` | [Maze Generator & Solver](https://4lltools.morizdigital.com/maze-generator) | Generate mazes with backtracking, Prim's or Kruskal's algorithm, then watch them get solved |
+| `Mst` | [Minimum Spanning Tree Visualizer](https://4lltools.morizdigital.com/minimum-spanning-tree) | Watch Kruskal's and Prim's algorithms pick the cheapest edges that connect every node |
+| `Nq` | [N-Queens Solver](https://4lltools.morizdigital.com/n-queens) | Watch backtracking place N queens on a chessboard so that no two queens attack each other |
+| `A*` | [Pathfinding Visualizer](https://4lltools.morizdigital.com/pathfinding-visualizer) | Draw walls and weights, then watch A*, Dijkstra, BFS and DFS search a grid for the shortest path |
+| `Sra` | [Sorting Algorithm Race](https://4lltools.morizdigital.com/sorting-race) | Race sorting algorithms side by side on the same shuffled data and see which one finishes first |
+| `So` | [Sorting Algorithm Visualizer](https://4lltools.morizdigital.com/sorting-visualizer) | Watch bubble, quick, merge, heap, radix and more sorts animate with sound, compares and swaps |
+| `Stq` | [Stack & Queue Visualizer](https://4lltools.morizdigital.com/stack-queue) | Push, pop, enqueue and dequeue items and see how LIFO stacks and FIFO queues behave |
+| `Su` | [Sudoku Solver](https://4lltools.morizdigital.com/sudoku-solver) | Type in a Sudoku or load one, then watch backtracking with constraint checks fill it in |
+| `Th` | [Tower of Hanoi](https://4lltools.morizdigital.com/tower-of-hanoi) | Play the Tower of Hanoi yourself or watch the recursive solution move up to 10 disks |
+| `Tsp` | [Traveling Salesman Solver](https://4lltools.morizdigital.com/traveling-salesman) | Place cities and watch nearest neighbor, 2-opt and simulated annealing shorten the tour |
+
+</details>
+
+<details>
+<summary><b>🎨 Art</b> · 20 tools · ★ interactive simulations</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Tg` | [3D Terrain Flyover](https://4lltools.morizdigital.com/terrain-generator) | Fly over endless procedural terrain made from Perlin noise, as a neon wireframe or shaded hills |
+| `Av` | [Audio Visualizer](https://4lltools.morizdigital.com/audio-visualizer) | See your microphone or a test tone as spectrum bars, a waveform or a radial visual in real time |
+| `Cpk` | [Circle Packing Generator](https://4lltools.morizdigital.com/circle-packing) | Grow non-overlapping circles until they fill the canvas or a word, then save the pattern as PNG |
+| `Fsd` | [Falling Sand Game](https://4lltools.morizdigital.com/falling-sand) | Pour sand, water, stone, fire and plants into a pixel sandbox and watch them interact |
+| `Fw` | [Fireworks Simulator](https://4lltools.morizdigital.com/fireworks) | Tap the sky to launch fireworks with peonies, rings and willows, or let an automatic show run |
+| `Ffa` | [Flow Field Art Generator](https://4lltools.morizdigital.com/flow-field-art) | Let thousands of particles trace a Perlin noise flow field into generative art, then save a PNG |
+| `Hg` | [Harmonograph](https://4lltools.morizdigital.com/harmonograph) | Simulate a pendulum drawing machine whose decaying swings draw delicate harmonograph figures |
+| `Kd` | [Kaleidoscope Drawing Pad](https://4lltools.morizdigital.com/kaleidoscope-draw) | Draw with mirrored symmetry in 2 to 24 slices to make mandalas and kaleidoscope patterns |
+| `Ls` | [L-System Plant Generator](https://4lltools.morizdigital.com/l-system-plants) | Grow ferns, bushes, snowflakes and dragon curves from L-system rules with an animated turtle |
+| `Mr` | [Matrix Digital Rain](https://4lltools.morizdigital.com/matrix-rain) | Make falling green code rain with your own characters, colors, speed and density |
+| `Mt` | [Metaballs Lava Lamp](https://4lltools.morizdigital.com/metaballs) | Watch blobby metaballs merge and split like a lava lamp, drag them around and pick the colors |
+| `Pp` | [Particle Playground](https://4lltools.morizdigital.com/particle-playground) | Spray particles from fountains, place attractors and repellers, and tweak gravity and color |
+| `Ph` | [Phyllotaxis Sunflower Pattern](https://4lltools.morizdigital.com/phyllotaxis) | Grow sunflower and pinecone spirals from the golden angle and see what other angles do instead |
+| `Ro` | [Polar Rose Curve Generator](https://4lltools.morizdigital.com/rose-curves) | Trace animated rose curves r = cos(kθ) and other polar patterns with adjustable petals |
+| `Hc` | [Space-Filling Curve Drawer](https://4lltools.morizdigital.com/space-filling-curves) | Draw Hilbert, Peano, Moore and Z-order curves level by level with an animated pen |
+| `Tp` | [Text Particle Effect](https://4lltools.morizdigital.com/text-particles) | Turn any word into particles that scatter away from your cursor and spring back into place |
+| `Tt` | [Times Table Circle](https://4lltools.morizdigital.com/times-table-circle) | Connect points around a circle by multiplying mod n and watch cardioids and nephroids morph |
+| `Tru` | [Truchet Tile Pattern Generator](https://4lltools.morizdigital.com/truchet-tiles) | Generate Truchet tile patterns with arcs, diagonals and triangles that flip in rippling waves |
+| `Vo` | [Voronoi Diagram Generator](https://4lltools.morizdigital.com/voronoi-diagram) | Drag seeds and watch Voronoi cells and the Delaunay triangulation update as the seeds drift |
+| `Wr` | [Water Ripple Pond](https://4lltools.morizdigital.com/water-ripples) | Touch a pond to make ripples that spread, bounce and interfere, with rain and drag trails |
+
+</details>
+
+<details>
+<summary><b>📐 Math</b> · 20 tools · ★ interactive simulations</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Mx` | [2D Matrix Transformation Visualizer](https://4lltools.morizdigital.com/matrix-transform) | Watch a 2×2 matrix warp the plane, with its determinant, eigenvectors and a morphing grid |
+| `Fx` | [Animated Function Grapher](https://4lltools.morizdigital.com/function-grapher) | Plot functions of x with sliders and a time variable t, and watch the graphs morph live |
+| `Bz` | [Bézier Curve Construction](https://4lltools.morizdigital.com/bezier-construction) | Drag control points and watch de Casteljau's algorithm build a Bézier curve step by step |
+| `Clt` | [Central Limit Theorem Simulator](https://4lltools.morizdigital.com/central-limit) | Draw samples from skewed distributions and watch their averages settle into a normal curve |
+| `Cg` | [Chaos Game Fractals](https://4lltools.morizdigital.com/chaos-game) | Play the chaos game with 3 to 8 corners and watch the Sierpinski triangle and more appear |
+| `Cz` | [Collatz Conjecture Visualizer](https://4lltools.morizdigital.com/collatz-conjecture) | Follow the 3n + 1 sequence for any number and grow the branching Collatz tree of many values |
+| `Fe` | [Fourier Epicycle Drawing](https://4lltools.morizdigital.com/fourier-drawing) | Draw any shape and watch spinning Fourier circles trace it back, one frequency at a time |
+| `Fs` | [Fourier Series Wave Builder](https://4lltools.morizdigital.com/fourier-series) | Build square, sawtooth and triangle waves from rotating circles and watch each harmonic add up |
+| `Tr` | [Fractal Tree Generator](https://4lltools.morizdigital.com/fractal-tree) | Grow a recursive fractal tree, bend its branches with sliders and let it sway in the wind |
+| `Gb` | [Galton Board](https://4lltools.morizdigital.com/galton-board) | Drop balls through a pegboard and watch the bell curve of the binomial distribution build up |
+| `Lj` | [Lissajous Curve Generator](https://4lltools.morizdigital.com/lissajous-curves) | Draw animated Lissajous figures from two oscillations with any frequency ratio and phase shift |
+| `Mj` | [Mandelbrot & Julia Set Explorer](https://4lltools.morizdigital.com/mandelbrot-explorer) | Zoom deep into the Mandelbrot set and preview the Julia set that belongs to any point |
+| `Pi` | [Monte Carlo Pi Estimator](https://4lltools.morizdigital.com/monte-carlo-pi) | Throw random darts at a square and watch the estimate of π converge as they land in the circle |
+| `Us` | [Prime Number Spiral](https://4lltools.morizdigital.com/ulam-spiral) | Watch prime numbers light up on the Ulam and Sacks spirals as the integers wind outward |
+| `Rwk` | [Random Walk & Brownian Motion](https://4lltools.morizdigital.com/random-walk) | Release random walkers in 1D, 2D or on a lattice and compare how far they spread with √n |
+| `Ri` | [Riemann Sum Visualizer](https://4lltools.morizdigital.com/riemann-sums) | Approximate the area under a curve with left, right, midpoint and trapezoid sums as n grows |
+| `Sp` | [Spirograph](https://4lltools.morizdigital.com/spirograph) | Roll gears inside and outside a ring to draw spirograph patterns, then save them as PNG |
+| `Tay` | [Taylor Series Approximation](https://4lltools.morizdigital.com/taylor-series) | Add Taylor polynomial terms one by one and watch them hug sin, cos, eˣ and ln around a point |
+| `Uc` | [Unit Circle & Trig Visualizer](https://4lltools.morizdigital.com/unit-circle) | Spin an angle around the unit circle and watch sine, cosine and tangent unroll into waves |
+| `Vf` | [Vector Field Visualizer](https://4lltools.morizdigital.com/vector-field) | Type a 2D vector field and watch particles stream along it, with arrows, curl and divergence |
+
+</details>
+
+<details>
+<summary><b>🪐 Physics</b> · 20 tools · ★ interactive simulations</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Lz` | [Charged Particle in a Magnetic Field](https://4lltools.morizdigital.com/lorentz-force) | Fire charged particles through magnetic and electric fields and watch them spiral and drift |
+| `Cth` | [Cloth Simulation](https://4lltools.morizdigital.com/cloth-simulation) | Pull, blow and tear a sheet of cloth made of springs, with gravity and gusting wind |
+| `Co` | [Collision Lab](https://4lltools.morizdigital.com/collision-lab) | Crash balls together with elastic or sticky collisions and check that momentum is conserved |
+| `Dop` | [Doppler Effect Visualizer](https://4lltools.morizdigital.com/doppler-effect) | Move a sound source and watch wavefronts bunch up, the pitch shift and a sonic boom past Mach 1 |
+| `Dp` | [Double Pendulum Chaos](https://4lltools.morizdigital.com/double-pendulum) | Watch two nearly identical double pendulums drift apart into chaos, with glowing trails |
+| `Ef` | [Electric Field Simulator](https://4lltools.morizdigital.com/electric-field) | Drag positive and negative charges and see field lines, equipotentials and a test charge move |
+| `Fl` | [Fluid & Smoke Simulator](https://4lltools.morizdigital.com/fluid-smoke) | Stir a real-time fluid with your mouse or finger and watch swirling colored smoke follow the flow |
+| `Hd` | [Heat Diffusion Simulator](https://4lltools.morizdigital.com/heat-diffusion) | Paint hot and cold spots on a metal plate and watch heat spread and even out over time |
+| `Pv` | [Ideal Gas Simulator](https://4lltools.morizdigital.com/ideal-gas) | Heat, squeeze and fill a box of gas particles and watch pressure, temperature and speeds change |
+| `Ra` | [Inclined Plane & Friction](https://4lltools.morizdigital.com/inclined-plane) | Slide a block down a ramp, change the angle and friction, and see force vectors and acceleration |
+| `Lr` | [Lens & Mirror Ray Tracer](https://4lltools.morizdigital.com/lens-ray-tracer) | Drag an object past a lens or mirror and watch the principal rays form a real or virtual image |
+| `Nc` | [Newton's Cradle](https://4lltools.morizdigital.com/newtons-cradle) | Lift balls of a Newton's cradle and watch momentum and energy travel through the row |
+| `Ob` | [Orbit & Gravity Simulator](https://4lltools.morizdigital.com/orbit-simulator) | Fling planets and moons around a star and watch gravity bend their paths into elliptical orbits |
+| `Pd` | [Pendulum Lab](https://4lltools.morizdigital.com/pendulum-lab) | Swing a pendulum, change its length, gravity and damping, and watch its period and energy change |
+| `Pm` | [Projectile Motion Simulator](https://4lltools.morizdigital.com/projectile-motion) | Launch projectiles at any angle and speed, add air drag and see range, height and flight time live |
+| `RC` | [RC Circuit Simulator](https://4lltools.morizdigital.com/rc-circuit) | Charge and discharge a capacitor through a resistor and watch voltage, current and the time constant |
+| `Sn` | [Snell's Law Refraction](https://4lltools.morizdigital.com/snells-law) | Aim a laser across two materials and see refraction, partial reflection and total internal reflection |
+| `Ks` | [Spring & Mass Oscillator](https://4lltools.morizdigital.com/spring-mass) | Stretch a spring, tune stiffness, mass, damping and driving force, and watch resonance in real time |
+| `Sw` | [Standing Waves on a String](https://4lltools.morizdigital.com/standing-waves) | Vibrate a string at its harmonics, hear the tone and see nodes, antinodes and each frequency |
+| `Wi` | [Wave Interference Ripple Tank](https://4lltools.morizdigital.com/wave-interference) | Drag wave sources around a ripple tank and watch interference fringes form in real time |
+
+</details>
+
+<details>
+<summary><b>🧬 Science</b> · 20 tools · ★ interactive simulations</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Mol` | [3D Molecule Viewer](https://4lltools.morizdigital.com/molecule-viewer) | Rotate 3D ball-and-stick models of water, methane, caffeine and more, with bond angles |
+| `Ac` | [Ant Colony Simulator](https://4lltools.morizdigital.com/ant-colony) | Watch ants find food by laying and following pheromone trails, and draw walls to block them |
+| `At` | [Atom Builder](https://4lltools.morizdigital.com/atom-builder) | Add protons, neutrons and electrons to build any element, ion or isotope on an animated Bohr model |
+| `Eq` | [Chemical Equilibrium Simulator](https://4lltools.morizdigital.com/reaction-equilibrium) | Collide molecules in A + B ⇌ C + D and watch the reaction settle into equilibrium as you heat it |
+| `Dif` | [Diffusion & Osmosis Simulator](https://4lltools.morizdigital.com/diffusion-membrane) | Watch particles diffuse through a semipermeable membrane until the concentrations even out |
+| `Dna` | [DNA Transcription & Translation](https://4lltools.morizdigital.com/dna-transcription) | Type a DNA strand and watch it unzip, transcribe into mRNA and translate into amino acids |
+| `Sir` | [Epidemic Simulator (SIR)](https://4lltools.morizdigital.com/epidemic-simulator) | Watch an outbreak spread through a moving crowd and flatten the curve with distancing and vaccines |
+| `Bd` | [Flocking Birds (Boids)](https://4lltools.morizdigital.com/flocking-boids) | Tune separation, alignment and cohesion and watch a flock of boids swarm and flee a hawk |
+| `Fir` | [Forest Fire Simulator](https://4lltools.morizdigital.com/forest-fire) | Grow a forest, strike lightning and watch fires spread, with tree density, wind and regrowth |
+| `Ga` | [Genetic Algorithm Phrase Evolver](https://4lltools.morizdigital.com/genetic-algorithm) | Evolve random letters into a target phrase with selection, crossover and mutation |
+| `Gh` | [Greenhouse Effect Simulator](https://4lltools.morizdigital.com/greenhouse-effect) | Add greenhouse gases and watch infrared photons get trapped as the planet's temperature rises |
+| `Mo` | [Moon Phases Simulator](https://4lltools.morizdigital.com/moon-phases) | Move the Moon around Earth and see how sunlight creates each phase, from new moon to full moon |
+| `Ns` | [Natural Selection Simulator](https://4lltools.morizdigital.com/natural-selection) | Watch creatures with random speed, size and sense evolve over generations as they compete for food |
+| `Nn` | [Neural Network Playground](https://4lltools.morizdigital.com/neural-network) | Train a small neural network in your browser and watch its decision boundary learn 2D data |
+| `Lv` | [Predator–Prey Simulator](https://4lltools.morizdigital.com/predator-prey) | Watch rabbits and foxes rise and crash in the Lotka–Volterra model, with a live phase plot |
+| `Pn` | [Punnett Square & Genetics](https://4lltools.morizdigital.com/punnett-square) | Cross two parents for one or two genes and watch offspring appear in the expected ratios |
+| `Hl` | [Radioactive Decay & Half-Life](https://4lltools.morizdigital.com/half-life) | Watch atoms decay at random and see the exponential half-life curve emerge from pure chance |
+| `Gs` | [Reaction–Diffusion Patterns](https://4lltools.morizdigital.com/reaction-diffusion) | Grow Turing patterns like spots, stripes and coral with the Gray–Scott reaction–diffusion model |
+| `Es` | [Seasons & Daylight Simulator](https://4lltools.morizdigital.com/earth-seasons) | Orbit a tilted Earth around the Sun to see why seasons happen and how day length changes with latitude |
+| `Ss` | [Solar System Orrery](https://4lltools.morizdigital.com/solar-system) | Watch the planets circle the Sun at their true relative speeds, jump to any date and speed up time |
+
+</details>
+
+#### Everyday tools (100)
+
+<details>
+<summary><b>🛠️ Developer</b> · 28 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `B64` | [Base64 Encode / Decode](https://4lltools.morizdigital.com/base64) | Convert text to Base64 and back, with full Unicode support |
+| `Cs` | [Code Screenshot](https://4lltools.morizdigital.com/code-screenshot) | Turn code into beautiful, shareable images with syntax themes, gradients and window chrome |
+| `Ch` | [CRON Expression Generator & Parser](https://4lltools.morizdigital.com/cron-expression) | Build, explain and validate cron schedules and preview the next run times |
+| `C2` | [CSS ↔ Tailwind Converter](https://4lltools.morizdigital.com/css-tailwind) | Turn plain CSS into Tailwind utility classes, or Tailwind classes back into CSS |
+| `Dc` | [Docker Run to Compose](https://4lltools.morizdigital.com/docker-compose) | Convert docker run commands to a docker-compose.yml file, or compose services back to docker run |
+| `Gi` | [Gitignore Generator](https://4lltools.morizdigital.com/gitignore-generator) | Build a .gitignore for Node, Python, Go, Java, Unity, IDEs and OS files in one click |
+| `&;` | [HTML Entities](https://4lltools.morizdigital.com/html-entities) | Escape text for HTML, or turn entities back into text |
+| `Jx` | [HTML to JSX Converter](https://4lltools.morizdigital.com/html-to-jsx) | Convert HTML and SVG markup to React JSX with className, style objects and camelCase props |
+| `Jd` | [JSON Diff](https://4lltools.morizdigital.com/json-diff) | Compare two JSON documents structurally and export the differences as a JSON Patch |
+| `{}` | [JSON Formatter](https://4lltools.morizdigital.com/json-formatter) | Prettify, minify and validate JSON |
+| `Jt` | [JSON to TypeScript & Zod](https://4lltools.morizdigital.com/json-to-typescript) | Turn sample JSON into TypeScript interfaces, Zod schemas or JSON Schema with inferred optional fields |
+| `Jp` | [JSONPath Tester](https://4lltools.morizdigital.com/jsonpath-tester) | Test JSONPath expressions and filters against your JSON and see every match with its path |
+| `Jw` | [JWT Decoder](https://4lltools.morizdigital.com/jwt-decoder) | Read the header and payload of a JSON Web Token |
+| `Mm` | [Mermaid Diagram Editor](https://4lltools.morizdigital.com/mermaid-editor) | Write Mermaid flowcharts, sequence, ER and Gantt diagrams with a live preview and SVG or PNG export |
+| `Og` | [Meta Tag & Open Graph Generator](https://4lltools.morizdigital.com/meta-tag-generator) | Generate SEO meta, Open Graph and X card tags with live Google, Facebook and chat previews |
+| `Se` | [Minifier / Beautifier (JS & CSS)](https://4lltools.morizdigital.com/minifier) | Minify JavaScript and CSS for faster pages, or beautify minified code to read it |
+| `Mb` | [Mock Data Generator](https://4lltools.morizdigital.com/mock-data) | Generate fake names, emails, addresses and more as JSON, CSV or SQL inserts for testing |
+| `0x` | [Number Base Converter](https://4lltools.morizdigital.com/number-base) | Convert numbers between binary, octal, decimal and hex |
+| `.*` | [Regex Tester](https://4lltools.morizdigital.com/regex-tester) | Test a regular expression and see every match highlighted |
+| `Rx` | [Regex Visualizer & Explainer](https://4lltools.morizdigital.com/regex-visualizer) | Draw a JavaScript regex as a railroad diagram and explain every part in plain English |
+| `Ld` | [Schema Markup Generator](https://4lltools.morizdigital.com/schema-generator) | Create JSON-LD structured data for FAQ, Product, Article, Recipe, Event and more for rich results |
+| `Sem` | [SemVer Calculator](https://4lltools.morizdigital.com/semver-calculator) | Bump, compare and sort semantic versions, and test npm ranges like ^1.2.3 or ~1.2 |
+| `Sq` | [SQL Formatter & Query Checker](https://4lltools.morizdigital.com/sql-formatter) | Format messy SQL for many dialects and spot risky or broken queries instantly |
+| `Ts` | [Timestamp Converter](https://4lltools.morizdigital.com/timestamp-converter) | Convert Unix timestamps to dates and back |
+| `Ul` | [ULID, NanoID & UUID v7 Generator](https://4lltools.morizdigital.com/id-generator) | Generate time-sortable UUID v7 and ULID, NanoID or UUID v4 ids in bulk and decode their timestamps |
+| `Ur` | [URL Encode / Decode](https://4lltools.morizdigital.com/url-encoder) | Percent-encode text for links, or decode an encoded link |
+| `Id` | [UUID Generator](https://4lltools.morizdigital.com/uuid-generator) | Generate random UUID v4 identifiers in bulk |
+| `Xm` | [XML Formatter & Converter](https://4lltools.morizdigital.com/xml-formatter) | Beautify, minify and validate XML, or convert XML to JSON and JSON to XML with attributes |
+
+</details>
+
+<details>
+<summary><b>📝 Text</b> · 15 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Tk` | [AI Token Counter](https://4lltools.morizdigital.com/token-counter) | Count GPT tokens exactly and estimate Claude, Gemini and Llama tokens for any prompt or document |
+| `Aa` | [Case Converter](https://4lltools.morizdigital.com/case-converter) | Switch text between UPPER, lower, Title, camelCase, snake_case and more |
+| `Em` | [Emoji Finder](https://4lltools.morizdigital.com/emoji-picker) | Search every emoji by name or keyword, pick a skin tone and copy it with one tap |
+| `Ft` | [Fancy Text Generator](https://4lltools.morizdigital.com/fancy-text) | Turn text into bold, italic, script, bubble and other Unicode fonts for Instagram and TikTok bios |
+| `Fr` | [Find & Replace](https://4lltools.morizdigital.com/find-replace) | Find and replace text in bulk with plain or regex rules, capture groups and a live preview |
+| `Zw` | [Invisible Character Remover](https://4lltools.morizdigital.com/invisible-characters) | Reveal and remove zero-width spaces, hidden Unicode and smart quotes from AI or pasted text |
+| `Ln` | [Line Tools](https://4lltools.morizdigital.com/line-tools) | Sort, dedupe, reverse, trim or shuffle lines of text |
+| `Li` | [Lorem Ipsum Generator](https://4lltools.morizdigital.com/lorem-ipsum) | Generate placeholder paragraphs, sentences or words |
+| `Md` | [Markdown Preview](https://4lltools.morizdigital.com/markdown-preview) | Write Markdown and see it rendered live |
+| `Rd` | [Readability Checker](https://4lltools.morizdigital.com/readability-checker) | Score English text with Flesch, Gunning Fog and SMOG and highlight long sentences and passive voice |
+| `Sl` | [Slug Generator](https://4lltools.morizdigital.com/slug-generator) | Turn a title into a clean URL slug |
+| `Stt` | [Speech to Text](https://4lltools.morizdigital.com/speech-to-text) | Dictate and transcribe speech to text live in many languages, then copy or download it |
+| `Df` | [Text Diff](https://4lltools.morizdigital.com/text-diff) | Compare two texts and see what was added or removed |
+| `Tts` | [Text to Speech](https://4lltools.morizdigital.com/text-to-speech) | Read any text aloud with your device voices, adjustable speed and pitch, and word highlighting |
+| `Wc` | [Word Counter](https://4lltools.morizdigital.com/word-counter) | Count words, characters, sentences and reading time |
+
+</details>
+
+<details>
+<summary><b>🎛️ Design</b> · 10 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Px` | [Aspect Ratio & Screen Calculator](https://4lltools.morizdigital.com/aspect-ratio-calculator) | Work out aspect ratios, screen PPI and px, rem, em, pt, vw and vh conversions |
+| `Shd` | [Box-Shadow & Gradient Generator](https://4lltools.morizdigital.com/shadow-gradient) | Design layered CSS box-shadows and linear, radial or conic gradients with a live preview |
+| `Hx` | [Color Converter](https://4lltools.morizdigital.com/color-converter) | Pick a color and get HEX, RGB and HSL values |
+| `Cp` | [Color Palette Generator](https://4lltools.morizdigital.com/color-palette) | Generate harmonious OKLCH color palettes, lock swatches, shuffle with space, export CSS or Tailwind |
+| `Cc` | [Contrast Checker (WCAG & APCA)](https://4lltools.morizdigital.com/contrast-checker) | Check color contrast against WCAG 2.2 AA/AAA and APCA Lc, and get a suggested passing color |
+| `Cl` | [CSS Clip-Path Maker](https://4lltools.morizdigital.com/clip-path) | Make CSS clip-path polygons, circles and insets by dragging points on a live preview |
+| `Cb` | [Cubic Bezier Easing Editor](https://4lltools.morizdigital.com/cubic-bezier) | Drag a CSS cubic-bezier() easing curve, preview it against linear and copy the transition |
+| `Gl` | [Glassmorphism Generator](https://4lltools.morizdigital.com/glassmorphism) | Design frosted-glass cards with backdrop blur, tint and border, then copy CSS or Tailwind |
+| `Svg` | [SVG Optimizer](https://4lltools.morizdigital.com/svg-optimizer) | Shrink SVG files with SVGO: strip metadata, comments and junk, then compare before and after |
+| `Tw` | [Tailwind Color Shades Generator](https://4lltools.morizdigital.com/tailwind-shades) | Turn one color into a Tailwind 50–950 OKLCH shade scale with contrast labels and @theme output |
+
+</details>
+
+<details>
+<summary><b>🔐 Security</b> · 10 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `2f` | [2FA / TOTP Code Generator](https://4lltools.morizdigital.com/totp-generator) | Generate live 2FA codes from a TOTP secret or otpauth link, plus QR codes for authenticator apps |
+| `Bc` | [Bcrypt Hash Generator & Checker](https://4lltools.morizdigital.com/bcrypt) | Hash passwords with bcrypt at any cost and check a password against an existing bcrypt hash |
+| `Sh` | [Hash Generator](https://4lltools.morizdigital.com/hash-generator) | Compute SHA-1, SHA-256, SHA-384 and SHA-512 hashes of text or files |
+| `Hm` | [HMAC Generator & Verifier](https://4lltools.morizdigital.com/hmac-generator) | Sign messages with HMAC SHA-256/512 and verify webhook signatures from GitHub or Stripe |
+| `Js` | [JWT Generator & Signer](https://4lltools.morizdigital.com/jwt-generator) | Create and sign JSON Web Tokens with HS256, RS256 or ES256 and verify any JWT signature |
+| `Pw` | [Password Generator](https://4lltools.morizdigital.com/password-generator) | Create strong random passwords right in your browser |
+| `Ps` | [Password Strength Checker](https://4lltools.morizdigital.com/password-strength) | Test how strong a password is with zxcvbn: score, crack time, weak patterns and tips, all offline |
+| `Rsa` | [RSA Key Pair Generator](https://4lltools.morizdigital.com/rsa-key-generator) | Create RSA public and private keys as PEM plus an OpenSSH public key, right in your browser |
+| `Ce` | [SSL Certificate Decoder](https://4lltools.morizdigital.com/certificate-decoder) | Decode SSL/TLS certificates and CSRs: expiry, SANs, issuer, key size, fingerprints and chain order |
+| `Ae` | [Text Encryption (AES-256)](https://4lltools.morizdigital.com/text-encryption) | Encrypt and decrypt text or files with a passphrase using AES-256-GCM and PBKDF2 |
+
+</details>
+
+<details>
+<summary><b>🧾 Calculator</b> · 8 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Bmi` | [BMI & Body Calculator](https://4lltools.morizdigital.com/bmi-calculator) | Calculate BMI with WHO and Asian cut-offs, healthy weight range, BMR and daily calories |
+| `Cm` | [CHMOD Permission Calculator](https://4lltools.morizdigital.com/chmod-calculator) | Convert Unix file permissions between checkboxes, octal like 755 and rwxr-xr-x |
+| `Ci` | [Compound Interest Calculator](https://4lltools.morizdigital.com/compound-interest) | Project savings growth with compound interest, monthly deposits, inflation and a yearly chart |
+| `Dt` | [Date Calculator](https://4lltools.morizdigital.com/date-calculator) | Find your age or the days between two dates |
+| `Lo` | [Loan Calculator](https://4lltools.morizdigital.com/loan-calculator) | Estimate monthly installments and total interest |
+| `%` | [Percentage Calculator](https://4lltools.morizdigital.com/percentage-calculator) | Work out percentages, changes and discounts |
+| `Tz` | [Time Zone Converter & Meeting Planner](https://4lltools.morizdigital.com/time-zone-converter) | Convert times between world time zones, WIB, WITA and WIT, and find overlapping work hours |
+| `Zk` | [Zakat Calculator](https://4lltools.morizdigital.com/zakat-calculator) | Hitung zakat mal, zakat penghasilan and zakat fitrah with gold or silver nisab (2.5%) |
+
+</details>
+
+<details>
+<summary><b>🖼️ Image</b> · 7 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Ex` | [EXIF / Metadata Remover](https://4lltools.morizdigital.com/exif-remover) | Strip GPS location, camera details and other hidden metadata from photos |
+| `Fv` | [Favicon Generator](https://4lltools.morizdigital.com/favicon-generator) | Create favicon.ico, Apple touch and maskable PWA icons plus a web manifest from an image or emoji |
+| `He` | [HEIC to JPG Converter](https://4lltools.morizdigital.com/heic-to-jpg) | Convert iPhone HEIC and HEIF photos to JPG or PNG in bulk, privately in your browser |
+| `Ic` | [Image Color Extractor](https://4lltools.morizdigital.com/color-extractor) | Extract a color palette from any photo, pick exact pixel colors and export HEX as CSS or JSON |
+| `Im` | [Image Resizer & Compressor](https://4lltools.morizdigital.com/image-resizer) | Resize, compress and convert images to JPG, PNG or WebP |
+| `Sb` | [Screenshot Beautifier](https://4lltools.morizdigital.com/screenshot-beautifier) | Put screenshots on gradient backgrounds with padding, shadow and a macOS or browser window frame |
+| `Sg` | [Signature Maker](https://4lltools.morizdigital.com/signature-pad) | Draw or type an e-signature with mouse, finger or pen and save it as a transparent PNG or SVG |
+
+</details>
+
+<details>
+<summary><b>🌐 Network</b> · 7 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Crs` | [CORS & Security Header Checker](https://4lltools.morizdigital.com/cors-checker) | Grade security headers like CSP and HSTS, and simulate whether CORS allows a request |
+| `Cu` | [cURL to Code Converter](https://4lltools.morizdigital.com/curl-to-code) | Turn a curl command into fetch, axios, Python requests, PHP, Go or Rust code |
+| `Dn` | [DNS Lookup](https://4lltools.morizdigital.com/dns-lookup) | Look up A, AAAA, MX, TXT, NS, CAA and PTR records and check SPF, DMARC and DKIM for email delivery |
+| `Hsc` | [HTTP Status Code Reference](https://4lltools.morizdigital.com/http-status-codes) | Look up any HTTP status code from 1xx to 5xx with causes, fixes and headers |
+| `Sub` | [Subnet & CIDR Calculator](https://4lltools.morizdigital.com/subnet-calculator) | Work out network, broadcast, host range and mask for any IPv4 or IPv6 CIDR block |
+| `Ua` | [User Agent Parser](https://4lltools.morizdigital.com/user-agent-parser) | Parse any user agent string into browser, engine, OS, device and CPU, with bot detection |
+| `Ut` | [UTM Link Builder](https://4lltools.morizdigital.com/utm-builder) | Build UTM campaign links for Google Analytics with presets, bulk tagging, QR codes and a URL parser |
+
+</details>
+
+<details>
+<summary><b>🔁 Convert</b> · 6 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Cj` | [CSV ↔ JSON](https://4lltools.morizdigital.com/csv-json) | Convert CSV to JSON and JSON back to CSV |
+| `Ip` | [Images to PDF](https://4lltools.morizdigital.com/images-to-pdf) | Combine JPG, PNG and WebP images into one PDF with A4 or Letter pages, margins and ordering |
+| `Nw` | [Number to Words](https://4lltools.morizdigital.com/number-to-words) | Spell out numbers in English words or Indonesian terbilang, with currency, ordinals and check style |
+| `Pdf` | [PDF Merge & Split](https://4lltools.morizdigital.com/pdf-merge-split) | Merge PDFs, split by page ranges, extract, rotate or delete pages without uploading files |
+| `Un` | [Unit Converter](https://4lltools.morizdigital.com/unit-converter) | Convert length, weight, temperature, data size and more |
+| `Yj` | [YAML ↔ JSON ↔ TOML Converter](https://4lltools.morizdigital.com/yaml-json-toml) | Convert config files between YAML, JSON and TOML in any direction, with clear error lines |
+
+</details>
+
+<details>
+<summary><b>⏱️ Utility</b> · 6 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Po` | [Pomodoro Timer](https://4lltools.morizdigital.com/pomodoro) | Focus timer with pomodoro work and break cycles, a task list, chimes and daily stats |
+| `Rw` | [Random Picker Wheel](https://4lltools.morizdigital.com/random-picker) | Spin a wheel of names, pick random winners, shuffle lists, split teams, roll dice or flip a coin |
+| `Sr` | [Screen Recorder](https://4lltools.morizdigital.com/screen-recorder) | Record your screen, a window or a tab with microphone audio and download the video |
+| `St` | [Stopwatch & Timer](https://4lltools.morizdigital.com/stopwatch-timer) | A stopwatch with laps and a countdown timer with an alarm |
+| `Ty` | [Typing Speed Test](https://4lltools.morizdigital.com/typing-test) | Test your typing speed in WPM and accuracy with English or Indonesian words |
+| `Wb` | [Webcam & Mic Test](https://4lltools.morizdigital.com/webcam-mic-test) | Check your webcam, microphone level and left/right speakers before a video call |
+
+</details>
+
+<details>
+<summary><b>📷 Scan & Code</b> · 3 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Bg` | [Barcode Generator](https://4lltools.morizdigital.com/barcode-generator) | Create EAN-13, UPC-A, Code 128, Code 39 and ITF-14 barcodes with check digits as SVG or PNG |
+| `Qg` | [QR Code Generator](https://4lltools.morizdigital.com/qr-generator) | Turn any text or link into a QR code you can download |
+| `Qr` | [QR Code Reader](https://4lltools.morizdigital.com/qr-reader) | Scan a QR code with your camera, or read one from an image |
+
+</details>
+<!-- tools:end -->
+
+> [!TIP]
+> On the site, press <kbd>/</kbd> anywhere to jump to search. Search also matches Indonesian keywords, like *kamera*, *pembiasan* or *bandul*.
+
+## 🧱 How it works
+
+4llTools is a static single-page app: **React 19 + React Router + TypeScript**, built with **Vite**. There's no backend. At build time every route is rendered to its own HTML file, so crawlers and slow connections get real content before any JavaScript runs.
+
+### A tool is just a folder
+
+```mermaid
+flowchart LR
+  subgraph folder["src/tools/pendulum-lab/"]
+    M["meta.ts<br/><i>name, description,<br/>category, icon</i>"]
+    T["Tool.tsx<br/><i>the React component</i>"]
+    L["pendulum.ts<br/><i>pure logic, unit-tested</i>"]
+  end
+  M -- "import.meta.glob (eager)" --> R["registry.ts"]
+  T -- "import.meta.glob (lazy)" --> R
+  L --> T
+  R --> S["Sidebar & search"]
+  R --> H["Home & category pages"]
+  R --> P["/pendulum-lab route"]
+  R --> B["Build: prerendered HTML,<br/>share image, sitemap, FAQ"]
 ```
 
-## Add a new tool
+`src/tools/registry.ts` finds every folder with a `meta.ts` using Vite's `import.meta.glob`. Metadata is bundled eagerly (it's tiny and powers search), while each `Tool.tsx` becomes its own lazy chunk that downloads only when someone opens that tool.
+
+### What `npm run build` does
+
+```mermaid
+flowchart LR
+  A["tsc -b<br/>typecheck"] --> B["vite build<br/>client bundle,<br/>one chunk per tool"]
+  B --> C["prerender plugin"]
+  C --> D["/index.html<br/>/category/*.html<br/>/&lt;tool&gt;.html × 200"]
+  C --> E["/og/*.png<br/>share images"]
+  C --> F["sitemap.xml · robots.txt<br/>llms.txt · manifest"]
+  C --> G["third-party-licenses.txt"]
+  D & E & F & G --> H["dist/ → Cloudflare Pages or Vercel"]
+```
+
+<details>
+<summary><b>📁 Project layout</b></summary>
+
+```text
+4llTools/
+├── index.html                 # Vite entry
+├── vite.config.ts             # icon, licence and prerender plugins
+├── build/seo-assets.ts        # draws share images and icons at build time
+├── public/                    # _headers, favicon
+├── docs/readme/               # images for this README (+ generate.mjs)
+└── src/
+    ├── main.tsx               # client entry
+    ├── entry-server.tsx       # render() used by the prerender step
+    ├── App.tsx                # routes: /, /category/:key, /:slug, legal pages
+    ├── Home.tsx · CategoryPage.tsx · Sidebar.tsx
+    ├── seo.ts                 # titles, descriptions, JSON-LD, FAQ
+    ├── site.config.ts         # owner, contact, governing law
+    ├── styles.css             # warm-paper theme, category hues, motion tokens
+    ├── components/            # Icon (duotone Majesticons), CopyButton, ToolTile…
+    ├── motion/                # springs, odometer digits, FLIP, sliding pills
+    ├── legal/                 # privacy, terms, licences, about
+    ├── sim/                   # the simulation kit (see below)
+    └── tools/
+        ├── registry.ts        # discovers every tool folder
+        ├── types.ts           # ToolMeta and the Category list
+        ├── <slug>/            # one folder per tool × 200
+        │   ├── meta.ts
+        │   ├── Tool.tsx
+        │   └── *.ts           # pure logic
+        └── *.test.ts          # grouped tests
+```
+
+</details>
+
+## 🧩 The simulation kit
+
+All 100 simulations share a small kit in [`src/sim/`](src/sim). It handles the fiddly parts (canvas sizing, the animation loop, pointer input, theming and reduced motion) so each simulation is mostly its own physics or algorithm.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/readme/screens/tool-dark.webp">
+  <img alt="The Pendulum Lab tool: a swinging pendulum with phase-space and energy panels, sliders and live readouts" src="docs/readme/screens/tool-light.webp" width="100%">
+</picture>
+
+| Module | What it gives you |
+| --- | --- |
+| [`Stage.tsx`](src/sim/Stage.tsx) | `<Stage world={[W, H]} running onFrame onPointer label />`: a canvas that draws in fixed **world units**, scales to fit at the device pixel ratio, runs a `requestAnimationFrame` loop, skips frames while scrolled out of view, and maps pointer events into world coordinates. |
+| [`controls.tsx`](src/sim/controls.tsx) | `useRunning()`, `SimLayout`, `PlayBar` (play / pause / step / reset), `Slider`, `Toggle`, `Choice` (sliding pill buttons), `Select`, `Readout`, `Legend`, `Hint`. |
+| [`draw.ts`](src/sim/draw.ts) | `circle`, `line`, `arrow`, `text`, `grid`, `chart`, `bars`, `rrect`, `makeBuffer` (fast per-pixel drawing), `downloadCanvas` (Save PNG). |
+| [`math.ts`](src/sim/math.ts) | `rk4` integrator, seeded `rng`, `gaussian`, Perlin `makeNoise`, `histogram`, `mean`/`stdev`, `collide1D`, `niceStep`, `fmt` for readouts. |
+| [`theme.ts`](src/sim/theme.ts) | `useTheme()` reads the site's CSS colours so canvases match light and dark mode; `alpha`, `hue`, `PALETTE`. |
+| [`audio.ts`](src/sim/audio.ts) | `tone()` for optional sound effects (sorting beeps, Geiger clicks, cradle clacks). |
+
+```mermaid
+sequenceDiagram
+  participant B as Browser
+  participant S as Stage
+  participant T as Your Tool
+  loop every animation frame
+    B->>S: requestAnimationFrame(now)
+    S->>S: dt = min(50 ms, now − last) × speed (0 while paused)
+    S->>S: scale context to world units
+    S->>T: onFrame(ctx, { w, h, dt, t, frame })
+    T->>T: step the simulation by dt, then draw
+  end
+  B->>S: pointerdown / move / up
+  S->>T: onPointer({ type, x, y } in world units)
+```
+
+<details>
+<summary><b>🧪 A complete simulation in ~40 lines</b></summary>
+
+```tsx
+import { useRef, useState } from 'react'
+import Stage from '../../sim/Stage'
+import { Hint, PlayBar, Readout, SimLayout, Slider, useRunning } from '../../sim/controls'
+import { circle, clear } from '../../sim/draw'
+import { fmt } from '../../sim/math'
+import { useTheme } from '../../sim/theme'
+
+export default function BouncingBall() {
+  const theme = useTheme()
+  const [running, setRunning] = useRunning()  // starts paused under reduced motion
+  const [gravity, setGravity] = useState(900)
+  const ball = useRef({ y: 60, v: 0 })        // mutable sim state lives in a ref
+  const [height, setHeight] = useState(0)
+
+  return (
+    <SimLayout
+      stage={
+        <>
+          <Stage
+            world={[600, 400]}
+            running={running}
+            label="A ball bouncing on the floor"
+            onPointer={(p) => p.type === 'down' && Object.assign(ball.current, { y: p.y, v: 0 })}
+            onFrame={(ctx, f) => {
+              const b = ball.current
+              b.v += gravity * f.dt                       // dt is 0 while paused
+              b.y += b.v * f.dt
+              if (b.y > 380) [b.y, b.v] = [380, -b.v * 0.85]
+              clear(ctx, f.w, f.h, theme.sunken)
+              circle(ctx, 300, b.y, 20, theme.accent)
+              if (f.frame % 10 === 0) setHeight(380 - b.y) // throttle React updates
+            }}
+          />
+          <Readout items={[['Height', `${fmt(height, 0)} px`]]} />
+        </>
+      }
+    >
+      <PlayBar running={running} setRunning={setRunning} onReset={() => (ball.current = { y: 60, v: 0 })} />
+      <Slider label="Gravity" value={gravity} min={100} max={2000} unit=" px/s²" onChange={setGravity} />
+      <Hint>Click anywhere to drop the ball from there.</Hint>
+    </SimLayout>
+  )
+}
+```
+
+</details>
+
+<details>
+<summary><b>📐 Conventions every simulation follows</b></summary>
+
+- **Pure logic lives next to the component** (`pendulum.ts`, `sorts.ts`, `grayscott.ts`…) and is covered by the `src/tools/sims-*.test.ts` suites: energy conservation, known answers (27 takes 111 Collatz steps; 8 queens have 92 solutions; an AVL tree stays balanced) and invariants.
+- **State split:** per-frame state in `useRef`, UI parameters in `useState`, and readouts pushed to React only every few frames.
+- **Step-by-step algorithms are generators.** Each `yield` is one compare, swap or visit, and a speed slider decides how many run per frame. That makes *Step* and *Play* free.
+- **Themed canvases:** colours come from `useTheme()` or a deliberately dark stage (`className="sim-dark"`), so both modes look right.
+- **Accessible:** the canvas has a descriptive `label`, every control is a real button, slider or checkbox, and nothing moves on its own under `prefers-reduced-motion`.
+- **Heavy maths stays light:** typed arrays, low-resolution pixel buffers scaled up, spatial grids for neighbour search, and a cap on `dt`, so a slow frame never makes the physics explode.
+
+</details>
+
+## 🔒 Privacy, network and motion
+
+- **Local first.** Tools run on JavaScript in your tab. Camera, microphone and screen access (QR reader, webcam test, audio visualizer, screen recorder) are requested only when you use them and never leave your device.
+- **Honest network use.** A tool that has to call out sets `network` in its `meta.ts`. That text appears in its FAQ and on the [privacy page](https://4lltools.morizdigital.com/privacy) instead of the usual "nothing leaves your device" promise.
+- **No cookies.** A few tools remember small preferences (recent emoji, Pomodoro settings, time zones, typing best scores) in `localStorage`.
+- **Motion.** Transitions use real spring physics pre-computed into CSS `linear()` easings (see `src/motion/springs.ts`). Under reduced motion, animations are removed and simulations start paused with a note explaining why.
+
+## 🚀 Run it locally
+
+Needs **Node.js 20+** (the build pins Node 22 in `.node-version`).
+
+```bash
+git clone https://github.com/mrzkprtm/4llTools.git
+cd 4llTools
+npm install
+npm run dev      # dev server at http://localhost:5173
+```
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the Vite dev server with hot reload |
+| `npm test` | Run every unit test once with Vitest |
+| `npm run build` | Typecheck, bundle and prerender everything into `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `node docs/readme/generate.mjs` | Redraw this README's banner, category chart and tool catalog |
+
+CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs `npm test` and `npm run build` on every pull request and push to `main`.
+
+## ➕ Add a new tool
 
 Each folder in `src/tools/` is one tool. The folder name becomes its URL, and the home page picks it up automatically, so you never edit a central list.
 
@@ -237,32 +628,29 @@ Each folder in `src/tools/` is one tool. The folder name becomes its URL, and th
    }
    ```
 
-2. Create `src/tools/my-tool/Tool.tsx` with a default-exported React component.
+2. Create `src/tools/my-tool/Tool.tsx` with a default-exported React component. For a simulation, start from the [example above](#-the-simulation-kit) or copy `src/tools/pendulum-lab`.
 3. Put any pure logic in its own file (like `format.ts`) and test it in `src/tools/my-tool/my-tool.test.ts`. Tool-specific styles can go in `src/tools/my-tool/tool.css`, imported from `Tool.tsx`, with class names prefixed to avoid clashes.
+4. Run `node docs/readme/generate.mjs` to add it to the catalog and chart in this README.
 
-   For an animated or interactive simulation, build on the kit in `src/sim/`: `Stage` is a canvas that runs an animation loop in fixed world units (sized for the screen's pixel ratio, paused while scrolled away, with pointer events mapped into world coordinates), `controls.tsx` has the play bar, sliders, toggles and readouts, and `draw.ts`, `math.ts` (RK4, seeded random numbers, Perlin noise) and `theme.ts` (light and dark colors) cover the rest. Simulations start paused when the visitor prefers reduced motion. `src/tools/pendulum-lab` is a small example.
-4. Add a row to the table above.
+The tool is now live at `/my-tool` and shows up in the sidebar, on the home page, in its category page and in the sitemap.
 
-The tool is now live at `/my-tool` and shows up in the sidebar, on the home page and in the sitemap. Its search title and description come from `meta.ts`, so keep the description to one clear sentence. Each tool is loaded only when it's opened, so adding more doesn't slow down the home page.
+<details>
+<summary><b>✅ Checks the test suite enforces</b></summary>
 
-## Deploy on Cloudflare Pages
+- Every tool has a **unique name** and a **unique 1–3 character symbol**.
+- Its **icon** exists in Majesticons (the build fails otherwise, with a helpful message).
+- Its page **title** fits in 70 characters and its **description** (plus the site's suffix) is 70–160 characters, so search results show it in full.
+- Titles and descriptions are unique across the whole site.
 
-1. In the Cloudflare dashboard go to **Workers & Pages → Create → Pages → Connect to Git** and pick this repository.
-2. Use these build settings:
-   - Framework preset: **Vite** (or None)
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-3. Click **Save and Deploy**. Every push to `main` deploys, and pull requests get preview links.
+</details>
 
-`.node-version` pins Node 22 for the build, which Vite needs. The build writes one HTML file per tool (`dist/qr-reader.html` and so on), which Pages serves at `/qr-reader`, and a `404.html` for unknown paths. `public/_headers` sends `X-Robots-Tag: noindex` on the `*.pages.dev` addresses (production and previews), so only the custom domain shows up in search. Pages sites are always HTTPS, which the camera needs.
-
-## SEO
+## 🔎 SEO
 
 `npm run build` prerenders every page, so search engines see real content without running JavaScript. Everything is generated from each tool's `meta.ts`, so a new tool gets all of it automatically:
 
 - **Pages:** the home page, one page per tool, and one page per category at `/category/<key>`. Tool pages link to their category and to up to six related tools.
 - **Tags:** its own title, description, canonical link, robots, Open Graph and Twitter tags.
-- **Share images:** a 1200×630 PNG per tool, per category and for the home page (`/og/…`), drawn by `build/seo-assets.ts` with the site's font and category colours.
+- **Share images:** a 1200×630 PNG per tool, per category and for the home page (`/og/…`), drawn by `build/seo-assets.ts` with the site's font and category colors.
 - **Structured data (JSON-LD):** `Organization`, `WebSite` and the category list on home. `CollectionPage` and breadcrumbs on categories. `WebApplication`, breadcrumbs and `FAQPage` on tools, matching the FAQ shown on the page.
 - **Icons:** `favicon.ico`, `favicon.svg`, `apple-touch-icon.png`, manifest icons including a maskable one, and `site.webmanifest`.
 - **Files for crawlers:** `sitemap.xml`, `robots.txt`, and `llms.txt` / `llms-full.txt` (a Markdown map of the tools for AI assistants).
@@ -280,10 +668,74 @@ These environment variables in Cloudflare Pages (**Settings → Variables and Se
 
 After deploying, submit `https://<your domain>/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 
-## Deploy on Vercel
+## 📦 Deploy
+
+The build is a plain static folder (`dist/`), so any static host works. Both of these deploy every push to `main` and give pull requests preview links.
+
+<details open>
+<summary><b>☁️ Cloudflare Pages</b> (recommended)</summary>
+
+1. In the Cloudflare dashboard go to **Workers & Pages → Create → Pages → Connect to Git** and pick this repository.
+2. Use these build settings:
+   - Framework preset: **Vite** (or None)
+   - Build command: `npm run build`
+   - Build output directory: `dist`
+3. Click **Save and Deploy**. Every push to `main` deploys, and pull requests get preview links.
+
+`.node-version` pins Node 22 for the build, which Vite needs. The build writes one HTML file per tool (`dist/qr-reader.html` and so on), which Pages serves at `/qr-reader`, and a `404.html` for unknown paths. `public/_headers` sends `X-Robots-Tag: noindex` on the `*.pages.dev` addresses (production and previews), so only the custom domain shows up in search. Pages sites are always HTTPS, which the camera needs.
+
+</details>
+
+<details>
+<summary><b>▲ Vercel</b></summary>
 
 1. Go to [vercel.com/new](https://vercel.com/new) and import this repository.
 2. Vercel detects Vite on its own. Keep the defaults (build command `npm run build`, output folder `dist`) and click **Deploy**.
 3. From then on, every push to `main` deploys automatically, and every pull request gets its own preview link.
 
 `vercel.json` turns on clean URLs, so `/qr-reader` serves the prerendered `qr-reader.html`, and sends any other path to `index.html`. The camera needs HTTPS, which Vercel provides.
+
+</details>
+
+## 📜 Copyright and licences
+
+© 2026 Moriz Digital. All rights reserved. The source is public so you can see how the tools work. That doesn't by itself grant a licence to reuse it; see the [licences page](https://4lltools.morizdigital.com/licenses).
+
+4llTools is built on open-source libraries, icons and fonts (MIT, ISC, BSD, Apache-2.0, OFL and others). The build lists every one on the licences page and writes their full licence texts to [`/third-party-licenses.txt`](https://4lltools.morizdigital.com/third-party-licenses.txt). Also see the [privacy policy](https://4lltools.morizdigital.com/privacy), [terms of use](https://4lltools.morizdigital.com/terms) and [about page](https://4lltools.morizdigital.com/about).
+
+## ❓ FAQ
+
+<details>
+<summary><b>Does anything I type or upload leave my device?</b></summary>
+
+Not for 196 of the 200 tools. Four tools need the network, and each says so in its FAQ and on the privacy page: **DNS Lookup** and **CORS & Security Header Checker** query the address you enter, **HTTP Status Code Reference** can check a live URL, and **Speech to Text** uses your browser's speech service. They send only what that job needs, straight to the named service.
+
+</details>
+
+<details>
+<summary><b>Why is a simulation paused when I open it?</b></summary>
+
+Your system is set to reduce motion, so simulations wait for you to press **Play**. Everything else still works: drag, step and reset.
+
+</details>
+
+<details>
+<summary><b>Can I save what I make?</b></summary>
+
+Most art tools and several simulations have **Save PNG**. Converters and generators have copy and download buttons. Nothing is stored on a server, so download anything you want to keep.
+
+</details>
+
+<details>
+<summary><b>Does it work on phones and tablets?</b></summary>
+
+Yes. The layout collapses to one column, the tool list becomes a drawer, and every canvas takes touch input: drag with a finger wherever the desktop version uses the mouse.
+
+</details>
+
+<details>
+<summary><b>How do I report a bug or ask for a tool?</b></summary>
+
+Open an issue on [GitHub](https://github.com/mrzkprtm/4llTools/issues).
+
+</details>

@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-label="4llTools: 200 free tools and simulations that run in your browser">
+<style>
+  .t { font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; fill: #efebe2; }
+  .m { font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #a39d8f; letter-spacing: 0.08em; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes swing { 0%, 100% { transform: rotate(26deg); } 50% { transform: rotate(-26deg); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin2 { to { transform: rotate(-360deg); } }
+  @keyframes scroll { to { transform: translateX(-120px); } }
+  @keyframes bar { 0%, 100% { transform: scaleY(var(--a)); } 50% { transform: scaleY(var(--b)); } }
+  @keyframes pop { 0%, 100% { transform: scale(0.6); opacity: 0.35; } 50% { transform: scale(1); opacity: 1; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  .rise { animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .pend { transform-origin: 900px 72px; animation: swing 2.4s ease-in-out infinite; }
+  .orbit { transform-origin: 1148px 150px; animation: spin 6s linear infinite; }
+  .moon { transform-origin: 1148px 150px; animation: spin2 2.6s linear infinite; }
+  .wave { animation: scroll 1.6s linear infinite; }
+  .bar { transform-box: fill-box; transform-origin: bottom; animation: bar 1.8s ease-in-out infinite; }
+  .dot { transform-box: fill-box; transform-origin: center; animation: pop 2s ease-in-out infinite; }
+  .caret { animation: blink 1s steps(1) infinite; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<defs>
+  <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#2f2d28" stroke-width="1" opacity="0.55"/></pattern>
+  <clipPath id="waveclip"><rect x="836" y="236" width="224" height="124" rx="10"/></clipPath>
+</defs>
+<rect width="1280" height="400" rx="20" fill="#141311"/>
+<rect width="1280" height="400" rx="20" fill="url(#grid)"/>
+<rect x="0.5" y="0.5" width="1279" height="399" rx="19.5" fill="none" stroke="#2f2d28"/>
+
+<g class="rise"><text x="64" y="92" class="m" font-size="15">A POCKET WORKBENCH · 200 TOOLS</text></g>
+<g class="rise" style="animation-delay: 80ms"><text x="60" y="176" class="t" font-size="96" font-weight="800" letter-spacing="-4"><tspan fill="#ff7033">4</tspan>ll<tspan font-weight="400">Tools</tspan><tspan class="caret" fill="#ff7033" font-weight="400">_</tspan></text></g>
+<g class="rise" style="animation-delay: 160ms">
+  <text x="64" y="232" class="t" font-size="27" font-weight="650">Small tools for everyday jobs.</text>
+  <text x="64" y="268" class="t" font-size="27" font-weight="400" fill="#a39d8f" style="fill: #a39d8f">Nothing you type leaves this tab.</text>
+</g>
+<g class="rise" style="animation-delay: 240ms" font-family="'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="14">
+  <g transform="translate(64 306)"><rect width="157" height="34" rx="17" fill="#1c1b18" stroke="#2f2d28"/><text x="14" y="22" fill="#efebe2">100 simulations</text></g>
+  <g transform="translate(236 306)"><rect width="182.79999999999998" height="34" rx="17" fill="#1c1b18" stroke="#2f2d28"/><text x="14" y="22" fill="#efebe2">100 everyday tools</text></g>
+  <g transform="translate(428 306)"><rect width="217.2" height="34" rx="17" fill="#1c1b18" stroke="#2f2d28"/><text x="14" y="22" fill="#efebe2">0 uploads · 0 sign-ups</text></g>
+</g>
+
+<!-- Pendulum -->
+<g>
+  <rect x="836" y="40" width="224" height="180" rx="10" fill="#1c1b18" stroke="#2f2d28"/>
+  <text x="850" y="208" class="m" font-size="11">PHYSICS</text>
+  <rect x="870" y="64" width="60" height="8" rx="2" fill="#efebe2"/>
+  <path d="M858 162 A 42 42 0 0 0 942 162" fill="none" stroke="#2f2d28" stroke-dasharray="3 5" transform="translate(0 0)"/>
+  <g class="pend"><line x1="900" y1="72" x2="900" y2="172" stroke="#efebe2" stroke-width="2.5"/><circle cx="900" cy="172" r="13" fill="#ff7033" stroke="#1c1b18" stroke-width="3"/></g>
+  <circle cx="900" cy="72" r="4" fill="#1c1b18" stroke="#efebe2" stroke-width="2"/>
+</g>
+
+<!-- Orbit -->
+<g>
+  <rect x="1076" y="40" width="152" height="180" rx="10" fill="#0d0c0b" stroke="#2f2d28"/>
+  <text x="1090" y="208" class="m" font-size="11" style="fill:#a39d8f">SPACE</text>
+  <circle cx="1148" cy="150" r="46" fill="none" stroke="#3a3833" stroke-dasharray="2 4"/>
+  <circle cx="1148" cy="150" r="12" fill="#f59f00"/><circle cx="1148" cy="150" r="20" fill="#f59f00" opacity="0.18"/>
+  <g class="orbit"><circle cx="1194" cy="150" r="6" fill="#4dabf7"/><g class="moon" style="transform-origin: 1194px 150px"><circle cx="1206" cy="150" r="2.5" fill="#efebe2"/></g></g>
+  <circle class="dot" style="animation-delay:0s" cx="1092" cy="60" r="1.4" fill="#efebe2"/><circle class="dot" style="animation-delay:0.3s" cx="1210" cy="76" r="1.4" fill="#efebe2"/><circle class="dot" style="animation-delay:0.6s" cx="1100" cy="120" r="1.4" fill="#efebe2"/><circle class="dot" style="animation-delay:0.8999999999999999s" cx="1214" cy="196" r="1.4" fill="#efebe2"/><circle class="dot" style="animation-delay:1.2s" cx="1130" cy="70" r="1.4" fill="#efebe2"/><circle class="dot" style="animation-delay:1.5s" cx="1180" cy="190" r="1.4" fill="#efebe2"/>
+</g>
+
+<!-- Wave -->
+<g>
+  <rect x="836" y="236" width="224" height="124" rx="10" fill="#1c1b18" stroke="#2f2d28"/>
+  <g clip-path="url(#waveclip)"><g class="wave">
+    <path d="M836,298 L842,289.9655581462514 L848,282.7175834403957 L854,276.9655581462514 L860,273.272530576326 L866,272 L872,273.272530576326 L878,276.9655581462514 L884,282.7175834403957 L890,289.96555814625134 L896,298 L902,306.0344418537486 L908,313.2824165596043 L914,319.0344418537486 L920,322.727469423674 L926,324 L932,322.727469423674 L938,319.03444185374866 L944,313.2824165596043 L950,306.03444185374866 L956,298.00000000000006 L962,289.9655581462514 L968,282.7175834403957 L974,276.9655581462514 L980,273.272530576326 L986,272 L992,273.272530576326 L998,276.96555814625134 L1004,282.7175834403957 L1010,289.96555814625134 L1016,298 L1022,306.0344418537486 L1028,313.2824165596043 L1034,319.0344418537486 L1040,322.727469423674 L1046,324 L1052,322.727469423674 L1058,319.03444185374866 L1064,313.2824165596043 L1070,306.03444185374866 L1076,298.00000000000006 L1082,289.9655581462514 L1088,282.7175834403957 L1094,276.9655581462514 L1100,273.272530576326 L1106,272 L1112,273.272530576326 L1118,276.96555814625134 L1124,282.7175834403957 L1130,289.96555814625134 L1136,298 L1142,306.03444185374866 L1148,313.2824165596043 L1154,319.03444185374866 L1160,322.727469423674 L1166,324 L1172,322.727469423674 L1178,319.03444185374866 L1184,313.2824165596043 L1190,306.0344418537486 L1196,298" fill="none" stroke="#ff7033" stroke-width="3" stroke-linecap="round"/>
+    <path d="M836,284 L842,284.68520877186785 L848,286.6737620787507 L854,289.77100646790535 L860,293.6737620787507 L866,298 L872,302.3262379212493 L878,306.22899353209465 L884,309.3262379212493 L890,311.31479122813215 L896,312 L902,311.31479122813215 L908,309.3262379212493 L914,306.22899353209465 L920,302.3262379212493 L926,298 L932,293.6737620787507 L938,289.7710064679054 L944,286.6737620787507 L950,284.68520877186785 L956,284 L962,284.68520877186785 L968,286.6737620787507 L974,289.77100646790535 L980,293.6737620787507 L986,298 L992,302.3262379212493 L998,306.2289935320946 L1004,309.3262379212493 L1010,311.31479122813215 L1016,312 L1022,311.31479122813215 L1028,309.3262379212493 L1034,306.22899353209465 L1040,302.3262379212493 L1046,298 L1052,293.67376207875077 L1058,289.7710064679054 L1064,286.67376207875077 L1070,284.68520877186785 L1076,284 L1082,284.68520877186785 L1088,286.6737620787507 L1094,289.77100646790535 L1100,293.6737620787507 L1106,298 L1112,302.32623792124923 L1118,306.2289935320946 L1124,309.32623792124923 L1130,311.31479122813215 L1136,312 L1142,311.31479122813215 L1148,309.3262379212493 L1154,306.2289935320946 L1160,302.3262379212493 L1166,298.00000000000006 L1172,293.67376207875077 L1178,289.7710064679054 L1184,286.67376207875077 L1190,284.68520877186785 L1196,284" fill="none" stroke="#1c7ed6" stroke-width="2" opacity="0.7"/>
+  </g></g>
+  <text x="850" y="350" class="m" font-size="11">MATH</text>
+</g>
+
+<!-- Sorting bars -->
+<g>
+  <rect x="1076" y="236" width="152" height="124" rx="10" fill="#1c1b18" stroke="#2f2d28"/>
+  <rect class="bar" style="--a:0.35;--b:0.2;animation-delay:0s" x="1090" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <rect class="bar" style="--a:0.8;--b:0.95;animation-delay:0.12s" x="1106" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <rect class="bar" style="--a:0.55;--b:0.65;animation-delay:0.24s" x="1122" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <rect class="bar" style="--a:0.2;--b:0.45;animation-delay:0.36s" x="1138" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <rect class="bar" style="--a:0.95;--b:0.75;animation-delay:0.48s" x="1154" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <rect class="bar" style="--a:0.65;--b:0.35;animation-delay:0.6s" x="1170" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <rect class="bar" style="--a:0.45;--b:0.8;animation-delay:0.72s" x="1186" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <rect class="bar" style="--a:0.75;--b:0.55;animation-delay:0.84s" x="1202" y="252" width="11" height="80" rx="2" fill="hsl(175 55% 62%)"/>
+  <text x="1090" y="350" class="m" font-size="11">ALGORITHMS</text>
+</g>
+</svg>
