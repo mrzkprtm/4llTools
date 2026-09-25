@@ -1,0 +1,80 @@
+:root {
+  --bg: #f7f7fb;
+  --surface: #ffffff;
+  --text: #16161d;
+  --muted: #5d5d6e;
+  --border: #e3e3ec;
+  --accent: #4f46e5;
+  --accent-text: #ffffff;
+  --danger: #c0262d;
+  --ok: #157f3b;
+  --radius: 12px;
+  color-scheme: light;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111117;
+    --surface: #1b1b24;
+    --text: #ececf3;
+    --muted: #a0a0b2;
+    --border: #2d2d3a;
+    --accent: #8b85ff;
+    --accent-text: #111117;
+    --danger: #ff6b70;
+    --ok: #4ade80;
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.5; }
+a { color: var(--accent); }
+h1, h2 { line-height: 1.2; }
+
+.app { min-height: 100vh; }
+.topbar { border-bottom: 1px solid var(--border); background: var(--surface); padding: 12px 16px; }
+.brand { font-weight: 700; font-size: 1.15rem; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 2px; }
+.brand-mark { background: var(--accent); color: var(--accent-text); border-radius: 6px; padding: 0 7px; margin-right: 2px; }
+.content { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+
+.hero { margin-bottom: 24px; }
+.hero h1 { font-size: clamp(1.5rem, 4vw, 2.1rem); margin: 0 0 6px; }
+.muted { color: var(--muted); }
+.search { width: 100%; font-size: 1rem; padding: 12px 14px; margin-top: 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+
+.category h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 28px 0 10px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.card { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); color: var(--text); text-decoration: none; transition: border-color 0.15s, transform 0.15s; }
+.card:hover, .card:focus-visible { border-color: var(--accent); transform: translateY(-1px); }
+.card-icon { font-size: 1.6rem; }
+.card-name { font-weight: 600; }
+.card-desc { color: var(--muted); font-size: 0.9rem; }
+
+.back { display: inline-block; margin-bottom: 12px; text-decoration: none; }
+.tool-title { margin: 0 0 4px; font-size: 1.6rem; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-top: 16px; }
+
+textarea, input[type='text'], input[type='number'], select {
+  width: 100%; font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text);
+}
+textarea { min-height: 160px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9rem; resize: vertical; }
+label { display: block; font-weight: 600; margin: 12px 0 6px; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+.btn { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+.btn:hover:not(:disabled) { border-color: var(--accent); }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+.error { color: var(--danger); }
+.ok { color: var(--ok); }
+.output { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; word-break: break-all; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 12px; }
+.stat { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.stat b { display: block; font-size: 1.4rem; }
+.video-wrap { position: relative; width: 100%; max-width: 480px; aspect-ratio: 1; background: #000; border-radius: var(--radius); overflow: hidden; }
+.video-wrap video { width: 100%; height: 100%; object-fit: cover; }
+.video-wrap .frame { position: absolute; inset: 15%; border: 3px solid rgba(255, 255, 255, 0.85); border-radius: 12px; pointer-events: none; }
+.qr-preview { background: #fff; padding: 12px; border-radius: 8px; display: inline-block; }
+.qr-preview canvas { display: block; max-width: 100%; height: auto; }
+a.btn { text-decoration: none; display: inline-block; }
