@@ -258,9 +258,27 @@ The tool is now live at `/my-tool` and shows up in the sidebar, on the home page
 
 ## SEO
 
-`npm run build` prerenders every page, so search engines see real content without running JavaScript. Each page gets its own title, description, canonical link, Open Graph and Twitter tags, and JSON-LD structured data. The build also writes `sitemap.xml` and `robots.txt`. All of this lives in `src/seo.ts` and the `prerender` plugin in `vite.config.ts`.
+`npm run build` prerenders every page, so search engines see real content without running JavaScript. Everything is generated from each tool's `meta.ts`, so a new tool gets all of it automatically:
 
-The site address used in those tags defaults to `https://4lltools.morizdigital.com`. To change it, set the `VITE_SITE_URL` environment variable in Cloudflare Pages (**Settings → Variables and Secrets**), or edit the default in `src/seo.ts`. After the first deploy, submit `https://<your domain>/sitemap.xml` in Google Search Console.
+- **Pages:** the home page, one page per tool, and one page per category at `/category/<key>`. Tool pages link to their category and to up to six related tools.
+- **Tags:** its own title, description, canonical link, robots, Open Graph and Twitter tags.
+- **Share images:** a 1200×630 PNG per tool, per category and for the home page (`/og/…`), drawn by `build/seo-assets.ts` with the site's font and category colours.
+- **Structured data (JSON-LD):** `Organization`, `WebSite` and the category list on home. `CollectionPage` and breadcrumbs on categories. `WebApplication`, breadcrumbs and `FAQPage` on tools, matching the FAQ shown on the page.
+- **Icons:** `favicon.ico`, `favicon.svg`, `apple-touch-icon.png`, manifest icons including a maskable one, and `site.webmanifest`.
+- **Files for crawlers:** `sitemap.xml`, `robots.txt`, and `llms.txt` / `llms-full.txt` (a Markdown map of the tools for AI assistants).
+
+If a tool sends anything over the network, set `network` in its `meta.ts` to say what goes where. Its FAQ then says that instead of promising the data stays on the device.
+
+These environment variables in Cloudflare Pages (**Settings → Variables and Secrets**) change what is generated:
+
+| Variable | What it does |
+| --- | --- |
+| `VITE_SITE_URL` | Site address for canonical links, share images and the sitemap. Defaults to `https://4lltools.morizdigital.com`. |
+| `VITE_GOOGLE_SITE_VERIFICATION` | Adds Google Search Console's `google-site-verification` meta tag. |
+| `VITE_BING_SITE_VERIFICATION` | Adds Bing Webmaster Tools' `msvalidate.01` meta tag. |
+| `VITE_YANDEX_VERIFICATION` | Adds Yandex Webmaster's verification meta tag. |
+
+After deploying, submit `https://<your domain>/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
 
 ## Deploy on Vercel
 

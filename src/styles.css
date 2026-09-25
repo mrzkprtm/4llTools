@@ -236,6 +236,24 @@ input.search::-webkit-search-cancel-button { cursor: pointer; }
 .panel > :first-child { margin-top: 0; }
 .panel > :last-child { margin-bottom: 0; }
 .panel label:first-child { margin-top: 0; }
+/* ---------- SEO sections: FAQ, related tools, category pages ---------- */
+
+.category h2 a { color: inherit; text-decoration: none; }
+.category h2 a:hover { color: var(--accent); }
+.tool-faq, .tool-related, .more-cats { margin-top: 48px; }
+.tool-faq h2, .tool-related h2, .more-cats h2 {
+  margin: 0 0 14px; font-family: var(--mono); font-size: 0.74rem; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted);
+}
+.tool-faq details { border-top: 1px solid var(--border); padding: 14px 0; }
+.tool-faq details:last-child { border-bottom: 1px solid var(--border); }
+.tool-faq summary { cursor: pointer; font-weight: 650; }
+.tool-faq summary:hover { color: var(--accent); }
+.tool-faq details p { margin: 8px 0 0; max-width: 68ch; color: var(--muted); }
+.category-page { margin-top: 0; }
+.category-page > .tool-desc { margin-bottom: 28px; }
+.more-cats p { margin: 0; line-height: 1.9; }
+
 .not-found { padding: 48px 0; }
 .not-found-icon { margin-bottom: 20px; --icon-2-o: 0.35; animation: wobble 2.4s var(--ease-out) infinite; transform-origin: center; }
 .not-found h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); max-width: 22ch; margin: 0 0 24px; letter-spacing: -0.03em; }

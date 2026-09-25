@@ -7,4 +7,6 @@ export const meta: ToolMeta = {
   keywords: ['speech to text', 'dictation', 'voice typing', 'transcribe', 'voice recognition', 'suara ke teks', 'dikte', 'transkripsi', 'ketik suara'],
   symbol: 'Stt',
   icon: 'microphone',
+  network:
+    'Your browser sends the audio to its own speech service (Google in Chrome, Apple in Safari) to turn it into text. 4llTools never receives it.',
 }
