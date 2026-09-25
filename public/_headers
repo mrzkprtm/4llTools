@@ -1,0 +1,7 @@
+# Keep the *.pages.dev copies (production and every preview) out of search
+# results, so only the custom domain gets indexed.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex

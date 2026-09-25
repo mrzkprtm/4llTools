@@ -80,7 +80,7 @@ The tool is now live at `/my-tool` and shows up in the sidebar, on the home page
    - Build output directory: `dist`
 3. Click **Save and Deploy**. Every push to `main` deploys, and pull requests get preview links.
 
-`.node-version` pins Node 22 for the build, which Vite needs. The build writes one HTML file per tool (`dist/qr-reader.html` and so on), which Pages serves at `/qr-reader`, and a `404.html` for unknown paths. Pages sites are always HTTPS, which the camera needs.
+`.node-version` pins Node 22 for the build, which Vite needs. The build writes one HTML file per tool (`dist/qr-reader.html` and so on), which Pages serves at `/qr-reader`, and a `404.html` for unknown paths. `public/_headers` sends `X-Robots-Tag: noindex` on the `*.pages.dev` addresses (production and previews), so only the custom domain shows up in search. Pages sites are always HTTPS, which the camera needs.
 
 ## SEO
 
