@@ -9,6 +9,11 @@ export type Category =
   | 'Image'
   | 'Network'
   | 'Utility'
+  | 'Physics'
+  | 'Math'
+  | 'Algorithms'
+  | 'Science'
+  | 'Art'
 
 export interface ToolMeta {
   /** Short display name. */

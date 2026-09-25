@@ -40,7 +40,7 @@ export const absoluteUrl = (path: string) => SITE_URL + path
 export function homeMeta(tools: Tool[]): PageMeta {
   return {
     title: `${SITE_NAME}: ${tools.length} Free Online Tools That Run in Your Browser`,
-    description: `${tools.length} free online tools: QR code reader, JSON formatter, PDF merge, image converters, password tools, calculators and more. No sign-up, runs in your browser.`,
+    description: `${tools.length} free online tools: physics and math simulations, algorithm visualizers, QR, JSON, PDF and image tools and calculators. No sign-up, runs in your browser.`,
     path: '/',
     image: '/og-image.png',
   }
@@ -294,7 +294,7 @@ export function llmsTxt(tools: Tool[]): string {
   const lines = [
     `# ${SITE_NAME}`,
     '',
-    `> ${tools.length} free online tools that run entirely in the browser: QR codes, JSON and code formatters, PDF and image tools, password and security tools, converters and calculators. No sign-up, and input stays on the user's device unless a tool is marked "network".`,
+    `> ${tools.length} free online tools that run entirely in the browser: QR codes, JSON and code formatters, PDF and image tools, password and security tools, converters, calculators, and interactive physics, math, science and algorithm simulations. No sign-up, and input stays on the user's device unless a tool is marked "network".`,
     '',
     `Every tool lives at ${SITE_URL}/<slug> and works without an account. Tools marked "network" send requests from the user's browser to the address they enter, never through 4llTools.`,
     '',
