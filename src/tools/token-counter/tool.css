@@ -1,0 +1,21 @@
+.tk-h { font-size: 1rem; margin: 22px 0 0; }
+.tk-stale { opacity: 0.7; transition: opacity 0.2s; }
+.tk-main { border-color: var(--accent); background: var(--accent-soft); }
+.tk-windows { display: grid; gap: 8px; margin-top: 10px; }
+.tk-win { display: grid; grid-template-columns: 44px minmax(0, 1fr) 72px; gap: 10px; align-items: center; font-size: 0.86rem; }
+.tk-win-label { font-family: var(--mono); font-weight: 600; }
+.tk-win-pct { font-family: var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+.tk-win .bar > i.tk-warn { background: #d97706; }
+.tk-win .bar > i.tk-over { background: var(--danger); }
+.tk-vis {
+  margin-top: 10px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken);
+  font-family: var(--mono); font-size: 0.86rem; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 360px; overflow: auto;
+}
+.tk-tok { border-radius: 3px; padding: 1px 0; animation: tk-in 0.3s var(--ease-out) backwards; }
+@keyframes tk-in { from { opacity: 0; } }
+.tk-c0 { background: color-mix(in srgb, #f97316 22%, transparent); }
+.tk-c1 { background: color-mix(in srgb, #0ea5e9 22%, transparent); }
+.tk-c2 { background: color-mix(in srgb, #22c55e 22%, transparent); }
+.tk-c3 { background: color-mix(in srgb, #a855f7 22%, transparent); }
+.tk-c4 { background: color-mix(in srgb, #eab308 26%, transparent); }
+.tk-tok:hover { outline: 1px solid var(--accent); }

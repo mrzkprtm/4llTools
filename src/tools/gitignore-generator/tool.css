@@ -1,0 +1,23 @@
+.gi-group { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 8px; align-items: start; margin: 10px 0; }
+.gi-group-name { font-size: 0.78rem; font-family: var(--mono); color: var(--muted); padding-top: 6px; text-transform: uppercase; letter-spacing: 0.04em; }
+.gi-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.gi-chip {
+  display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 0.86rem; padding: 5px 11px 5px 8px; border-radius: 999px;
+  border: 1px solid var(--border); background: var(--sunken); color: var(--text); cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s, transform var(--spring-snap-ms, 300ms) var(--spring-snap, ease-out);
+}
+.gi-chip:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.gi-chip:active { transform: scale(0.94); }
+.gi-chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.gi-tick { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); }
+.gi-chip.on .gi-tick { background: var(--accent); color: var(--accent-text); border-color: var(--accent); animation: gi-pop var(--spring-bouncy-ms, 500ms) var(--spring-bouncy, ease-out); }
+.gi-picked { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 36px; padding: 8px; border: 1px dashed var(--border); border-radius: var(--radius-sm); }
+.gi-sel { cursor: pointer; font: inherit; font-size: 0.84rem; }
+.gi-sel:hover { border-color: var(--danger); color: var(--danger); }
+.gi-clear { padding: 4px 10px; font-size: 0.82rem; margin-left: auto; }
+.gi-stack { padding: 5px 10px; font-size: 0.84rem; }
+@keyframes gi-pop { 0% { transform: scale(0.3); } 100% { transform: none; } }
+@media (max-width: 480px) {
+  .gi-group { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .gi-group-name { padding-top: 0; }
+}

@@ -1,0 +1,42 @@
+.ce-drop {
+  border: 2px dashed var(--border); background: var(--sunken); border-radius: var(--radius-sm); padding: 14px 16px; position: relative;
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; text-align: center;
+  transition: border-color 0.15s, background-color 0.15s, transform var(--spring-snap-ms) var(--spring-snap);
+}
+.ce-drop.is-over { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.015); animation: breathe 1.2s ease-in-out infinite; }
+.ce-hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.ce-stage { position: relative; margin-top: 12px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); background: repeating-conic-gradient(var(--sunken) 0 25%, var(--surface) 0 50%) 50% / 16px 16px; display: flex; justify-content: center; }
+.ce-stage img { display: block; max-width: 100%; max-height: 460px; cursor: crosshair; user-select: none; -webkit-user-drag: none; animation: ce-reveal 0.5s var(--ease-out) both; touch-action: manipulation; }
+@keyframes ce-reveal { from { opacity: 0; filter: blur(6px) saturate(0.3); transform: scale(1.02); } }
+.ce-loupe {
+  position: absolute; pointer-events: none; width: 38px; height: 38px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, calc(-100% - 12px)); transition: background-color 0.06s linear;
+}
+.ce-ripple { position: absolute; pointer-events: none; width: 16px; height: 16px; border-radius: 50%; border: 2px solid #fff; transform: translate(-50%, -50%); animation: ce-ripple 0.6s var(--ease-out) forwards; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3); }
+@keyframes ce-ripple { to { width: 70px; height: 70px; opacity: 0; } }
+
+.ce-bar { display: flex; height: 16px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); margin-top: 14px; }
+.ce-bar > i { flex-basis: 0; min-width: 3px; transition: flex-grow var(--spring-soft-ms) var(--spring-soft), background-color 0.4s; }
+
+.ce-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 12px; }
+.ce-swatch {
+  appearance: none; font: inherit; text-align: left; cursor: pointer; padding: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
+  background: var(--surface); color: var(--text); display: flex; flex-direction: column; min-width: 0;
+  animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; transition: transform 0.2s var(--ease-out), box-shadow 0.2s;
+}
+.ce-swatch:hover { transform: translateY(-3px); box-shadow: 0 8px 18px -10px rgba(0, 0, 0, 0.45); }
+.ce-swatch:active { transform: scale(0.97); }
+.ce-swatch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ce-chip { height: 78px; display: flex; align-items: flex-end; justify-content: space-between; padding: 8px 10px; font-family: var(--mono); font-weight: 700; font-size: 0.92rem; }
+.ce-meta { padding: 8px 10px; font-size: 0.78rem; color: var(--muted); font-family: var(--mono); line-height: 1.5; overflow-wrap: anywhere; }
+.ce-copied { animation: pop 0.35s var(--spring-bouncy) both; }
+
+.ce-picked { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.ce-pick {
+  display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface);
+  font: inherit; font-family: var(--mono); font-size: 0.82rem; color: var(--text); cursor: pointer; animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both;
+}
+.ce-pick i { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); }
+.ce-pick:hover { border-color: var(--border-strong); }
+.ce-h { font-weight: 600; font-size: 0.92rem; margin: 16px 0 6px; }

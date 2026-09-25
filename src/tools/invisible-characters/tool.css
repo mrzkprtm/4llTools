@@ -1,0 +1,31 @@
+.ic-view {
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken);
+  font-family: var(--mono); font-size: 0.88rem; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 360px; overflow: auto;
+  unicode-bidi: plaintext;
+}
+.ic-badge {
+  display: inline-block; margin: 0 1px; padding: 0 4px; border-radius: 4px; font-size: 0.68rem; font-weight: 700; line-height: 1.5; vertical-align: 1px;
+  color: #fff; background: var(--ic-c, #6b7280); unicode-bidi: isolate; animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) backwards; cursor: help;
+}
+.ic-vis { border-radius: 3px; background: color-mix(in srgb, var(--ic-c) 25%, transparent); box-shadow: inset 0 -2px 0 var(--ic-c); cursor: help; }
+.ic-zero-width { --ic-c: #dc2626; }
+.ic-bidi { --ic-c: #9333ea; }
+.ic-tag { --ic-c: #be185d; }
+.ic-control { --ic-c: #7f1d1d; }
+.ic-space { --ic-c: #2563eb; }
+.ic-soft-hyphen { --ic-c: #0891b2; }
+.ic-separator { --ic-c: #4b5563; }
+.ic-quote { --ic-c: #d97706; }
+.ic-dash { --ic-c: #16a34a; }
+.ic-ellipsis { --ic-c: #0d9488; }
+.ic-key { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--ic-c); vertical-align: -1px; margin-right: 4px; }
+.ic-table td { vertical-align: middle; }
+.ic-table tr.ic-none td:nth-child(2) { color: var(--muted); }
+.ic-alert {
+  display: flex; gap: 10px; align-items: flex-start; margin: 12px 0; padding: 12px 14px; border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent); background: color-mix(in srgb, var(--danger) 8%, transparent);
+  color: var(--text); --icon-1: var(--danger); --icon-2: color-mix(in srgb, var(--danger) 30%, transparent); animation: ic-in 0.35s var(--ease-out) both;
+}
+.ic-alert > div { display: grid; gap: 4px; min-width: 0; font-size: 0.9rem; }
+.ic-alert code { font-family: var(--mono); overflow-wrap: anywhere; color: var(--danger); }
+@keyframes ic-in { from { opacity: 0; transform: translateY(-4px); } }

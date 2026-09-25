@@ -1,0 +1,18 @@
+.ci-chart-wrap { position: relative; margin-top: 16px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); padding: 10px 8px 4px; }
+.ci-chart { display: block; width: 100%; height: auto; touch-action: pan-y; }
+.ci-reveal { transform-box: view-box; transform-origin: 0 0; animation: ci-reveal 0.9s var(--ease-out) both; }
+.ci-area-c { fill: var(--accent); opacity: 0.85; }
+.ci-area-i { fill: color-mix(in srgb, var(--accent) 38%, var(--surface)); }
+.ci-line-real { fill: none; stroke: var(--text); stroke-width: 1.6; stroke-dasharray: 5 4; opacity: 0.7; }
+.ci-grid { stroke: var(--border); stroke-width: 1; }
+.ci-axis { font-family: var(--mono); font-size: 10px; fill: var(--muted); }
+.ci-cursor { stroke: var(--text); stroke-width: 1; opacity: 0.5; transition: transform 0.18s var(--ease-out); }
+.ci-dot { fill: var(--surface); stroke: var(--text); stroke-width: 2; transition: transform 0.18s var(--ease-out); }
+.ci-tip { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.84rem; padding: 6px 4px 4px; color: var(--muted); min-height: 1.6em; }
+.ci-tip b { color: var(--text); font-variant-numeric: tabular-nums; }
+.ci-key { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+.ci-key.c { background: var(--accent); }
+.ci-key.i { background: color-mix(in srgb, var(--accent) 38%, var(--surface)); border: 1px solid var(--border); }
+.ci-key.r { border-top: 2px dashed var(--text); height: 0; width: 14px; border-radius: 0; vertical-align: 3px; }
+.ci-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 14px; }
+@keyframes ci-reveal { from { transform: scaleX(0); } to { transform: none; } }

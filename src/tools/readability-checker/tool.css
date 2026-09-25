@@ -1,0 +1,19 @@
+.rd-hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 16px 0; align-items: stretch; }
+.rd-ease { display: flex; flex-direction: column; gap: 8px; padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--accent); background: var(--accent-soft); font-size: 0.86rem; }
+.rd-ease b { font-size: 2.6rem; line-height: 1.1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.rd-ease .chip { align-self: flex-start; }
+.rd-gauge { background: linear-gradient(90deg, color-mix(in srgb, var(--danger) 25%, var(--sunken)), var(--sunken) 50%, color-mix(in srgb, var(--ok) 25%, var(--sunken))); }
+.rd-stats { margin-top: 0; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+.rd-stats .stat b { font-size: 1.2rem; }
+.rd-h { font-size: 1rem; margin: 24px 0 0; }
+.rd-legend { gap: 8px 18px; font-size: 0.88rem; }
+.rd-legend .rd-toggle { display: inline-flex; align-items: center; gap: 6px; font-weight: 400; }
+.rd-key { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; }
+.rd-view {
+  padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken);
+  line-height: 1.75; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; font-size: 0.95rem;
+}
+.rd-long { background: color-mix(in srgb, #eab308 28%, transparent); border-radius: 3px; transition: background-color 0.3s; }
+.rd-very-long { background: color-mix(in srgb, #ef4444 24%, transparent); border-radius: 3px; transition: background-color 0.3s; }
+mark.rd-passive, .rd-key.rd-passive { background: color-mix(in srgb, #22c55e 32%, transparent); color: inherit; border-radius: 3px; }
+mark.rd-adverb, .rd-key.rd-adverb { background: color-mix(in srgb, #3b82f6 30%, transparent); color: inherit; border-radius: 3px; }
