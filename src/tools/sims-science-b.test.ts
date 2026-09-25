@@ -7,6 +7,7 @@ import { MOLECULES, hillFormula } from './molecule-viewer/molecules'
 import { cleanDNA, codonToAmino, complement, gcContent, proteinString, randomCoding, transcribe, translate } from './dna-transcription/genetics'
 import { chiSquare, chiSquareP, gametes, parseGenotype, phenotypeKey, punnett, simplestRatio, tally } from './punnett-square/mendel'
 import { FIRE, ASH, TREE, crossingProbability, igniteChance, makeGrid, percolates, randomForest, stepForest } from './forest-fire/forest'
+import { SOLAR, emissivityFromCO2, equilibriumTemp, outgoing, stepClimate, absorbedSolar } from './greenhouse-effect/climate'
 import { barriers, collisionEnergy, equilibriumK, predictedK, reacts } from './reaction-equilibrium/equilibrium'
 import { concentration, fitsPore, passesMembrane, poreCentres, waterActivity } from './diffusion-membrane/membrane'
 
@@ -241,5 +242,32 @@ describe('forest-fire', () => {
     const r = rng(11)
     expect(crossingProbability(0.45, 20, 60, 40, r)).toBeLessThan(0.1)
     expect(crossingProbability(0.75, 20, 60, 40, r)).toBeGreaterThan(0.9)
+  })
+})
+
+describe('greenhouse-effect', () => {
+  it('gives the classic one-layer temperatures', () => {
+    // No greenhouse layer: about 255 K. A perfectly absorbing layer: 2^¼ times warmer, about 303 K.
+    expect(equilibriumTemp(SOLAR, 0.3, 0)).toBeCloseTo(254.6, 0)
+    expect(equilibriumTemp(SOLAR, 0.3, 1)).toBeCloseTo(254.6 * 2 ** 0.25, 0)
+    expect(equilibriumTemp(SOLAR, 0.3, 1, 2)).toBeCloseTo(254.6 * 3 ** 0.25, 0)
+    // More reflective planets are colder.
+    expect(equilibriumTemp(SOLAR, 0.5, 0.78)).toBeLessThan(equilibriumTemp(SOLAR, 0.3, 0.78))
+  })
+
+  it('warms with CO₂ by about 3 °C per doubling', () => {
+    const t280 = equilibriumTemp(SOLAR, 0.3, emissivityFromCO2(280))
+    const t560 = equilibriumTemp(SOLAR, 0.3, emissivityFromCO2(560))
+    expect(t280 - 273.15).toBeCloseTo(14, 0)
+    expect(t560 - t280).toBeGreaterThan(2.5)
+    expect(t560 - t280).toBeLessThan(3.5)
+  })
+
+  it('relaxes to the equilibrium where heat out equals sunlight in', () => {
+    const eps = emissivityFromCO2(420)
+    let s = { ts: 280, ta: 240 }
+    for (let k = 0; k < 400; k++) s = stepClimate(s, 0.5, SOLAR, 0.3, eps)
+    expect(s.ts).toBeCloseTo(equilibriumTemp(SOLAR, 0.3, eps), 2)
+    expect(outgoing(s, eps)).toBeCloseTo(absorbedSolar(SOLAR, 0.3), 1)
   })
 })
