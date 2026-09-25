@@ -1,5 +1,7 @@
 import { useMemo, useState, type DragEvent } from 'react'
 import CopyButton from '../../components/CopyButton'
+import Roll from '../../motion/Roll'
+import SettleOutput from '../../motion/SettleOutput'
 import { DEFAULT_OPTIONS, formatBytes, optimizeSvg, svgDataUrl, type SvgOptions } from './optimize'
 
 const EXAMPLE = `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
@@ -104,7 +106,7 @@ export default function SvgOptimizer() {
         onDrop={onDrop}
         spellCheck={false}
         placeholder="Paste <svg>…</svg> here, or drop a .svg file"
-        style={{ minHeight: 160, fontFamily: 'var(--mono)', fontSize: '0.82rem', outline: dragging ? '2px dashed var(--accent)' : undefined }}
+        style={{ minHeight: 160, fontFamily: 'var(--mono)', fontSize: '0.82rem', outline: dragging ? '2px dashed var(--accent)' : undefined, animation: dragging ? 'breathe 1.2s ease-in-out infinite' : undefined }}
       />
       <div className="row">
         <label htmlFor="svg-file" className="btn" style={{ cursor: 'pointer' }}>Open .svg file</label>
@@ -121,7 +123,7 @@ export default function SvgOptimizer() {
         <button type="button" className="btn" onClick={() => setInput('')}>Clear</button>
         <span className="muted">or drag a file onto the box</span>
       </div>
-      {fileError && <p className="error">{fileError}</p>}
+      {fileError && <p className="error shake-once" key={fileError}>{fileError}</p>}
 
       <div className="row" style={{ gap: 16 }}>
         <label style={{ fontWeight: 400 }}>
@@ -154,18 +156,21 @@ export default function SvgOptimizer() {
       {result.ok && (
         <>
           <div className="stats">
-            <div className="stat"><b>{formatBytes(result.before)}</b>Original</div>
-            <div className="stat"><b>{formatBytes(result.after)}</b>Optimized</div>
+            <div className="stat"><b><Roll>{formatBytes(result.before)}</Roll></b>Original</div>
+            <div className="stat"><b><Roll>{formatBytes(result.after)}</Roll></b>Optimized</div>
             <div className="stat">
-              <b style={{ color: saved > 0 ? 'var(--ok)' : undefined }}>{saved.toFixed(1)}%</b>Saved
+              <b style={{ color: saved > 0 ? 'var(--ok)' : undefined }}><Roll>{saved.toFixed(1)}</Roll>%</b>Saved
             </div>
+          </div>
+          <div className="bar" style={{ marginTop: 12 }} role="img" aria-label={`Optimized file is ${(100 - saved).toFixed(1)}% of the original`}>
+            <i style={{ transform: `scaleX(${result.before > 0 ? Math.min(1, result.after / result.before) : 1})`, background: 'var(--ok)' }} />
           </div>
           <div className="two-col" style={{ marginTop: 16 }}>
             <Preview title="Original" svg={input} size={formatBytes(result.before)} />
             <Preview title="Optimized" svg={result.data} size={formatBytes(result.after)} />
           </div>
           <label htmlFor="svg-out">Optimized SVG</label>
-          <textarea id="svg-out" readOnly value={result.data} spellCheck={false} style={{ minHeight: 140, fontFamily: 'var(--mono)', fontSize: '0.82rem' }} />
+          <SettleOutput id="svg-out" value={result.data} motion="order" style={{ minHeight: 140, fontFamily: 'var(--mono)', fontSize: '0.82rem' }} />
           <div className="row">
             <CopyButton text={result.data} />
             <button type="button" className="btn primary" onClick={download}>Download .svg</button>

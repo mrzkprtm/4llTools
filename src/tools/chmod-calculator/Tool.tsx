@@ -1,5 +1,8 @@
 import { useState, type CSSProperties } from 'react'
 import CopyButton from '../../components/CopyButton'
+import MorphText from '../../motion/MorphText'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
 import { PERMS, PRESETS, SPECIAL, SPECIAL_BITS, WHO, bit, explain, parseOctal, parseSymbolic, toChmodSymbolic, toOctal, toSymbolic, warnings } from './chmod'
 
 export default function ChmodCalculator() {
@@ -70,7 +73,7 @@ export default function ChmodCalculator() {
                     <input type="checkbox" aria-label={`${who} ${p}`} checked={!!(mode & bit(w, pi))} onChange={() => setMode(mode ^ bit(w, pi))} style={{ width: 20, height: 20 }} />
                   </td>
                 ))}
-                <td style={{ ...cell, fontFamily: 'var(--mono)', fontWeight: 700 }}>{(mode >> ((2 - w) * 3)) & 7}</td>
+                <td style={{ ...cell, fontFamily: 'var(--mono)', fontWeight: 700 }}><Roll>{(mode >> ((2 - w) * 3)) & 7}</Roll></td>
               </tr>
             ))}
           </tbody>
@@ -86,8 +89,8 @@ export default function ChmodCalculator() {
       </div>
 
       <div className="stats">
-        <div className="stat"><b style={{ fontFamily: 'var(--mono)' }}>{octal}</b>Octal</div>
-        <div className="stat"><b style={{ fontFamily: 'var(--mono)', fontSize: '1.15rem', paddingTop: 6 }}>{toSymbolic(mode)}</b>Symbolic</div>
+        <div className="stat"><b style={{ fontFamily: 'var(--mono)' }}><Roll>{octal}</Roll></b>Octal</div>
+        <div className="stat"><b style={{ fontFamily: 'var(--mono)', fontSize: '1.15rem', paddingTop: 6 }}><MorphText text={toSymbolic(mode)} /></b>Symbolic</div>
       </div>
 
       <label htmlFor="chmod-file">File or directory name</label>
@@ -99,13 +102,13 @@ export default function ChmodCalculator() {
         </div>
       ))}
 
-      {warns.map((w) => <p key={w} className="error" style={{ margin: '6px 0' }}>⚠ {w}</p>)}
+      {warns.map((w) => <p key={w} className="error shake-once" style={{ margin: '6px 0' }}>⚠ {w}</p>)}
       <ul className="muted" style={{ paddingLeft: 20, margin: '10px 0' }}>
         {explain(mode).map((n) => <li key={n}>{n}</li>)}
       </ul>
 
       <label>Common presets</label>
-      <div className="row" style={{ marginTop: 0 }}>
+      <PillRow style={{ marginTop: 0 }}>
         {PRESETS.map((p) => (
           <button key={p.mode} type="button" className={`btn ${octal === p.mode ? 'primary' : ''}`} title={p.label}
             style={p.warn ? { borderColor: 'var(--danger)', color: octal === p.mode ? undefined : 'var(--danger)' } : undefined}
@@ -113,7 +116,7 @@ export default function ChmodCalculator() {
             <span style={{ fontFamily: 'var(--mono)' }}>{p.mode}</span> <span style={{ fontWeight: 400, fontSize: '0.82rem' }}>{p.label}</span>
           </button>
         ))}
-      </div>
+      </PillRow>
     </div>
   )
 }

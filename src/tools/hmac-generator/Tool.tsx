@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import Check from '../../motion/Check'
+import PillRow from '../../motion/PillRow'
+import { Scramble } from '../../motion/useScramble'
 import {
   DIGEST_BYTES,
   HMAC_ALGORITHMS,
@@ -104,12 +107,11 @@ export default function HmacGenerator() {
 
   return (
     <div>
-      <style>{`@keyframes hm-in{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}`}</style>
-      <div className="row" role="tablist" aria-label="Preset">
+      <PillRow role="tablist" label="Preset">
         {([['generic', 'Generic HMAC'], ['github', 'GitHub webhook'], ['stripe', 'Stripe webhook']] as [Preset, string][]).map(([p, label]) => (
           <button key={p} type="button" role="tab" aria-selected={preset === p} className={`btn ${preset === p ? 'primary' : ''}`} onClick={() => choose(p)}>{label}</button>
         ))}
-      </div>
+      </PillRow>
 
       <div className="two-col">
         <div>
@@ -147,7 +149,7 @@ export default function HmacGenerator() {
         <div key={label}>
           <label>{label}</label>
           <div className="row" style={{ margin: 0, flexWrap: 'nowrap' }}>
-            <div className="output" style={{ flex: 1, minWidth: 0, fontSize: '0.84rem' }}>{value}</div>
+            <div className="output" style={{ flex: 1, minWidth: 0, fontSize: '0.84rem' }}><Scramble text={value} limit={96} duration={240} /></div>
             <CopyButton text={value} />
           </div>
         </div>
@@ -167,8 +169,9 @@ export default function HmacGenerator() {
       />
       {verdict.state === 'error' && <p className="error">{verdict.message}</p>}
       {(verdict.state === 'match' || verdict.state === 'nomatch') && (
-        <p key={verdict.state} className={verdict.state === 'match' ? 'ok' : 'error'} role="status" style={{ fontWeight: 650, animation: 'hm-in .18s ease-out' }}>
-          {verdict.state === 'match' ? '✓ Valid signature' : '✗ Signature does not match'} <span className="muted" style={{ fontWeight: 400 }}>({verdict.format}, compared in constant time)</span>
+        <p key={verdict.state} role="status" style={{ margin: '10px 0' }}>
+          <span className={`chip ${verdict.state === 'match' ? 'good' : 'bad'}`}>{verdict.state === 'match' ? <><Check size={15} /> Valid signature</> : '✗ Signature does not match'}</span>{' '}
+          <span className="muted" style={{ fontSize: '0.85rem' }}>({verdict.format}, compared in constant time)</span>
         </p>
       )}
 

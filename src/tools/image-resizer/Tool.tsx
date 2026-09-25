@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import Busy from '../../components/Busy'
+import Roll from '../../motion/Roll'
 
 type Format = 'image/jpeg' | 'image/png' | 'image/webp'
 const EXT: Record<Format, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }
@@ -110,14 +111,16 @@ export default function ImageResizer() {
           {result && (
             <>
               <p>
-                New size: <b>{formatBytes(result.size)}</b>{' '}
-                <span className={result.size < file.size ? 'ok' : 'muted'}>
-                  ({result.size < file.size ? `${Math.round((1 - result.size / file.size) * 100)}% smaller` : 'not smaller'})
-                </span>
+                New size: <b><Roll>{formatBytes(result.size)}</Roll></b>{' '}
+                {result.size < file.size ? (
+                  <span key="smaller" className="chip good calm"><Roll>{Math.round((1 - result.size / file.size) * 100)}</Roll>% smaller</span>
+                ) : (
+                  <span key="same" className="chip calm">not smaller</span>
+                )}
               </p>
-              <img src={result.url} alt="Resized preview" style={{ maxWidth: '100%', maxHeight: 360, borderRadius: 8, border: '1px solid var(--border)' }} />
+              <img key={result.url} className="settle-in" src={result.url} alt="Resized preview" style={{ maxWidth: '100%', maxHeight: 360, borderRadius: 8, border: '1px solid var(--border)' }} />
               <div className="row">
-                <a className="btn primary" href={result.url} download={`${baseName}-${width}x${height}.${EXT[format]}`}>Download</a>
+                <a key={result.url} className="btn primary shine" href={result.url} download={`${baseName}-${width}x${height}.${EXT[format]}`}>Download</a>
               </div>
             </>
           )}

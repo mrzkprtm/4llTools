@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Roll from '../../motion/Roll'
 import { GROUPS, convert, formatNumber, unitsOf } from './units'
 
 export default function UnitConverter() {
@@ -6,6 +7,7 @@ export default function UnitConverter() {
   const [from, setFrom] = useState('Meter')
   const [to, setTo] = useState('Foot')
   const [value, setValue] = useState('1')
+  const [turns, setTurns] = useState(0)
 
   function changeGroup(g: string) {
     const units = unitsOf(g)
@@ -29,13 +31,15 @@ export default function UnitConverter() {
         <select aria-label="From unit" value={from} onChange={(e) => setFrom(e.target.value)} style={{ flex: 1, minWidth: 140 }}>
           {unitsOf(group).map((u) => <option key={u}>{u}</option>)}
         </select>
-        <button type="button" className="btn" onClick={() => { setFrom(to); setTo(from) }} aria-label="Swap units">⇄</button>
+        <button type="button" className="btn" onClick={() => { setFrom(to); setTo(from); setTurns((t) => t + 1) }} aria-label="Swap units">
+          <span className="spin-icon" style={{ transform: `rotate(${turns * 180}deg)` }}>⇄</span>
+        </button>
         <select aria-label="To unit" value={to} onChange={(e) => setTo(e.target.value)} style={{ flex: 1, minWidth: 140 }}>
           {unitsOf(group).map((u) => <option key={u}>{u}</option>)}
         </select>
       </div>
       <div className="output" style={{ fontSize: '1.3rem' }}>
-        {result} <span className="muted">{to}</span>
+        <Roll>{result}</Roll> <span key={to} className="muted swap-code" style={{ display: 'inline-block' }}>{to}</span>
       </div>
     </div>
   )

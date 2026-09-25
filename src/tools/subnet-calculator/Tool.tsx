@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import Roll from '../../motion/Roll'
 import {
   compressIPv6, containsIPv4, containsIPv6, expandIPv6, formatIPv4, groupDigits, ipv4Info, ipv6Info, parseIPv4, parseIPv4Cidr,
   parseIPv6, parseIPv6Cidr, prefixForSubnets, prefixToMask, splitIPv4, toBinary,
@@ -92,8 +93,8 @@ export default function SubnetCalculator() {
       {info4 && (
         <>
           <div className="stats">
-            <div className="stat"><b>{groupDigits(info4.usable)}</b>Usable hosts</div>
-            <div className="stat"><b>/{info4.prefix}</b>{formatIPv4(info4.mask)}</div>
+            <div className="stat"><b><Roll>{groupDigits(info4.usable)}</Roll></b>Usable hosts</div>
+            <div className="stat"><b><Roll>{`/${info4.prefix}`}</Roll></b>{formatIPv4(info4.mask)}</div>
             <div className="stat"><b>{info4.ipClass.split(' ')[0]}</b>Class · {info4.type}</div>
           </div>
           <div style={{ ...scroll, marginTop: 14 }}>
@@ -120,11 +121,15 @@ export default function SubnetCalculator() {
               return (
                 <div key={k as string}>
                   <span className="muted">{(k as string).padEnd(10)}</span>
-                  <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{bin.slice(0, cut)}</span>
-                  <span>{bin.slice(cut)}</span>
+                  {[...bin].map((ch, i) => (
+                    <span key={`${i}:${ch}`} className="flip-in bin-bit" style={i < cut ? { color: 'var(--accent)', fontWeight: 600 } : undefined}>{ch}</span>
+                  ))}
                 </div>
               )
             })}
+          </div>
+          <div className="bar" style={{ marginTop: 10 }} role="img" aria-label={`${info4.prefix} network bits, ${32 - info4.prefix} host bits`}>
+            <i style={{ transform: `scaleX(${info4.prefix / 32})` }} />
           </div>
           <p className="muted" style={{ fontSize: '0.85rem' }}>Highlighted bits are the network part; the rest identifies hosts.</p>
         </>
@@ -133,7 +138,7 @@ export default function SubnetCalculator() {
       {info6 && (
         <>
           <div className="stats">
-            <div className="stat"><b>/{info6.prefix}</b>Prefix</div>
+            <div className="stat"><b><Roll>{`/${info6.prefix}`}</Roll></b>Prefix</div>
             <div className="stat"><b style={{ fontSize: '1.1rem', paddingTop: 6 }}>{info6.type}</b>Type</div>
           </div>
           <div style={{ ...scroll, marginTop: 14 }}>

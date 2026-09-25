@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
-import { cameraErrorMessage, decodeFrom, isHttpUrl } from './decode'
+import { reducedMotion } from '../../motion/springs'
+import { cameraErrorMessage, decodeFrom, decodeWithBox, isHttpUrl } from './decode'
 
 export default function QrReader() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -13,6 +14,9 @@ export default function QrReader() {
   const [error, setError] = useState('')
   const [cameras, setCameras] = useState<MediaDeviceInfo[]>([])
   const [cameraId, setCameraId] = useState('')
+  // The frame's position (percent insets) while it locks onto a found code.
+  const [lock, setLock] = useState<{ top: number; right: number; bottom: number; left: number } | null>(null)
+  const lockTimer = useRef(0)
 
   const stop = useCallback(() => {
     cancelAnimationFrame(rafRef.current)
@@ -20,19 +24,38 @@ export default function QrReader() {
     streamRef.current = null
     if (videoRef.current) videoRef.current.srcObject = null
     setScanning(false)
+    setLock(null)
   }, [])
 
-  useEffect(() => stop, [stop])
+  useEffect(() => () => { clearTimeout(lockTimer.current); stop() }, [stop])
 
   const scanLoop = useCallback(() => {
     const video = videoRef.current
     if (!video || !streamRef.current) return
     if (video.readyState >= video.HAVE_ENOUGH_DATA) {
-      const text = decodeFrom(video, video.videoWidth, video.videoHeight, canvasRef.current)
-      if (text !== null) {
-        setResult(text)
+      const found = decodeWithBox(video, video.videoWidth, video.videoHeight, canvasRef.current)
+      if (found) {
         navigator.vibrate?.(80)
-        stop()
+        const done = () => {
+          setResult(found.data)
+          stop()
+        }
+        if (reducedMotion()) return done()
+        // Freeze the frame and fly the corners onto the code before showing the result.
+        video.pause()
+        const size = video.clientWidth
+        const scale = Math.max(size / video.videoWidth, size / video.videoHeight)
+        const offX = (size - video.videoWidth * scale) / 2
+        const offY = (size - video.videoHeight * scale) / 2
+        const pct = (v: number, len: number, off: number) => Math.min(100, Math.max(0, ((v * len * scale + off) / size) * 100))
+        const pad = 2
+        setLock({
+          left: pct(found.box.left, video.videoWidth, offX) - pad,
+          top: pct(found.box.top, video.videoHeight, offY) - pad,
+          right: 100 - pct(found.box.right, video.videoWidth, offX) - pad,
+          bottom: 100 - pct(found.box.bottom, video.videoHeight, offY) - pad,
+        })
+        lockTimer.current = window.setTimeout(done, 650)
         return
       }
     }
@@ -85,7 +108,9 @@ export default function QrReader() {
     <div>
       <div className="video-wrap" hidden={!scanning}>
         <video ref={videoRef} playsInline muted />
-        <div className="frame" />
+        <div className={`frame ${lock ? 'locked' : ''}`} style={lock ? { inset: `${lock.top}% ${lock.right}% ${lock.bottom}% ${lock.left}%` } : undefined}>
+          <i /><i /><i /><i />
+        </div>
       </div>
 
       <div className="row">
@@ -94,7 +119,7 @@ export default function QrReader() {
             Stop camera
           </button>
         ) : (
-          <button type="button" className="btn primary" onClick={() => start()}>
+          <button type="button" className={`btn primary ${result ? '' : 'breathe'}`} onClick={() => start()}>
             {result ? 'Scan again' : 'Start camera'}
           </button>
         )}
@@ -121,10 +146,10 @@ export default function QrReader() {
       {error && <p className="error">{error}</p>}
 
       {result && (
-        <div>
+        <div className="qr-result">
           <label>Result</label>
           <div className="output">{result}</div>
-          <div className="row">
+          <div className="row pop-row">
             <CopyButton text={result} />
             {isHttpUrl(result) && (
               <a className="btn primary" href={result.trim()} target="_blank" rel="noopener noreferrer">

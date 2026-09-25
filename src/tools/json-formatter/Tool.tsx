@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import Check from '../../motion/Check'
+import SettleOutput from '../../motion/SettleOutput'
 import { formatJson } from './format'
 
 export default function JsonFormatter() {
@@ -17,10 +19,10 @@ export default function JsonFormatter() {
           <option value="4">4 spaces</option>
           <option value="min">Minify</option>
         </select>
-        {input.trim() && (result.ok ? <span className="ok">Valid JSON</span> : <span className="error">{result.error}</span>)}
+        {input.trim() && (result.ok ? <span className="chip good"><Check size={14} /> Valid JSON</span> : <span key={result.error} className="error">{result.error}</span>)}
       </div>
       <label htmlFor="json-out">Result</label>
-      <textarea id="json-out" readOnly value={result.ok ? result.text : ''} spellCheck={false} />
+      <SettleOutput id="json-out" value={result.ok ? result.text : ''} motion="order" delay={260} />
       <div className="row">
         <CopyButton text={result.ok ? result.text : ''} />
       </div>

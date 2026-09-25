@@ -1,13 +1,16 @@
 import { useEffect, useMemo, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import Check from '../../motion/Check'
+import PillRow from '../../motion/PillRow'
+import { useScramble } from '../../motion/useScramble'
 import { MAX_BYTES, MAX_COST, MIN_COST, SLOW_COST, byteLength, hashPassword, parseHash, verifyPassword } from './bcrypt'
 
 type Tab = 'hash' | 'verify'
 
 function Progress({ value }: { value: number }) {
   return (
-    <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value * 100)} style={{ height: 6, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 99, overflow: 'hidden', margin: '10px 0' }}>
-      <div style={{ height: '100%', width: `${Math.max(3, value * 100)}%`, background: 'var(--accent)', transition: 'width .12s linear' }} />
+    <div className="bar busy-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(value * 100)} style={{ margin: '10px 0' }}>
+      <i style={{ transform: `scaleX(${Math.max(0.03, value)})` }} />
     </div>
   )
 }
@@ -47,6 +50,11 @@ function HashParts({ hash }: { hash: string }) {
       </table>
     </div>
   )
+}
+
+function HashOut({ hash }: { hash: string }) {
+  const shown = useScramble(hash, { limit: 60, duration: 420, pool: './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789' })
+  return <div className="output" style={{ flex: 1, minWidth: 0 }}>{shown}</div>
 }
 
 export default function Bcrypt() {
@@ -104,11 +112,10 @@ export default function Bcrypt() {
 
   return (
     <div>
-      <style>{`@keyframes bc-pop{0%{transform:scale(.96);opacity:0}100%{transform:none;opacity:1}}`}</style>
-      <div className="row" role="tablist">
+      <PillRow role="tablist">
         <button type="button" role="tab" aria-selected={tab === 'hash'} className={`btn ${tab === 'hash' ? 'primary' : ''}`} onClick={() => setTab('hash')}>Generate hash</button>
         <button type="button" role="tab" aria-selected={tab === 'verify'} className={`btn ${tab === 'verify' ? 'primary' : ''}`} onClick={() => setTab('verify')}>Verify password</button>
-      </div>
+      </PillRow>
 
       {tab === 'hash' ? (
         <div>
@@ -124,10 +131,10 @@ export default function Bcrypt() {
           {busy && <Progress value={progress} />}
           {error && <p className="error">{error}</p>}
           {hash && !busy && (
-            <div style={{ animation: 'bc-pop .2s ease-out' }}>
+            <div className="settle-in">
               <label>bcrypt hash <span className="muted" style={{ fontWeight: 400 }}>({(ms / 1000).toFixed(2)} s)</span></label>
               <div className="row" style={{ margin: 0, flexWrap: 'nowrap' }}>
-                <div className="output" style={{ flex: 1, minWidth: 0 }}>{hash}</div>
+                <HashOut hash={hash} />
                 <CopyButton text={hash} />
               </div>
               <div className="row">
@@ -152,8 +159,10 @@ export default function Bcrypt() {
           {vBusy && <Progress value={vProgress} />}
           {vError && <p className="error">{vError}</p>}
           {match !== null && !vBusy && (
-            <p className={match ? 'ok' : 'error'} role="status" style={{ fontWeight: 650, fontSize: '1.1rem', animation: 'bc-pop .2s ease-out' }}>
-              {match ? '✓ Match: the password fits this hash.' : '✗ No match: this password does not produce this hash.'}
+            <p role="status" style={{ margin: '12px 0' }}>
+              <span className={`chip ${match ? 'good' : 'bad'}`} style={{ fontSize: '1rem', fontWeight: 650 }}>
+                {match ? <><Check /> Match: the password fits this hash.</> : '✗ No match: this password does not produce this hash.'}
+              </span>
             </p>
           )}
         </div>

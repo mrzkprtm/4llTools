@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
+import SettleOutput from '../../motion/SettleOutput'
+import { useFlip } from '../../motion/useFlip'
 import { FIELD_TYPES, generateRowsAsync, toCSV, toJSON, toSQL, type Field, type FieldType, type Row, type SqlDialect } from './mock'
 
 type Output = 'json' | 'csv' | 'sql'
@@ -31,6 +35,8 @@ export default function MockData() {
   const [progress, setProgress] = useState<number | null>(null)
   const [runs, setRuns] = useState(0)
   const cancelRef = useRef(0)
+  const fieldList = useRef<HTMLDivElement>(null)
+  useFlip(fieldList)
 
   const nameProblem = useMemo(() => {
     const names = fields.map((f) => f.name.trim())
@@ -97,10 +103,11 @@ export default function MockData() {
     <div>
       <style>{`@keyframes mb-spin{to{transform:rotate(360deg)}}@keyframes mb-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}`}</style>
       <label>Fields</label>
-      <div style={{ display: 'grid', gap: 8 }}>
+      <div ref={fieldList} style={{ display: 'grid', gap: 8 }}>
         {fields.map((f, i) => (
           <div
             key={f.id}
+            data-flip={f.id}
             style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', padding: 8, border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', background: 'var(--sunken)', animation: 'mb-in .18s ease-out' }}
           >
             <input type="text" aria-label="Field name" value={f.name} onChange={(e) => update(f.id, { name: e.target.value })} style={{ ...inputStyle, flex: '1 1 130px' }} spellCheck={false} />
@@ -154,7 +161,7 @@ export default function MockData() {
       </div>
       {count > MAX_ROWS && <p className="muted">Limited to {MAX_ROWS.toLocaleString()} rows.</p>}
 
-      <div className="row">
+      <PillRow>
         {(['json', 'csv', 'sql'] as Output[]).map((o) => (
           <button key={o} type="button" className={`btn ${format === o ? 'primary' : ''}`} onClick={() => setFormat(o)}>{o.toUpperCase()}</button>
         ))}
@@ -167,7 +174,7 @@ export default function MockData() {
             </select>
           </>
         )}
-      </div>
+      </PillRow>
 
       {progress !== null && (
         <p className="muted" role="status" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -175,11 +182,11 @@ export default function MockData() {
           Generating… {progress.toLocaleString()} / {safeCount.toLocaleString()} rows
         </p>
       )}
-      <textarea readOnly value={preview} spellCheck={false} aria-label="Generated data" style={{ minHeight: 300, whiteSpace: 'pre', overflowX: 'auto', opacity: progress !== null ? 0.5 : 1, transition: 'opacity .2s' }} />
+      <SettleOutput value={preview} delay={40} aria-label="Generated data" style={{ minHeight: 300, whiteSpace: 'pre', overflowX: 'auto', opacity: progress !== null ? 0.5 : 1, transition: 'opacity .2s' }} />
       <div className="row">
         <CopyButton text={output} />
         <button type="button" className="btn" onClick={download} disabled={!output}>Download .{format}</button>
-        <span className="muted" style={{ fontSize: '0.88rem' }}>{rows.length.toLocaleString()} rows · {sizeKb} KB</span>
+        <span className="muted" style={{ fontSize: '0.88rem' }}><Roll>{rows.length.toLocaleString()}</Roll> rows · <Roll>{sizeKb}</Roll> KB</span>
       </div>
       <p className="muted">Data is random and fictional, drawn from a mix of Indonesian and international names and cities. Emails match the name in the same row. SQL inserts are batched 500 rows per statement.</p>
     </div>

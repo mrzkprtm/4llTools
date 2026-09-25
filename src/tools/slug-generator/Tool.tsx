@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import MorphText from '../../motion/MorphText'
+import { useSettled } from '../../motion/useSettled'
 import { slugify } from './slug'
 
 export default function SlugGenerator() {
@@ -7,6 +9,7 @@ export default function SlugGenerator() {
   const [sep, setSep] = useState('-')
   const [lower, setLower] = useState(true)
   const slug = slugify(text, sep, lower)
+  const settled = useSettled(slug, 500)
 
   return (
     <div>
@@ -22,7 +25,12 @@ export default function SlugGenerator() {
         </label>
       </div>
       <label>Slug</label>
-      <div className="output" style={{ minHeight: 42 }}>{slug}</div>
+      <div className="output" style={{ minHeight: 42 }}>
+        <span key={settled} className={settled ? 'sweep-under' : undefined}>
+          <MorphText text={slug.slice(0, 60)} stagger={2} />
+          {slug.length > 60 && <span style={{ color: '#b45309' }} title="Long slugs get cut off in search results">{slug.slice(60)}</span>}
+        </span>
+      </div>
       <div className="row"><CopyButton text={slug} /></div>
     </div>
   )

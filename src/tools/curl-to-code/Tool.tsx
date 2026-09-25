@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
 import { generate, LANGUAGES, type Language } from './generate'
 import { parseCurl, type ParsedRequest } from './parse'
 
@@ -50,7 +51,7 @@ export default function CurlToCode() {
       {req && (
         <>
           <div className="row" style={{ fontSize: '0.9rem', gap: 6 }}>
-            <b style={{ fontFamily: 'var(--mono)', padding: '2px 8px', borderRadius: 4, background: 'var(--accent-soft)', color: 'var(--accent)' }}>{req.method}</b>
+            <b key={req.method} className="pop" style={{ fontFamily: 'var(--mono)', padding: '2px 8px', borderRadius: 4, background: 'var(--accent-soft)', color: 'var(--accent)' }}>{req.method}</b>
             <span style={{ fontFamily: 'var(--mono)', wordBreak: 'break-all', minWidth: 0 }}>{req.url}</span>
           </div>
           <div className="muted" style={{ fontSize: '0.85rem', marginTop: -6 }}>
@@ -59,13 +60,13 @@ export default function CurlToCode() {
             {req.auth ? ' · basic auth' : ''}{req.insecure ? ' · TLS verification off' : ''}{req.followRedirects ? ' · follows redirects' : ''}
           </div>
 
-          <div className="row" role="tablist" style={{ marginTop: 16 }}>
+          <PillRow role="tablist" style={{ marginTop: 16 }}>
             {LANGUAGES.map((l) => (
               <button key={l.id} type="button" role="tab" aria-selected={lang === l.id} className={`btn ${lang === l.id ? 'primary' : ''}`} style={{ padding: '7px 11px', fontSize: '0.88rem' }} onClick={() => setLang(l.id)}>{l.label}</button>
             ))}
-          </div>
+          </PillRow>
           <div style={{ position: 'relative' }}>
-            <pre className="output" style={{ margin: 0, overflowX: 'auto', whiteSpace: 'pre', wordBreak: 'normal', lineHeight: 1.55, maxHeight: 560, tabSize: 4 }}>{code}</pre>
+            <pre key={lang} className="output swap-code" style={{ margin: 0, overflowX: 'auto', whiteSpace: 'pre', wordBreak: 'normal', lineHeight: 1.55, maxHeight: 560, tabSize: 4 }}>{code}</pre>
           </div>
           <div className="row">
             <CopyButton text={code} label="Copy code" />

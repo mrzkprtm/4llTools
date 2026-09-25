@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import Check from '../../motion/Check'
 import { KEY_SIZES, generateRsaKeys, type GeneratedKeys, type KeySize, type Purpose } from './rsa'
 
 function download(name: string, text: string) {
@@ -10,9 +11,9 @@ function download(name: string, text: string) {
   URL.revokeObjectURL(a.href)
 }
 
-function KeyBlock({ title, text, file }: { title: string; text: string; file: string }) {
+function KeyBlock({ title, text, file, from = 'rise' }: { title: string; text: string; file: string; from?: 'rise' | 'from-left' | 'from-right' }) {
   return (
-    <div style={{ minWidth: 0, animation: 'rsa-in .25s ease-out' }}>
+    <div style={{ minWidth: 0, animation: `${from} var(--spring-soft-ms) var(--spring-soft) both` }}>
       <label>{title}</label>
       <pre className="output" style={{ whiteSpace: 'pre', overflowX: 'auto', wordBreak: 'normal', margin: 0, maxHeight: 280, fontSize: '0.78rem' }}>{text}</pre>
       <div className="row" style={{ marginTop: 8 }}>
@@ -53,7 +54,7 @@ export default function RsaKeyGenerator() {
 
   return (
     <div>
-      <style>{`@keyframes rsa-spin{to{transform:rotate(360deg)}}@keyframes rsa-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}`}</style>
+      <style>{`@keyframes rsa-spin{to{transform:rotate(360deg)}}`}</style>
       <div className="two-col">
         <div>
           <label htmlFor="rsa-bits">Key size</label>
@@ -80,16 +81,16 @@ export default function RsaKeyGenerator() {
       </div>
       {error && <p className="error" role="alert">{error}</p>}
       {keys && (
-        <div style={{ opacity: busy ? 0.5 : 1, transition: 'opacity .2s' }}>
-          <p className="ok" style={{ margin: '4px 0' }}>
-            ✓ {keys.bits}-bit {keys.algorithm} key pair made in {(keys.ms / 1000).toFixed(2)} s
+        <div key={keys.fingerprint} className={busy ? 'busy-bar' : ''} style={{ opacity: busy ? 0.5 : 1, transition: 'opacity .2s' }}>
+          <p style={{ margin: '4px 0' }}>
+            <span className="chip good"><Check size={15} /> {keys.bits}-bit {keys.algorithm} key pair made in {(keys.ms / 1000).toFixed(2)} s</span>
           </p>
           <label>SSH fingerprint</label>
           <div className="output" style={{ fontSize: '0.85rem' }}>{keys.fingerprint}</div>
           <KeyBlock title="OpenSSH public key (for ~/.ssh/authorized_keys)" text={keys.sshPublic} file="id_rsa.pub" />
           <div className="two-col">
-            <KeyBlock title="Private key (PKCS#8 PEM)" text={keys.privatePem} file="private.pem" />
-            <KeyBlock title="Public key (SPKI PEM)" text={keys.publicPem} file="public.pem" />
+            <KeyBlock title="Private key (PKCS#8 PEM)" text={keys.privatePem} file="private.pem" from="from-left" />
+            <KeyBlock title="Public key (SPKI PEM)" text={keys.publicPem} file="public.pem" from="from-right" />
           </div>
         </div>
       )}

@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import CopyButton from '../../components/CopyButton'
+import PillRow from '../../motion/PillRow'
+import Roll from '../../motion/Roll'
+import SettleOutput from '../../motion/SettleOutput'
 
 export default function UrlEncoder() {
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
@@ -15,16 +18,19 @@ export default function UrlEncoder() {
 
   return (
     <div>
-      <div className="row">
+      <PillRow>
         <button type="button" className={`btn ${mode === 'encode' ? 'primary' : ''}`} onClick={() => setMode('encode')}>Encode</button>
         <button type="button" className={`btn ${mode === 'decode' ? 'primary' : ''}`} onClick={() => setMode('decode')}>Decode</button>
-      </div>
+      </PillRow>
       <label htmlFor="url-in">Input</label>
       <textarea id="url-in" value={input} onChange={(e) => setInput(e.target.value)} spellCheck={false} style={{ minHeight: 100 }} />
       {error && <p className="error">{error}</p>}
       <label htmlFor="url-out">Result</label>
-      <textarea id="url-out" readOnly value={output} spellCheck={false} style={{ minHeight: 100 }} />
-      <div className="row"><CopyButton text={output} /></div>
+      <SettleOutput id="url-out" value={output} style={{ minHeight: 100 }} />
+      <div className="row">
+        <CopyButton text={output} />
+        {input && !error && <span className="chip calm"><Roll>{((mode === 'encode' ? output : input).match(/%[0-9A-Fa-f]{2}/g) ?? []).length}</Roll> characters {mode === 'encode' ? 'encoded' : 'decoded'}</span>}
+      </div>
     </div>
   )
 }
