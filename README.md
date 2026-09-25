@@ -68,7 +68,7 @@ Each folder in `src/tools/` is one tool. The folder name becomes its URL, and th
 3. Put any pure logic in its own file (like `format.ts`) and add a test for it in `src/tools/more-tools.test.ts`.
 4. Add a row to the table above.
 
-The tool is now live at `/my-tool` and shows up in the sidebar and on the home page. Each tool is loaded only when it's opened, so adding more doesn't slow down the home page.
+The tool is now live at `/my-tool` and shows up in the sidebar, on the home page and in the sitemap. Its search title and description come from `meta.ts`, so keep the description to one clear sentence. Each tool is loaded only when it's opened, so adding more doesn't slow down the home page.
 
 ## Deploy on Cloudflare Pages
 
@@ -79,7 +79,13 @@ The tool is now live at `/my-tool` and shows up in the sidebar and on the home p
    - Build output directory: `dist`
 3. Click **Save and Deploy**. Every push to `main` deploys, and pull requests get preview links.
 
-`.node-version` pins Node 22 for the build, which Vite needs. There is no `404.html`, so Pages serves `index.html` for unknown paths and direct links like `/qr-reader` work. Pages sites are always HTTPS, which the camera needs.
+`.node-version` pins Node 22 for the build, which Vite needs. The build writes one HTML file per tool (`dist/qr-reader.html` and so on), which Pages serves at `/qr-reader`, and a `404.html` for unknown paths. Pages sites are always HTTPS, which the camera needs.
+
+## SEO
+
+`npm run build` prerenders every page, so search engines see real content without running JavaScript. Each page gets its own title, description, canonical link, Open Graph and Twitter tags, and JSON-LD structured data. The build also writes `sitemap.xml` and `robots.txt`. All of this lives in `src/seo.ts` and the `prerender` plugin in `vite.config.ts`.
+
+The site address used in those tags defaults to `https://4lltools.morizdigital.com`. To change it, set the `VITE_SITE_URL` environment variable in Cloudflare Pages (**Settings → Variables and Secrets**), or edit the default in `src/seo.ts`. After the first deploy, submit `https://<your domain>/sitemap.xml` in Google Search Console.
 
 ## Deploy on Vercel
 
@@ -87,4 +93,4 @@ The tool is now live at `/my-tool` and shows up in the sidebar and on the home p
 2. Vercel detects Vite on its own. Keep the defaults (build command `npm run build`, output folder `dist`) and click **Deploy**.
 3. From then on, every push to `main` deploys automatically, and every pull request gets its own preview link.
 
-`vercel.json` sends every path to `index.html`, so direct links like `/qr-reader` work. The camera needs HTTPS, which Vercel provides.
+`vercel.json` turns on clean URLs, so `/qr-reader` serves the prerendered `qr-reader.html`, and sends any other path to `index.html`. The camera needs HTTPS, which Vercel provides.
