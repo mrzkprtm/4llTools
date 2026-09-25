@@ -88,7 +88,8 @@ export default function NewtonsCradle() {
                   acc.current -= SUB
                   stepPendulums(bs, SUB, RIG, damping)
                   const r = resolveContacts(bs, RIG, e)
-                  if (r.hits) {
+                  // Count real impacts, not the gentle resting contacts of balls leaning on each other.
+                  if (r.hits && r.speed > 0.01) {
                     hitCount.current++
                     loud = Math.max(loud, r.speed)
                   }

@@ -91,6 +91,16 @@ export default function InclinedPlane() {
               const fr = inclineAcceleration({ ...input, v: s.v })
 
               clear(ctx, W, H, theme.surface)
+              // Status and a speed–time trace.
+              const msg = s.done || (fr.holds ? 'Static friction holds: the block stays put' : s.v === 0 && !running ? 'Press Play to let go' : '')
+              if (msg) {
+                rrect(ctx, 16, 16, 380, 30, 7, alpha(fr.holds && !s.done ? PALETTE[2] : theme.accent, 0.14))
+                text(ctx, msg, 30, 36, { color: theme.text, size: 13, weight: 700 })
+              }
+              rrect(ctx, W - 226, 16, 210, 92, 8, alpha(theme.sunken, 0.9), theme.border)
+              chart(ctx, W - 216, 34, 190, 66, [{ data: s.vs, color: theme.accent, width: 2 }], { min: 0, span: 300, axis: theme.border })
+              text(ctx, 'speed vs time', W - 216, 30, { color: theme.muted, size: 12 })
+
               // Ramp.
               const d: Pt = [Math.cos(th), Math.sin(th)]
               const nrm: Pt = [Math.sin(th), -Math.cos(th)]
@@ -148,16 +158,6 @@ export default function InclinedPlane() {
               vec(contact, d, fr.friction, PALETTE[6], 'f')
               if (F !== 0) vec([C[0] - d[0] * (BW / 2), C[1] - d[1] * (BW / 2)], [-d[0], -d[1]], F, PALETTE[3], 'F')
               if (!fr.holds && Math.abs(fr.net) * k > 2) vec([C[0] + nrm[0] * (BH / 2 + 30), C[1] + nrm[1] * (BH / 2 + 30)], d, fr.net, theme.accent, 'net', 4)
-
-              // Status and a speed–time trace.
-              const msg = s.done || (fr.holds ? 'Static friction holds: the block stays put' : s.v === 0 && !running ? 'Press Play to let go' : '')
-              if (msg) {
-                rrect(ctx, 16, 16, 380, 30, 7, alpha(fr.holds && !s.done ? PALETTE[2] : theme.accent, 0.14))
-                text(ctx, msg, 30, 36, { color: theme.text, size: 13, weight: 700 })
-              }
-              rrect(ctx, W - 226, 16, 210, 92, 8, alpha(theme.sunken, 0.9), theme.border)
-              chart(ctx, W - 216, 34, 190, 66, [{ data: s.vs, color: theme.accent, width: 2 }], { min: 0, span: 300, axis: theme.border })
-              text(ctx, 'speed vs time', W - 216, 30, { color: theme.muted, size: 12 })
 
               if (f.frame % 6 === 0) setInfo({ v: Math.abs(s.v), t: s.t, s: s.s, done: s.done })
             }}

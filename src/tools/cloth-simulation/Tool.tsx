@@ -31,17 +31,19 @@ export default function ClothSimulation() {
   const [mode, setMode] = useState<Mode>('pull')
   const [look, setLook] = useState<Look>('shaded')
   const [stats, setStats] = useState({ links: 0, torn: 0, stretch: 0 })
-  const cloth = useRef<Cloth>(new Cloth(COLS, ROWS, SP, OX, OY, 'row'))
+  const cloth = useRef<Cloth | null>(null)
   const acc = useRef(0)
   const time = useRef(0)
   const cutFrom = useRef<{ x: number; y: number } | null>(null)
+
+  const get = () => (cloth.current ??= new Cloth(COLS, ROWS, SP, OX, OY, pins))
 
   function reset(p = pins) {
     cloth.current = new Cloth(COLS, ROWS, SP, OX, OY, p)
   }
 
   function onPointer(p: SimPointer) {
-    const c = cloth.current
+    const c = get()
     const cutting = mode === 'cut' || p.shift
     if (p.type === 'down') {
       if (cutting) cutFrom.current = { x: p.x, y: p.y }
@@ -73,7 +75,7 @@ export default function ClothSimulation() {
             cursor={mode === 'cut' ? 'crosshair' : 'grab'}
             label={`A ${COLS} by ${ROWS} cloth hanging under gravity with wind.`}
             onFrame={(ctx, f) => {
-              const c = cloth.current
+              const c = get()
               // Fixed sub-steps keep Verlet stable whatever the frame rate.
               acc.current = Math.min(acc.current + f.dt, STEP * 5)
               while (acc.current >= STEP) {

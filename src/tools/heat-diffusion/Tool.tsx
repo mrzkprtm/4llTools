@@ -69,8 +69,8 @@ export default function HeatDiffusion() {
   const [boundary, setBoundary] = useState<Boundary>('insulated')
   const [info, setInfo] = useState({ min: 0, max: 0, mean: 0, probe: NaN })
   const grid = useRef<Float64Array | null>(null)
-  const scratch = useRef<Float64Array>(new Float64Array(GW * GH))
-  const src = useRef(new Int8Array(GW * GH))
+  const scratch = useRef<Float64Array | null>(null)
+  const [sources] = useState(() => new Int8Array(GW * GH))
   const buf = useRef<ReturnType<typeof makeBuffer> | null>(null)
   const pointer = useRef<{ x: number; y: number; at: number } | null>(null)
   const last = useRef<{ x: number; y: number } | null>(null)
@@ -78,14 +78,14 @@ export default function HeatDiffusion() {
   function cells() {
     if (!grid.current) {
       grid.current = new Float64Array(GW * GH)
-      build('spot', grid.current, src.current)
+      build('spot', grid.current, sources)
     }
     return grid.current
   }
 
   function paint(cx: number, cy: number, erase: boolean) {
     const g = cells()
-    const s = src.current
+    const s = sources
     const r = size
     for (let j = Math.floor(cy - r); j <= cy + r; j++)
       for (let i = Math.floor(cx - r); i <= cx + r; i++) {
@@ -117,7 +117,7 @@ export default function HeatDiffusion() {
   }
 
   function load(p: Preset) {
-    build(p, cells(), src.current)
+    build(p, cells(), sources)
   }
 
   return (
@@ -133,7 +133,7 @@ export default function HeatDiffusion() {
             label={`Heat spreading across a ${GW} by ${GH} plate with ${boundary} edges.`}
             onFrame={(ctx, f) => {
               let g = cells()
-              const s = src.current
+              const s = sources
               const pin = () => {
                 for (let k = 0; k < s.length; k++) if (s[k]) g[k] = s[k] > 0 ? TMAX : 0
               }
@@ -141,7 +141,7 @@ export default function HeatDiffusion() {
               if (f.dt > 0) {
                 const { n, k } = subSteps(alphaD, Math.min(f.dt, 1 / 30))
                 for (let q = 0; q < n; q++) {
-                  const out = diffuseStep(g, GW, GH, k, boundary, scratch.current)
+                  const out = diffuseStep(g, GW, GH, k, boundary, (scratch.current ??= new Float64Array(GW * GH)))
                   scratch.current = g
                   g = out
                   pin()
@@ -213,7 +213,7 @@ export default function HeatDiffusion() {
       }
     >
       <PlayBar running={running} setRunning={setRunning} onReset={() => load('spot')}>
-        <button type="button" className="btn" onClick={() => src.current.fill(0)}>
+        <button type="button" className="btn" onClick={() => sources.fill(0)}>
           Clear sources
         </button>
       </PlayBar>
