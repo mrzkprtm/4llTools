@@ -6,6 +6,7 @@ import { angleAt, apply, mul, rotation, type Vec3 } from './molecule-viewer/geom
 import { MOLECULES, hillFormula } from './molecule-viewer/molecules'
 import { cleanDNA, codonToAmino, complement, gcContent, proteinString, randomCoding, transcribe, translate } from './dna-transcription/genetics'
 import { chiSquare, chiSquareP, gametes, parseGenotype, phenotypeKey, punnett, simplestRatio, tally } from './punnett-square/mendel'
+import { FIRE, ASH, TREE, crossingProbability, igniteChance, makeGrid, percolates, randomForest, stepForest } from './forest-fire/forest'
 import { barriers, collisionEnergy, equilibriumK, predictedK, reacts } from './reaction-equilibrium/equilibrium'
 import { concentration, fitsPore, passesMembrane, poreCentres, waterActivity } from './diffusion-membrane/membrane'
 
@@ -206,5 +207,39 @@ describe('punnett-square', () => {
     expect(chiSquareP(3.841, 1)).toBeCloseTo(0.05, 3)
     expect(chiSquareP(7.815, 3)).toBeCloseTo(0.05, 3)
     expect(chiSquareP(0, 2)).toBe(1)
+  })
+})
+
+describe('forest-fire', () => {
+  const still = { grow: 0, lightning: 0, spread: 1, wind: 0, wx: 1, wy: 0, ashDecay: 0 }
+
+  it('burning cells ignite every neighbouring tree when spread = 1', () => {
+    const a = makeGrid(5, 5)
+    const b = makeGrid(5, 5)
+    a.cell.fill(TREE)
+    a.cell[12] = FIRE
+    a.fire[12] = 1
+    let id = 2
+    stepForest(a, b, still, () => id++, rng(1))
+    expect(b.cell[12]).toBe(ASH)
+    for (const i of [7, 11, 13, 17]) expect(b.cell[i]).toBe(FIRE)
+    for (const i of [6, 8, 16, 18, 0]) expect(b.cell[i]).toBe(TREE)
+    expect(igniteChance(1, 0, 0.3)).toBe(1)
+    // Wind helps downwind and hinders upwind.
+    expect(igniteChance(0.5, 1, 1)).toBe(1)
+    expect(igniteChance(0.5, 1, -1)).toBe(0)
+  })
+
+  it('detects left-to-right percolation', () => {
+    expect(percolates(new Uint8Array(12).fill(1), 4, 3)).toBe(true)
+    expect(percolates(new Uint8Array(12), 4, 3)).toBe(false)
+    // A full column of gaps blocks every path.
+    const t = new Uint8Array(12).fill(1)
+    for (let y = 0; y < 3; y++) t[y * 4 + 2] = 0
+    expect(percolates(t, 4, 3)).toBe(false)
+    expect(randomForest(50, 50, 1).every((v) => v === 1)).toBe(true)
+    const r = rng(11)
+    expect(crossingProbability(0.45, 20, 60, 40, r)).toBeLessThan(0.1)
+    expect(crossingProbability(0.75, 20, 60, 40, r)).toBeGreaterThan(0.9)
   })
 })

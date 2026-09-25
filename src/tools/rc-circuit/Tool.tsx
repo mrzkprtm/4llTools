@@ -131,6 +131,7 @@ export default function RCCircuit() {
               line(ctx, 70, 420, 70, BAT_BOT, wire, w)
               line(ctx, 70, BAT_TOP, 70, THROW_A[1], wire, w)
               line(ctx, 170, 420, 170, THROW_B[1], wire, w)
+              circle(ctx, 170, 420, 5, theme.text)
               // Resistor zigzag on the top wire.
               rrect(ctx, 214, 66, 112, 28, 4, theme.surface)
               ctx.beginPath()
@@ -193,7 +194,7 @@ export default function RCCircuit() {
                 if (ref !== undefined) line(ctx, gx, y + h - ((ref - min) / (max - min)) * h, gx + gw, y + h - ((ref - min) / (max - min)) * h, alpha(color, 0.5), 1, [4, 4])
                 chart(ctx, gx, y, gw, h, [{ data, color, width: 2.5 }], { min, max, span: SPAN * PER_TAU + 1, axis: theme.border })
               }
-              plot(40, 160, s.vs, 0, V0, theme.accent, 'Capacitor voltage Vc', charging ? V0 * (1 - Math.exp(-1)) : s.vs[0] * Math.exp(-1))
+              plot(40, 160, s.vs, 0, V0, theme.accent, 'Capacitor voltage Vc', (charging ? V0 : 0) + (s.vs[0] - (charging ? V0 : 0)) * Math.exp(-1))
               plot(290, 160, s.is.map((v) => v * 1000), -I0 * 1000, I0 * 1000, PALETTE[1], 'Current I (mA)')
 
               if (f.frame % 6 === 0) setInfo({ vc, i, since: s.since })
