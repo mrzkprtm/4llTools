@@ -40,7 +40,7 @@ export const absoluteUrl = (path: string) => SITE_URL + path
 export function homeMeta(tools: Tool[]): PageMeta {
   return {
     title: `${SITE_NAME}: ${tools.length} Free Online Tools That Run in Your Browser`,
-    description: `${tools.length} free online tools: physics and math simulations, algorithm visualizers, QR, JSON, PDF and image tools and calculators. No sign-up, runs in your browser.`,
+    description: `${tools.length} free online tools: budget and health calculators, timers, music tools, simulations, QR, JSON, PDF and image tools. No sign-up, runs in your browser.`,
     path: '/',
     image: '/og-image.png',
   }

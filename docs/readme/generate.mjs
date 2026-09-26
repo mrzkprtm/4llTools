@@ -20,8 +20,9 @@ const counts = [...tools.reduce((m, c) => m.set(c, (m.get(c) ?? 0) + 1), new Map
 const total = tools.length
 
 // Same hue angles as the category tiles in src/styles.css.
-const HUE = { 'Scan & Code': 35, Text: 255, Developer: 155, Security: 0, Convert: 200, Calculator: 85, Design: 315, Image: 125, Network: 285, Utility: 60, Physics: 230, Math: 20, Algorithms: 175, Science: 105, Art: 340 }
+const HUE = { 'Scan & Code': 35, Text: 255, Developer: 155, Security: 0, Convert: 200, Calculator: 85, Design: 315, Image: 125, Network: 285, Utility: 60, Physics: 230, Math: 20, Algorithms: 175, Science: 105, Art: 340, Money: 140, Health: 210, Home: 330, Productivity: 10, Travel: 180, Learning: 265, Music: 30, Work: 240, Everyday: 355 }
 const SIMULATIONS = new Set(['Physics', 'Math', 'Algorithms', 'Science', 'Art'])
+const sims = tools.filter((c) => SIMULATIONS.has(c)).length
 
 const THEMES = {
   light: { bg: '#f3f0e8', surface: '#fcfbf7', sunken: '#ece8de', text: '#1b1a17', muted: '#676357', border: '#d8d2c3', accent: '#c2410c', l: 48, tile: 88 },
@@ -71,7 +72,7 @@ function banner(t) {
   <text x="64" y="268" class="t" font-size="27" font-weight="400" fill="${t.muted}" style="fill: ${t.muted}">Nothing you type leaves this tab.</text>
 </g>
 <g class="rise" style="animation-delay: 240ms" font-family="${MONO}" font-size="14">
-  ${[['100 simulations', 0], ['100 everyday tools', 172], ['0 uploads · 0 sign-ups', 364]]
+  ${[[`${sims} simulations`, 0], [`${total - sims} everyday tools`, 172], ['0 uploads · 0 sign-ups', 364]]
     .map(([s, x]) => `<g transform="translate(${64 + x} 306)"><rect width="${String(s).length * 8.6 + 28}" height="34" rx="17" fill="${t.surface}" stroke="${t.border}"/><text x="14" y="22" fill="${t.text}">${s}</text></g>`)
     .join('\n  ')}
 </g>
@@ -170,7 +171,7 @@ console.log(`Wrote banner and category chart for ${total} tools in ${counts.leng
 // Rebuild the tool catalog in README.md between the <!-- tools:start --> and
 // <!-- tools:end --> markers, one collapsible section per category.
 const SITE = 'https://4lltools.morizdigital.com'
-const EMOJI = { Physics: '🪐', Math: '📐', Algorithms: '🧮', Science: '🧬', Art: '🎨', Developer: '🛠️', Text: '📝', Security: '🔐', Design: '🎛️', Calculator: '🧾', Image: '🖼️', Network: '🌐', Convert: '🔁', Utility: '⏱️', 'Scan & Code': '📷' }
+const EMOJI = { Physics: '🪐', Math: '📐', Algorithms: '🧮', Science: '🧬', Art: '🎨', Developer: '🛠️', Text: '📝', Security: '🔐', Design: '🎛️', Calculator: '🧾', Image: '🖼️', Network: '🌐', Convert: '🔁', Utility: '⏱️', 'Scan & Code': '📷', Money: '💰', Health: '❤️', Home: '🏠', Productivity: '✅', Travel: '✈️', Learning: '📚', Music: '🎵', Work: '💼', Everyday: '🌙' }
 const str = (src, key) => (src.match(new RegExp(`\\b${key}:\\s*'((?:[^'\\\\]|\\\\.)*)'`))?.[1] ?? '').replace(/\\(.)/g, '$1')
 const all = readdirSync(toolsDir)
   .filter((d) => existsSync(join(toolsDir, d, 'meta.ts')))
