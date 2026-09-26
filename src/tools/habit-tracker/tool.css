@@ -1,0 +1,47 @@
+.ht { --ht-fl1: #f76707; --ht-fl2: #ffd43b; }
+.ht-summary { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+.ht-summary p { margin: 0; }
+.ht-ring {
+  --p: 0; width: 84px; height: 84px; flex: none; border-radius: 50%; display: grid; place-content: center; text-align: center;
+  background: radial-gradient(closest-side, var(--surface) 78%, transparent 80%), conic-gradient(var(--ok) calc(var(--p) * 360deg), var(--sunken) 0);
+  transition: --p 0.6s; border: 1px solid var(--border);
+}
+.ht-ring b { font-family: var(--mono); font-size: 1.2rem; }
+.ht-ring span { font-size: 0.72rem; color: var(--muted); }
+.ht-list { display: grid; gap: 12px; }
+.ht-card { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); padding: 12px; min-width: 0; }
+.ht-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ht-title { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.ht-title b { overflow-wrap: anywhere; }
+.ht-title span { font-size: 0.8rem; }
+.ht-today {
+  position: relative; width: 52px; height: 52px; flex: none; border-radius: 50%; border: 2px dashed var(--hc); background: var(--sunken);
+  display: grid; place-items: center; font-size: 1.4rem; cursor: pointer; color: #fff; transition: background-color 0.25s, border-color 0.25s, transform 0.15s;
+}
+.ht-today:active { transform: scale(0.9); }
+.ht-today.on { background: var(--hc); border-style: solid; box-shadow: 0 0 0 4px color-mix(in srgb, var(--hc) 25%, transparent); }
+.ht-today-in { display: grid; place-items: center; animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.ht-today:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.ht-burst { position: absolute; inset: 0; pointer-events: none; }
+.ht-burst i {
+  position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; margin: -3.5px; border-radius: 50%; background: var(--hc);
+  animation: ht-burst 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.ht-burst i:nth-child(even) { background: var(--ht-fl2); }
+@keyframes ht-burst { 0% { transform: rotate(var(--a)) translateY(0) scale(1); opacity: 1; } 100% { transform: rotate(var(--a)) translateY(-40px) scale(0.3); opacity: 0; } }
+.ht-flame { display: grid; justify-items: center; width: 44px; flex: none; }
+.ht-flame svg { width: 26px; height: 34px; transform-origin: 50% 100%; transition: transform var(--spring-bouncy-ms) var(--spring-bouncy); filter: grayscale(1) opacity(0.4); }
+.ht-flame.lit svg { filter: none; }
+.ht-flame.lit svg path:first-child { animation: ht-flicker 1.6s ease-in-out infinite; transform-origin: 50% 100%; }
+.ht-flame b { font-family: var(--mono); font-size: 0.95rem; line-height: 1; }
+@keyframes ht-flicker { 0%, 100% { transform: scale(1, 1) skewX(0); } 30% { transform: scale(0.96, 1.05) skewX(2deg); } 60% { transform: scale(1.03, 0.97) skewX(-2deg); } }
+.ht-del { padding: 8px; min-width: 40px; min-height: 40px; display: grid; place-items: center; }
+.ht-grid { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 3px; }
+.ht-col { display: grid; gap: 3px; }
+.ht-cell { display: block; aspect-ratio: 1; width: 100%; padding: 0; border: 0; border-radius: 3px; background: var(--sunken); cursor: pointer; transition: background-color 0.3s, transform var(--spring-snap-ms) var(--spring-snap); }
+.ht-cell.on { background: var(--hc); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.ht-cell.now { outline: 2px solid var(--text); outline-offset: 1px; }
+.ht-cell.empty { background: transparent; cursor: default; }
+.ht-cell:hover:not(.empty) { transform: scale(1.3); }
+.ht-add input[type='text'] { flex: 1; min-width: 160px; }
+.ht-add .ht-emoji { flex: 0 0 56px; min-width: 56px; text-align: center; font-size: 1.2rem; }

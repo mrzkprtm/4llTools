@@ -1,0 +1,10 @@
+.me-transport { justify-content: center; margin: 0; }
+.me-play { min-width: 140px; min-height: 48px; justify-content: center; font-size: 1.05rem; }
+.me-tap { min-height: 48px; }
+.me-bpm { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.me-step { width: 48px; height: 48px; font-size: 1.5rem; padding: 0; display: grid; place-items: center; }
+.me-bpm-num { text-align: center; display: grid; }
+.me-bpm-num b { font-size: 3rem; line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.me-bpm-num span { color: var(--accent); font-weight: 600; font-size: 0.95rem; }
+.me-quick { margin: 0; justify-content: space-between; }
+.me-quick .btn { flex: 1; min-height: 40px; padding-inline: 4px; }

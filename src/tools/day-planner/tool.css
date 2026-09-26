@@ -1,0 +1,39 @@
+.dp-top { display: flex; align-items: center; gap: 8px; }
+.dp-nav { width: 44px; height: 44px; padding: 0; display: grid; place-items: center; flex: none; }
+.dp-date { flex: 1; text-align: center; display: grid; gap: 2px; }
+.dp-date .muted { font-size: 0.8rem; }
+.dp-today { border: 0; background: none; color: var(--accent); font: inherit; font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 2px; }
+.dp-stats { display: grid; gap: 6px; margin: 12px 0; font-size: 0.88rem; color: var(--muted); }
+.dp-stats b { color: var(--text); font-family: var(--mono); }
+.dp-warn { color: var(--danger); font-weight: 600; }
+.dp-bar { height: 10px; border-radius: 5px; background: var(--sunken); border: 1px solid var(--border); overflow: hidden; }
+.dp-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #f59f00)); transition: width var(--spring-soft-ms) var(--spring-soft); }
+.dp-scroll { height: min(560px, 68vh); overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overscroll-behavior: contain; }
+.dp-grid { position: relative; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
+.dp-hour { position: absolute; left: 0; right: 0; border-top: 1px solid var(--border); pointer-events: none; }
+.dp-hour::after { content: ''; position: absolute; left: 52px; right: 0; top: 50%; border-top: 1px dashed color-mix(in srgb, var(--border) 60%, transparent); }
+.dp-hour span { position: absolute; left: 8px; top: 2px; font-family: var(--mono); font-size: 0.72rem; color: var(--muted); }
+.dp-block {
+  position: absolute; box-sizing: border-box; border-radius: 6px; padding: 4px 8px; overflow: hidden; cursor: grab; touch-action: none;
+  background: color-mix(in srgb, var(--bc) 22%, var(--surface)); border-left: 4px solid var(--bc); color: var(--text);
+  display: flex; flex-direction: column; gap: 0; font-size: 0.8rem; line-height: 1.25; min-height: 12px;
+  transition: top var(--spring-snap-ms) var(--spring-snap), height var(--spring-snap-ms) var(--spring-snap), left 0.3s, width 0.3s, box-shadow 0.2s;
+  animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both;
+}
+.dp-block b { font-weight: 650; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dp-block span { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+.dp-block.sel { box-shadow: 0 0 0 2px var(--bc), 0 8px 18px -8px rgba(0, 0, 0, 0.35); z-index: 2; }
+.dp-block.clash { outline: 2px dashed var(--danger); outline-offset: -2px; }
+.dp-block:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
+.dp-handle { position: absolute; left: 0; right: 0; bottom: 0; height: 12px; cursor: ns-resize; touch-action: none; }
+.dp-handle::after { content: ''; position: absolute; left: 50%; bottom: 3px; width: 24px; margin-left: -12px; height: 3px; border-radius: 2px; background: var(--bc); opacity: 0.6; }
+.dp-now { position: absolute; left: 44px; right: 0; height: 0; border-top: 2px solid var(--danger); z-index: 3; pointer-events: none; transition: top 1s linear; }
+.dp-now::before { content: ''; position: absolute; left: -5px; top: -6px; width: 10px; height: 10px; border-radius: 50%; background: var(--danger); animation: breathe 2s ease-in-out infinite; }
+.dp-now span { position: absolute; right: 4px; top: -18px; font-family: var(--mono); font-size: 0.68rem; color: var(--danger); background: var(--surface); padding: 0 4px; border-radius: 4px; }
+.dp-edit { margin-top: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--sunken); display: grid; gap: 8px; }
+.dp-edit-row { margin: 0; }
+.dp-edit select { width: auto; padding: 8px; margin: 0; }
+.dp-swatches { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.dp-swatches button { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border); cursor: pointer; transition: transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.dp-swatches button[aria-pressed='true'] { transform: scale(1.18); box-shadow: 0 0 0 2px var(--text); }
+.dp-del { color: var(--danger); margin-left: auto; }

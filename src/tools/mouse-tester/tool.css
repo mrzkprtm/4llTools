@@ -1,0 +1,39 @@
+.mt { display: grid; gap: 14px; }
+.mt-top { justify-content: space-between; align-items: flex-end; gap: 10px; }
+.mt-area {
+  position: relative; min-height: 240px; display: grid; place-items: center; overflow: hidden; cursor: pointer; user-select: none; -webkit-user-select: none;
+  border: 2px dashed var(--border); border-radius: var(--radius); background: var(--surface); touch-action: manipulation;
+  transition: border-color 0.2s, background-color 0.3s;
+}
+.mt-area.running { border-style: solid; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+.mt-area:active { background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.mt-timer { position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--accent); transform-origin: left; }
+.mt-center { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 16px; pointer-events: none; }
+.mt-center b { font-size: 1.3rem; }
+.mt-center span { color: var(--muted); font-size: 0.9rem; max-width: 40ch; }
+.mt-big { font-family: var(--mono); font-size: clamp(2.6rem, 12vw, 4rem) !important; line-height: 1; }
+.mt-big small { font-size: 1rem; color: var(--muted); }
+.mt-burst { position: absolute; width: 0; height: 0; pointer-events: none; }
+.mt-burst i { position: absolute; left: -3px; top: -3px; width: 6px; height: 6px; }
+.mt-burst i::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: currentColor; animation: mt-fly 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+@keyframes mt-fly { from { transform: translateY(0) scale(1.3); opacity: 1; } to { transform: translateY(-46px) scale(0.2); opacity: 0; } }
+.mt-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 14px; }
+.mt-card { padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); display: grid; gap: 8px; align-content: start; }
+.mt-card h4 { margin: 0; }
+.mt-mouse { width: 120px; justify-self: center; }
+.mt-mouse path, .mt-mouse rect { transition: fill 0.1s; }
+.mt-chips { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.mt-small { font-size: 0.84rem; margin: 0; }
+.mt-log { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 0.85rem; }
+.mt-log li { animation: pop 0.3s var(--spring-bouncy) both; }
+.mt-wheel { display: grid; justify-items: center; gap: 8px; padding: 16px; min-height: 180px; border: 2px dashed var(--border); border-radius: var(--radius); background: var(--sunken); outline: none; overscroll-behavior: contain; }
+.mt-wheel:focus-visible { border-color: var(--accent); }
+.mt-arrow { transition: transform var(--spring-snap-ms) var(--spring-snap); animation: mt-nudge 0.25s ease-out; }
+@keyframes mt-nudge { from { scale: 1.25; } to { scale: 1; } }
+.mt-wheel-stats { display: flex; gap: 14px; font-size: 0.9rem; }
+.mt-wheel-stats b { font-family: var(--mono); }
+.mt-trail-wrap { display: grid; gap: 6px; }
+.mt-trail { width: 100%; height: 200px; border-radius: var(--radius); background: var(--sunken); border: 1px solid var(--border); touch-action: none; cursor: crosshair; }
+.mt-rate { font-size: 0.9rem; }
+.mt-rate b { font-family: var(--mono); font-size: 1.3rem; }
+@media (prefers-reduced-motion: reduce) { .mt-arrow, .mt-log li { animation: none; } }

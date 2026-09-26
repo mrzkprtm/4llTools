@@ -1,0 +1,46 @@
+.pg-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; align-items: end; margin-top: 10px; }
+.pg-inputs label { display: grid; gap: 4px; font-size: 0.86rem; font-weight: 600; margin: 0; }
+.pg-hero { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 16px; }
+.pg-ring-wrap { position: relative; width: 190px; height: 190px; flex: none; margin-inline: auto; }
+.pg-ring { width: 100%; height: 100%; transform: rotate(-90deg); }
+.pg-track { fill: none; stroke: var(--sunken); stroke-width: 14; }
+.pg-tick { stroke: var(--surface); stroke-width: 3; }
+.pg-fill { fill: none; stroke-width: 14; stroke-linecap: round; transition: stroke-dashoffset 0.9s var(--ease-out), stroke 0.4s; animation: pg-ring 1.4s var(--ease-out) both; }
+.pg-fill.t1 { stroke: #f06595; }
+.pg-fill.t2 { stroke: #cc5de8; }
+.pg-fill.t3 { stroke: #5c7cfa; }
+.pg-ring-text { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 2px; padding: 30px; font-size: 0.85rem; }
+.pg-ring-text b { font-size: 2rem; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.pg-ring-text small { font-size: 0.9rem; color: var(--muted); margin-left: 1px; }
+.pg-due { display: grid; gap: 4px; flex: 1; min-width: 220px; }
+.pg-due b { font-size: 1.4rem; letter-spacing: -0.02em; animation: pg-in 0.4s var(--ease-out); }
+.pg-small { font-size: 0.82rem; }
+.pg-bar { height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; margin-top: 6px; }
+.pg-bar i { display: block; height: 100%; background: linear-gradient(90deg, #f06595, #cc5de8 50%, #5c7cfa); transition: width 0.9s var(--ease-out); }
+.pg-h { margin: 22px 0 8px; font-size: 1rem; }
+.pg-strip { list-style: none; margin: 0; padding: 4px 2px 10px; display: flex; gap: 5px; overflow-x: auto; scroll-snap-type: x proximity; }
+.pg-strip li { scroll-snap-align: center; }
+.pg-strip button { display: grid; justify-items: center; gap: 1px; min-width: 44px; min-height: 52px; padding: 5px 4px; border: 1px solid var(--border); border-radius: 10px; background: var(--sunken); color: var(--text); font: inherit; font-size: 0.75rem; font-family: var(--mono); cursor: pointer; transition: transform var(--spring-snap-ms) var(--spring-snap), border-color 0.2s, background-color 0.2s; }
+.pg-strip button span { font-size: 1.05rem; }
+.pg-strip button.past { opacity: 0.7; }
+.pg-strip button.now { border-color: var(--accent); }
+.pg-strip button.on { background: var(--accent-soft); border-color: var(--accent); transform: translateY(-3px) scale(1.06); opacity: 1; }
+.pg-card { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.pg-fruit { width: 150px; height: 150px; flex: none; margin-inline: auto; }
+.pg-halo { fill: var(--sunken); }
+.pg-grow { transition: transform 0.7s var(--spring-bouncy); animation: pg-grow 0.6s var(--spring-bouncy); transform-origin: 0 0; }
+.pg-info { display: grid; gap: 3px; flex: 1; min-width: 200px; animation: pg-in 0.35s var(--ease-out); }
+.pg-info b { font-size: 1.15rem; }
+.pg-info p { margin: 4px 0 0; font-size: 0.9rem; }
+.pg-info .btn { justify-self: start; margin-top: 6px; }
+.pg-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.pg-checks li { display: flex; gap: 10px; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); transition: border-color 0.3s, opacity 0.3s; }
+.pg-checks li p { margin: 2px 0 0; font-size: 0.84rem; color: var(--muted); }
+.pg-checks li.due { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.pg-checks li.done { opacity: 0.6; }
+.pg-wk { flex: none; width: 72px; font-family: var(--mono); font-size: 0.74rem; color: var(--muted); padding-top: 2px; }
+.pg-warn { margin-top: 16px; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--danger) 45%, var(--border)); background: color-mix(in srgb, var(--danger) 6%, transparent); font-size: 0.86rem; line-height: 1.5; }
+@keyframes pg-ring { from { stroke-dashoffset: var(--c); } }
+@keyframes pg-grow { from { transform: scale(0.1); } }
+@keyframes pg-in { from { opacity: 0; transform: translateY(5px); } }
+@media (prefers-reduced-motion: reduce) { .pg-fill, .pg-grow, .pg-info, .pg-due b { animation: none; } .pg-fill, .pg-bar i, .pg-grow { transition: none; } }
