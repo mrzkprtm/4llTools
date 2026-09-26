@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'MET-based calculator with animated figure and burned calories as food equivalents.',
   category: 'Health',
   keywords: ['calorie', 'burn', 'exercise', 'met', 'kalori', 'olahraga', 'aktivitas', 'makanan'],
-  symbol: 'Cb',
+  symbol: 'Cal',
   icon: 'lightning-bolt',
 }

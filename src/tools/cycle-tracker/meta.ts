@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'An animated cycle ring with predicted period, fertile window and ovulation; stored only on the device.',
   category: 'Health',
   keywords: ['period', 'ovulation', 'cycle', 'calculator', 'menstruasi', 'ovulasi', 'siklus', 'kalkulator', 'subur', 'haid'],
-  symbol: 'Po',
+  symbol: 'Cyc',
   icon: 'calendar',
 }

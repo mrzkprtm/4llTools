@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'A jar fills with dropping coins toward a target and date; shows monthly amount needed.',
   category: 'Money',
   keywords: ['savings', 'goal', 'jar', 'tabungan', 'target', 'menabung'],
-  symbol: 'Sg',
+  symbol: 'Sav',
   icon: 'money-plus',
 }

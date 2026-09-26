@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'A glass with sloshing wave fills per tap; daily goal from weight and activity; reminders; local history.',
   category: 'Health',
   keywords: ['water', 'hydration', 'tracker', 'air', 'minum', 'hidrasi'],
-  symbol: 'Wi',
+  symbol: 'H2O',
   icon: 'glas-water',
 }
