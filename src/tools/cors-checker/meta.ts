@@ -4,7 +4,7 @@ export const meta: ToolMeta = {
   name: 'CORS & Security Header Checker',
   description: 'Grade security headers like CSP and HSTS, and simulate whether CORS allows a request.',
   category: 'Network',
-  keywords: ['cors', 'csp', 'hsts', 'security headers', 'preflight', 'access-control-allow-origin', 'x-frame-options', 'set-cookie', 'header keamanan', 'cek header', 'kebijakan cors'],
+  keywords: ['cors', 'csp', 'hsts', 'security headers', 'preflight', 'access-control-allow-origin', 'x-frame-options', 'set-cookie', 'header keamanan', 'cek header', 'kebijakan cors', 'simulate', 'grade', 'pass', 'warn', 'fail', 'coop', 'coep', 'referrer-policy', 'permissions-policy', 'content-security-policy', 'strict-transport-security'],
   symbol: 'Crs',
   icon: 'shield',
   network:

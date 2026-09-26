@@ -4,7 +4,7 @@ export const meta: ToolMeta = {
   name: 'QR Code Reader',
   description: 'Scan a QR code with your camera, or read one from an image.',
   category: 'Scan & Code',
-  keywords: ['scan', 'scanner', 'camera', 'kamera', 'pindai', 'barcode'],
+  keywords: ['scan', 'scanner', 'camera', 'kamera', 'pindai', 'barcode', 'decode', 'upload', 'image', 'offline'],
   symbol: 'Qr',
   icon: 'camera',
 }
