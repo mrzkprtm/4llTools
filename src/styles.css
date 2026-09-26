@@ -65,6 +65,15 @@
 [data-cat='image'] { --h: 125; }
 [data-cat='network'] { --h: 285; }
 [data-cat='utility'] { --h: 60; }
+[data-cat='money'] { --h: 140; }
+[data-cat='health'] { --h: 210; }
+[data-cat='home'] { --h: 330; }
+[data-cat='productivity'] { --h: 10; }
+[data-cat='travel'] { --h: 180; }
+[data-cat='learning'] { --h: 265; }
+[data-cat='music'] { --h: 30; }
+[data-cat='work'] { --h: 240; }
+[data-cat='everyday'] { --h: 355; }
 
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); line-height: 1.5; font-size: 1rem; }

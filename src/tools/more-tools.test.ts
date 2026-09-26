@@ -25,8 +25,8 @@ import { parseTimestamp } from './timestamp-converter/parse'
 const seeded = (seed = 1) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646
 
 describe('registry with all tools', () => {
-  it('finds all 48 tools with unique names', () => {
-    expect(tools).toHaveLength(48)
+  it('finds all 78 tools with unique names', () => {
+    expect(tools).toHaveLength(78)
     expect(new Set(tools.map((t) => t.name)).size).toBe(tools.length)
   })
 

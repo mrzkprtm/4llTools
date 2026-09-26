@@ -9,6 +9,15 @@ export type Category =
   | 'Image'
   | 'Network'
   | 'Utility'
+  | 'Money'
+  | 'Health'
+  | 'Home'
+  | 'Productivity'
+  | 'Travel'
+  | 'Learning'
+  | 'Music'
+  | 'Work'
+  | 'Everyday'
 
 export interface ToolMeta {
   /** Short display name. */
