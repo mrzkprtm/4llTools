@@ -1,0 +1,38 @@
+.cz-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px; }
+.cz-top .sim-field:last-child { grid-column: 1 / -1; }
+.cz-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.cz-chip { min-width: 44px; min-height: 40px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--sunken); color: var(--text); font: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.cz-chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-text); transform: scale(1.08); }
+.cz-table-wrap { overflow-x: auto; margin-top: 14px; }
+.cz-table td, .cz-table th { white-space: nowrap; text-align: center; }
+.cz-table th.src { color: var(--accent); }
+.cz-table tr { cursor: pointer; transition: background-color 0.3s; }
+.cz-table tr td { transition: background-color 0.35s, color 0.35s; }
+.cz-table tr.fit td { box-shadow: inset 0 -2px 0 #0ca678; }
+.cz-table tr.on td { background: var(--accent-soft); font-weight: 700; }
+.cz-result { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 6px; margin-top: 12px; }
+.cz-card { display: grid; gap: 2px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); font-size: 0.78rem; animation: cz-flip 0.45s var(--spring-snap) both; }
+.cz-card b { font-size: 1.35rem; }
+.cz-h { margin: 22px 0 8px; font-size: 1rem; }
+.cz-find { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 520px) { .cz-find { grid-template-columns: 110px minmax(0, 1fr); gap: 10px; } }
+.cz-guide { width: 100%; height: auto; }
+.cz-body { fill: color-mix(in srgb, var(--muted) 22%, var(--sunken)); stroke: var(--muted); stroke-width: 1.2; }
+.cz-paper { fill: var(--surface); stroke: var(--border); }
+.cz-wall { stroke: var(--text); stroke-width: 3; }
+.cz-tape { opacity: 0.18; transition: opacity 0.3s; }
+.cz-tape.on { opacity: 1; }
+.cz-tape-ring { fill: none; stroke: #f59f00; stroke-width: 3.5; stroke-dasharray: 5 3; }
+.cz-tape.on .cz-tape-ring, .cz-tape.on .cz-tape-line { animation: cz-tape 1.2s linear infinite; }
+.cz-tape-line { stroke: #f59f00; stroke-width: 4; stroke-dasharray: 6 3; }
+.cz-tape-end { stroke: #f59f00; stroke-width: 2.5; }
+.cz-tape-text { font-size: 9px; font-weight: 700; fill: var(--text); }
+.cz-inputs { display: grid; gap: 8px; }
+.cz-inputs label { display: grid; gap: 3px; font-size: 0.85rem; font-weight: 600; margin: 0; }
+.cz-units { margin: 0; gap: 4px; }
+.cz-units .btn { padding: 6px 12px; min-height: 36px; }
+.cz-fit { margin: 4px 0 0; padding: 10px; border-radius: var(--radius-sm); background: color-mix(in srgb, #0ca678 10%, transparent); border: 1px solid color-mix(in srgb, #0ca678 40%, var(--border)); animation: cz-flip 0.4s var(--spring-snap); }
+.cz-small { font-size: 0.8rem; margin: 0; }
+@keyframes cz-flip { from { opacity: 0; transform: rotateX(-70deg); } }
+@keyframes cz-tape { to { stroke-dashoffset: -16; } }
+@media (prefers-reduced-motion: reduce) { .cz-card, .cz-fit, .cz-tape.on .cz-tape-ring, .cz-tape.on .cz-tape-line { animation: none; } }

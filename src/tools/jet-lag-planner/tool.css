@@ -1,0 +1,24 @@
+.jl-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 14px; }
+.jl-grid select, .jl-grid input { width: 100%; }
+.jl-times { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+.jl-slider { margin: 14px 0 6px; max-width: 420px; }
+.jl-summary { padding: 10px 12px; border-radius: var(--radius-sm); background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); margin: 14px 0 10px; }
+.jl-axis { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); padding: 0 1px; }
+.jl-rows { list-style: none; margin: 4px 0 10px; padding: 0; display: grid; gap: 8px; }
+.jl-row { animation: rise 0.4s var(--ease-out) both; animation-delay: calc(var(--i) * 60ms); }
+.jl-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; width: 100%; min-height: 32px; padding: 2px 0; background: none; border: 0; color: var(--text); font: inherit; font-size: 0.88rem; text-align: left; cursor: pointer; }
+.jl-head .muted { font-size: 0.8rem; }
+.jl-row.fly .jl-head b { color: var(--accent); }
+.jl-track { position: relative; height: 34px; border-radius: 8px; background: var(--sunken); border: 1px solid var(--border); overflow: hidden; }
+.jl-row.open .jl-track { box-shadow: 0 0 0 3px var(--accent-soft); border-color: var(--accent); }
+.jl-tick { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border); }
+.jl-blk {
+  position: absolute; top: 4px; bottom: 4px; border-radius: 6px; display: flex; align-items: center; justify-content: center; overflow: hidden;
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 600; white-space: nowrap;
+  transition: left var(--spring-soft-ms) var(--spring-soft), width var(--spring-soft-ms) var(--spring-soft);
+}
+.jl-blk.sleep { background: #5c7cfa; color: #fff; z-index: 2; }
+.jl-blk.seek { top: 0; bottom: 0; border-radius: 0; background: repeating-linear-gradient(45deg, #fab005aa 0 6px, #fab00566 6px 12px); color: #5c3c00; }
+.jl-blk.avoid { top: 0; bottom: 0; border-radius: 0; background: repeating-linear-gradient(-45deg, #49505799 0 6px, #49505744 6px 12px); }
+.jl-blk.flight { top: 9px; bottom: 9px; background: var(--accent); color: var(--accent-text, #fff); z-index: 3; opacity: 0.92; }
+.jl-tips { margin: 6px 0 0; padding-left: 18px; font-size: 0.88rem; display: grid; gap: 2px; }

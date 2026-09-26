@@ -1,0 +1,33 @@
+.ot-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 12px; }
+.ot-inputs label { margin: 10px 0 0; font-size: 0.86rem; }
+.ot-inputs input { margin-top: 4px; }
+.ot-choices { gap: 16px; align-items: flex-start; }
+.ot-single { display: grid; gap: 12px; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); animation: rise 0.3s var(--ease-out) both; }
+.ot-hours { margin: 0; display: grid; gap: 6px; font-size: 0.88rem; }
+.ot-hours b { font-family: var(--mono); color: var(--accent); }
+.ot-hours input { width: 100%; min-height: 32px; }
+.ot-line { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.ot-day { width: 34px; flex: none; font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+.ot-track { flex: 1; min-width: 0; display: flex; gap: 3px; height: 34px; }
+.ot-h, .ot-empty { flex: 1 1 0; min-width: 0; border-radius: 5px; display: grid; place-items: center; font-style: normal; font-size: 0.7rem; font-weight: 700; font-family: var(--mono); overflow: hidden; }
+.ot-h { color: #fff; transform-origin: left; animation: ot-in 0.4s var(--ease-out) both; }
+.ot-empty { background: var(--sunken); border: 1px dashed var(--border); flex-grow: 1; }
+.m15 { background: #2f9e44; }
+.m2 { background: #f08c00; }
+.m3 { background: #e03131; }
+.m4 { background: #9c36b5; }
+.ot-week { display: grid; gap: 6px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); animation: rise 0.3s var(--ease-out) both; }
+.ot-wrow { display: grid; grid-template-columns: minmax(0, 1fr) 170px 72px; gap: 6px; align-items: center; }
+.ot-wrow select, .ot-wrow input { padding: 7px 8px; font-size: 0.84rem; min-height: 40px; }
+@media (max-width: 560px) { .ot-wrow { grid-template-columns: minmax(0, 1fr) 72px; } .ot-wrow .ot-line { grid-column: 1 / -1; } }
+.ot-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 0.8rem; color: var(--muted); }
+.ot-legend span { display: inline-flex; align-items: center; gap: 5px; }
+.ot-legend i { width: 12px; height: 12px; border-radius: 3px; }
+.ot-total { border-color: var(--accent); background: var(--accent-soft); }
+.ot-total b { color: var(--accent); }
+.ot-warn { margin: 8px 0 0; font-size: 0.86rem; }
+.ot-rules { margin-top: 14px; font-size: 0.88rem; }
+.ot-rules summary { cursor: pointer; font-weight: 600; min-height: 40px; display: flex; align-items: center; }
+.ot-note { font-size: 0.84rem; }
+@keyframes ot-in { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .ot-h { animation: none; } }

@@ -1,0 +1,25 @@
+.an-top { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.an-play { min-height: 52px; min-width: 140px; justify-content: center; font-size: 1.05rem; }
+.an-play.on { animation: breathe 2.4s ease-in-out infinite; }
+.an-master { flex: 1; min-width: 200px; }
+.an-presets .btn { min-height: 40px; }
+.an-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.an-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 10px 10px;
+  display: grid; gap: 8px; transition: border-color 0.25s, box-shadow 0.25s;
+}
+.an-card.active { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); box-shadow: 0 6px 18px -12px var(--c); }
+.an-card .sim-stage { animation: none; border-radius: calc(var(--radius) - 4px); }
+.an-card input[type='range'] { accent-color: var(--c); min-height: 32px; }
+.an-sleep { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+.an-sleep-title { display: inline-flex; align-items: center; gap: 6px; }
+.an-sleep .row { margin: 8px 0 0; }
+.an-sleep .row .btn { min-height: 40px; }
+.an-ring { position: relative; width: 64px; height: 64px; display: grid; place-items: center; }
+.an-ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+.an-ring span { font: 600 0.8rem var(--mono); }
+.an-ring-bg { fill: none; stroke: var(--border); stroke-width: 5; }
+.an-ring-fg { fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; transition: stroke-dashoffset 0.5s linear; }
+@media (prefers-reduced-motion: reduce) {
+  .an-play.on { animation: none; }
+}

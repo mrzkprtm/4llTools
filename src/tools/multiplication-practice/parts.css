@@ -1,0 +1,9 @@
+.np-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: min(100%, 320px); margin: 0 auto; }
+.np-key { min-height: 56px; font-size: 1.5rem; font-family: var(--mono); font-weight: 650; display: grid; place-items: center; padding: 0; touch-action: manipulation; }
+.np-confetti { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 5; }
+.np-confetti i { position: absolute; top: 55%; width: 9px; height: 14px; border-radius: 2px; opacity: 0; animation: np-burst 1.3s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+@keyframes np-burst {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0); }
+  60% { opacity: 1; transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); }
+  100% { opacity: 0; transform: translate(calc(var(--dx) * 1.2), calc(var(--dy) + 160px)) rotate(calc(var(--rot) * 1.5)); }
+}

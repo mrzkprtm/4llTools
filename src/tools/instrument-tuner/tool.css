@@ -1,0 +1,42 @@
+.tu-panel {
+  display: grid; justify-items: center; gap: 4px; padding: 16px 12px 18px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  transition: box-shadow 0.35s, border-color 0.35s;
+}
+.tu-panel.tu-good { border-color: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 22%, transparent), 0 0 38px -6px var(--ok); }
+.tu-gauge { width: 100%; max-width: 420px; height: auto; overflow: visible; }
+.tu-arc { fill: none; stroke: var(--border); stroke-width: 10; stroke-linecap: round; }
+.tu-zone { fill: none; stroke: var(--ok); stroke-width: 10; opacity: 0.55; }
+.tu-good .tu-zone { opacity: 1; }
+.tu-tick { stroke: var(--muted); stroke-width: 1.5; }
+.tu-tick.big { stroke: var(--text); stroke-width: 2.5; }
+.tu-lbl { fill: var(--muted); font: 600 12px var(--mono); }
+.tu-lbl.flat, .tu-lbl.sharp { font-size: 20px; }
+.tu-needle { transform-origin: 160px 170px; transform-box: view-box; transition: transform 0.12s linear; }
+.tu-needle line { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; }
+.tu-needle circle { fill: var(--text); }
+.tu-good .tu-needle line { stroke: var(--ok); }
+.tu-note { display: grid; justify-items: center; gap: 2px; text-align: center; }
+.tu-note b { font-size: 3.6rem; line-height: 1; letter-spacing: -0.03em; }
+.tu-note sub { font-size: 1.4rem; color: var(--muted); vertical-align: baseline; margin-left: 2px; }
+.tu-good .tu-note b { color: var(--ok); }
+.tu-hz { font-family: var(--mono); color: var(--muted); font-size: 0.9rem; }
+.tu-advice { font-weight: 600; min-height: 1.4em; }
+.tu-strings { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.tu-string {
+  width: 52px; height: 52px; border-radius: 50%; border: 2px solid var(--border); background: var(--surface);
+  color: var(--text); display: grid; place-content: center; line-height: 1; cursor: pointer;
+  transition: transform var(--spring-bouncy-ms) var(--spring-bouncy), border-color 0.2s, background 0.2s, box-shadow 0.3s;
+}
+.tu-string b { font-size: 1.1rem; }
+.tu-string small { color: var(--muted); font-size: 0.72rem; }
+.tu-string:active { transform: scale(0.92); }
+.tu-string.near { border-color: var(--accent); transform: scale(1.12); background: var(--accent-soft); }
+.tu-string.tuned { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 16%, var(--surface)); box-shadow: 0 0 18px -2px var(--ok); }
+.tu-bar { justify-content: center; }
+.tu-go { min-height: 48px; min-width: 160px; justify-content: center; }
+.tu-live { animation: breathe 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .tu-needle { transition: none; }
+  .tu-live { animation: none; }
+}

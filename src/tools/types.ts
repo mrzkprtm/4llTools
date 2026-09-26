@@ -14,6 +14,15 @@ export type Category =
   | 'Algorithms'
   | 'Science'
   | 'Art'
+  | 'Money'
+  | 'Health'
+  | 'Home'
+  | 'Productivity'
+  | 'Travel'
+  | 'Learning'
+  | 'Music'
+  | 'Work'
+  | 'Everyday'
 
 export interface ToolMeta {
   /** Short display name. */

@@ -1,0 +1,30 @@
+.gp { display: grid; gap: 14px; }
+.gp-tabs { gap: 6px; }
+.gp-id { margin: 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.88rem; overflow-wrap: anywhere; }
+.gp-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 var(--ok); animation: gp-ping 1.6s ease-out infinite; }
+.gp-svg { width: 100%; max-width: 520px; margin-inline: auto; display: block; }
+.gp-svg circle, .gp-svg rect { transition: fill 0.08s; }
+.gp-btn.on circle { filter: drop-shadow(0 0 6px var(--accent)); }
+.gp-sticks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.gp-stick { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.gp-stick svg { width: 100%; max-width: 200px; }
+.gp-stick figcaption { display: grid; justify-items: center; font-size: 0.85rem; }
+.gp-mono { font-family: var(--mono); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+.gp-drift { display: grid; gap: 10px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.gp-drift .btn { justify-self: start; min-height: 42px; }
+.gp-drift-res { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.9rem; }
+.gp-rumble { gap: 8px; align-items: center; }
+.gp-rumble .btn { min-height: 42px; }
+.gp-raw summary { cursor: pointer; font-weight: 600; margin-bottom: 6px; }
+.gp-raw td { padding: 4px 8px; font-size: 0.84rem; }
+.gp-bar-cell { width: 40%; }
+.gp-axis { position: relative; height: 8px; border-radius: 99px; background: var(--sunken); overflow: hidden; }
+.gp-axis i { position: absolute; top: 0; bottom: 0; background: var(--accent); border-radius: 99px; }
+.gp-hot td { color: var(--accent); font-weight: 600; }
+.gp-empty { display: grid; justify-items: center; text-align: center; gap: 6px; padding: 28px 16px; border: 2px dashed var(--border); border-radius: var(--radius); }
+.gp-empty h3 { margin: 6px 0 0; }
+.gp-empty p { margin: 0; max-width: 46ch; }
+.gp-wait { width: 84px; height: 84px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); animation: gp-bob 2s ease-in-out infinite; }
+@keyframes gp-bob { 50% { transform: translateY(-6px) rotate(-4deg); } }
+@keyframes gp-ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 60%, transparent); } 100% { box-shadow: 0 0 0 10px transparent; } }
+@media (prefers-reduced-motion: reduce) { .gp-wait, .gp-dot { animation: none; } }

@@ -1,0 +1,38 @@
+.em.dragging { user-select: none; -webkit-user-select: none; }
+.em-inbox { border: 1px dashed var(--border-strong); border-radius: var(--radius); padding: 12px; background: var(--sunken); }
+.em-inbox h3 { margin: 10px 0 6px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+.em-add { display: flex; gap: 8px; }
+.em-add input { flex: 1; min-width: 0; margin: 0; }
+.em-empty { margin: 4px 0 0; font-size: 0.85rem; }
+.em-n { font-family: var(--mono); font-size: 0.78rem; padding: 1px 8px; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+.em-n small { color: var(--muted); }
+.em-axes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0 4px; text-align: center; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.em-matrix { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.em-q { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); overflow: hidden; min-height: 150px; display: flex; flex-direction: column; transition: box-shadow 0.25s, border-color 0.25s, transform var(--spring-snap-ms) var(--spring-snap); }
+.em-q.target { border-color: var(--qc); box-shadow: 0 0 0 3px color-mix(in srgb, var(--qc) 30%, transparent); transform: scale(1.015); }
+.em-q header { display: grid; grid-template-columns: 1fr auto; column-gap: 8px; padding: 8px 10px; background: var(--qc); color: #fff; }
+.em-q header b { font-size: 1rem; }
+.em-q header span:nth-child(2) { grid-row: 2; font-size: 0.72rem; opacity: 0.9; }
+.em-q header .em-n { grid-row: span 2; grid-column: 2; grid-row-start: 1; align-self: center; background: rgba(255, 255, 255, 0.9); color: #1b1a17; border: 0; }
+.em-q .em-list { padding: 8px; flex: 1; }
+.em-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; align-content: start; min-height: 40px; }
+.em-task { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px 6px 2px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: grab; user-select: none; -webkit-user-select: none; font-size: 0.88rem; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); }
+.em-q .em-task { background: color-mix(in srgb, var(--qc) 6%, var(--surface)); }
+.em-task.placeholder { border: 2px dashed var(--accent); background: var(--accent-soft) !important; box-shadow: none; }
+.em-task.placeholder > * { visibility: hidden; }
+.em-grip { color: var(--muted); padding: 2px 4px; min-width: 24px; min-height: 32px; display: grid; place-items: center; touch-action: none; }
+.em-check { width: 24px; height: 24px; flex: none; border-radius: 6px; border: 2px solid var(--border-strong); background: var(--surface); display: grid; place-items: center; color: #fff; cursor: pointer; padding: 0; transition: background-color 0.2s, border-color 0.2s; position: relative; }
+.em-check::before { content: ''; position: absolute; inset: -8px; }
+.em-task.done .em-check { background: var(--ok); border-color: var(--ok); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy); }
+.em-text { flex: 1; min-width: 0; overflow-wrap: anywhere; transition: color 0.2s; }
+.em-task.done .em-text { text-decoration: line-through; color: var(--muted); }
+.em-moves { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 4px; padding-left: 26px; }
+.em-moves button { font: inherit; font-size: 0.75rem; font-weight: 650; padding: 6px 10px; min-height: 32px; border-radius: 999px; border: 1px solid var(--qc); color: var(--qc); background: var(--surface); cursor: pointer; }
+.em-moves .em-del { border-color: var(--danger); color: var(--danger); display: grid; place-items: center; }
+.em-ghost { position: fixed; z-index: 50; pointer-events: none; transform: rotate(2deg) scale(1.05); box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.35); }
+@media (max-width: 480px) {
+  .em-matrix { gap: 6px; }
+  .em-q header { padding: 6px 8px; }
+  .em-q .em-list { padding: 6px; }
+  .em-task { font-size: 0.82rem; }
+}
