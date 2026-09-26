@@ -1,0 +1,55 @@
+.pk-settings { display: grid; gap: 12px; }
+.pk-settings .sim-choice .btn { min-height: 40px; }
+.pk-sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px 18px; }
+.pk-layout { display: grid; grid-template-columns: minmax(0, 1fr) 230px; gap: 20px; align-items: start; margin-top: 8px; }
+.pk-side { position: sticky; top: 68px; order: 2; }
+.pk-list { order: 1; min-width: 0; }
+.pk-case {
+  position: relative; margin: 22px auto 8px; width: 100%; max-width: 220px; aspect-ratio: 1.35; border-radius: 16px;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface)); border: 2px solid color-mix(in srgb, var(--accent) 60%, var(--border));
+  padding: 10px; perspective: 400px;
+}
+.pk-handle { position: absolute; left: 50%; top: -18px; width: 56px; height: 18px; margin-left: -28px; border: 4px solid color-mix(in srgb, var(--accent) 60%, var(--border)); border-bottom: 0; border-radius: 10px 10px 0 0; }
+.pk-lid {
+  position: absolute; inset: -2px; border-radius: 16px; background: color-mix(in srgb, var(--accent) 40%, var(--surface));
+  border: 2px solid color-mix(in srgb, var(--accent) 70%, var(--border)); transform-origin: top; transform: rotateX(-88deg); opacity: 0;
+  transition: transform var(--spring-bouncy-ms) var(--spring-bouncy), opacity 0.2s; z-index: 2; pointer-events: none;
+}
+.pk-case.full .pk-lid { transform: none; opacity: 1; }
+.pk-case.full .pk-lid::after { content: '✓'; position: absolute; inset: 0; display: grid; place-items: center; font-size: 2.4rem; font-weight: 800; color: var(--accent-text, #fff); }
+.pk-inside { display: flex; flex-wrap: wrap-reverse; align-content: flex-start; gap: 3px; height: 100%; overflow: hidden; border-radius: 8px; background: color-mix(in srgb, var(--surface) 70%, transparent); padding: 5px; }
+.pk-tile { width: 15px; height: 11px; border-radius: 3px; box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.15); }
+.pk-count { text-align: center; margin: 4px 0 6px; font-size: 0.9rem; color: var(--muted); }
+.pk-count b { color: var(--text); font-variant-numeric: tabular-nums; }
+.pk-side .row { justify-content: center; }
+.pk-print-title { display: none; }
+.pk-group { margin: 14px 0; }
+.pk-group h4 { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; font-size: 0.95rem; }
+.pk-group h4 i { width: 10px; height: 10px; border-radius: 3px; }
+.pk-group ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 4px 10px; }
+.pk-group li { display: flex; align-items: center; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); transition: opacity 0.2s, background-color 0.2s; }
+.pk-group li label { flex: 1; display: flex; align-items: center; gap: 10px; margin: 0; padding: 8px 10px; min-height: 42px; font-weight: 500; cursor: pointer; }
+.pk-group li input { width: 18px; height: 18px; flex: none; }
+.pk-group li.on { opacity: 0.6; background: var(--surface); }
+.pk-group li.on .pk-name { text-decoration: line-through; }
+.pk-name { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 0.92rem; }
+.pk-qty { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+.pk-x { border: 0; background: none; color: var(--muted); font-size: 1.2rem; min-width: 40px; min-height: 40px; cursor: pointer; }
+.pk-x:hover { color: var(--danger); }
+.pk-add { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.pk-add input { flex: 1 1 180px; min-width: 0; }
+.pk-add select { flex: 0 1 140px; }
+@media (max-width: 760px) {
+  .pk-layout { grid-template-columns: minmax(0, 1fr); }
+  .pk-side { order: 0; top: 60px; z-index: 3; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; display: grid; grid-template-columns: 110px 1fr; gap: 0 12px; align-items: center; }
+  .pk-case { margin: 16px 0 4px; max-width: 110px; padding: 5px; grid-row: span 3; }
+  .pk-tile { width: 8px; height: 6px; border-radius: 2px; }
+  .pk-side .row { margin: 4px 0; justify-content: flex-start; }
+  .pk-count { text-align: left; }
+}
+@media print {
+  .pk-noprint { display: none !important; }
+  .pk-layout { display: block; }
+  .pk-print-title { display: block; }
+  .pk-group li { background: none; opacity: 1 !important; }
+}
