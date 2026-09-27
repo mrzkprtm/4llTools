@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Goal {
@@ -24,8 +24,11 @@ function daysBetween(d1: string, d2: string): number {
 
 export default function SavingsGoalJar() {
   const [goals, setGoals] = useState<Goal[]>(() => {
-    const saved = localStorage.getItem('savings-goals')
-    return saved ? JSON.parse(saved) : [{
+    try {
+      const saved = localStorage.getItem('savings-goals')
+      if (saved) return JSON.parse(saved) as Goal[]
+    } catch {}
+    return [{
       name: 'Emergency Fund',
       target: 10000,
       current: 2500,
@@ -36,15 +39,15 @@ export default function SavingsGoalJar() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [formData, setFormData] = useState({ name: '', target: '', targetDate: '', color: COLORS[0] })
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef(0)
 
   useEffect(() => {
     try { localStorage.setItem('savings-goals', JSON.stringify(goals)) } catch {}
   }, [goals])
 
-  const drawJar = (goal: Goal) => {
+  const drawJar = (goal: Goal | undefined) => {
     const canvas = canvasRef.current
-    if (!canvas) return
+    if (!canvas || !goal) return
     const ctx = canvas.getContext('2d')!
     const dpr = window.devicePixelRatio || 1
     canvas.width = canvas.offsetWidth * dpr
@@ -53,12 +56,12 @@ export default function SavingsGoalJar() {
 
     const w = canvas.width / dpr
     const h = canvas.height / dpr
-    const pct = Math.min(1, goal.current / goal.target)
+    const pct = goal.target > 0 ? Math.min(1, goal.current / goal.target) : 0
 
     ctx.clearRect(0, 0, w, h)
 
     // Jar outline
-    ctx.strokeStyle = 'var(--border-strong)'
+    ctx.strokeStyle = getComputedStyle(canvas).getPropertyValue('--border-strong').trim() || '#999'
     ctx.lineWidth = 3
     ctx.beginPath()
     ctx.moveTo(w * 0.2, h * 0.1)
@@ -91,7 +94,7 @@ export default function SavingsGoalJar() {
       const now = Date.now()
       for (let i = 0; i < 3; i++) {
         const t = ((now / 1000 + i * 0.7) % 2) / 2
-        const x = w * 0.35 + Math.random() * w * 0.3
+        const x = w * 0.35 + ((i * 0.37 + Math.floor(now / 2000 + i * 0.35) * 0.61) % 1) * w * 0.3
         const y = h * 0.15 + t * (fillY - h * 0.15)
         ctx.fillStyle = '#fbbf24'
         ctx.beginPath()
@@ -102,17 +105,20 @@ export default function SavingsGoalJar() {
   }
 
   useEffect(() => {
+    const current = goals[editingId ?? 0]
+    // Only keep animating while coins are falling; with reduced motion draw a single still frame
+    const animated = !reducedMotion() && !!current && current.current < current.target
     const animate = () => {
-      drawJar(goals[editingId ?? 0])
-      animationRef.current = requestAnimationFrame(animate)
+      drawJar(current)
+      if (animated) animationRef.current = requestAnimationFrame(animate)
     }
     animate()
-    return () => cancelAnimationFrame(animationRef.current!)
+    return () => cancelAnimationFrame(animationRef.current)
   }, [goals, editingId])
 
   const addGoal = () => {
     if (!formData.name || !formData.target || !formData.targetDate) return
-    setGoals([...goals, { ...formData, current: 0 }])
+    setGoals([...goals, { ...formData, target: Number(formData.target), current: 0 }])
     setFormData({ name: '', target: '', targetDate: new Date(Date.now() + 90 * 86400000).toISOString().split('T')[0], color: COLORS[goals.length % COLORS.length] })
     setEditingId(goals.length)
   }
@@ -123,12 +129,13 @@ export default function SavingsGoalJar() {
 
   const deleteGoal = (id: number) => {
     setGoals(goals.filter((_, i) => i !== id))
-    if (editingId === id) setEditingId(null)
+    setEditingId(e => e === null || e === id ? null : e > id ? e - 1 : e)
   }
 
   const goal = goals[editingId ?? 0]
   const daysLeft = goal ? daysBetween(new Date().toISOString().split('T')[0], goal.targetDate) : 0
   const weeksLeft = Math.ceil(daysLeft / 7)
+  const selectedIdx = goal ? editingId ?? 0 : null
   const monthlyNeeded = goal && daysLeft > 0 ? (goal.target - goal.current) / (daysLeft / 30) : 0
 
   return (
@@ -169,13 +176,23 @@ export default function SavingsGoalJar() {
         </div>
       )}
 
-      {goal && goal.current >= goal.target && !reducedMotion() && (
+      {goal && selectedIdx !== null && (
+        <div className="row" style={{ gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginTop: 16 }}>
+          <button className="btn" onClick={() => updateCurrent(selectedIdx, -100)}>−$100</button>
+          <button className="btn" onClick={() => updateCurrent(selectedIdx, 100)}>+$100</button>
+          <button className="btn" onClick={() => updateCurrent(selectedIdx, 500)}>+$500</button>
+          <button className="btn" onClick={() => deleteGoal(selectedIdx)} style={{ color: 'var(--danger)' }}>Delete Goal</button>
+          <span className="muted" style={{ alignSelf: 'center' }}>{daysLeft} days ({weeksLeft} weeks) left</span>
+        </div>
+      )}
+
+      {goal && goal.current >= goal.target && (
         <div className="settle" style={{ textAlign: 'center', padding: 16, background: 'color-mix(in srgb, var(--ok) 10%, transparent)', border: '1px solid var(--ok)', borderRadius: 'var(--radius)', marginTop: 16 }}>
           🎉 Goal reached! 🎉
         </div>
       )}
 
-      <Hint>Tap a goal to select. Use the canvas to visualize progress. Confetti bursts at milestones.</Hint>
+      <Hint>Tap a goal to select. Add or remove savings with the buttons and watch the jar fill up.</Hint>
     </div>
   )
 }

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import { useState } from 'react'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 export default function SleepCalculator() {
@@ -7,48 +7,23 @@ export default function SleepCalculator() {
   const [time, setTime] = useState('07:00')
   const [cycles, setCycles] = useState(5)
 
-  const [bedtime, waketime] = mode === 'waketime'
-    ? calculateBedtime(time, cycles)
-    : ['', calculateWaketime(time, cycles)]
-
-  function calculateBedtime(wake: string, c: number) {
-    const [h, m] = wake.split(':').map(Number)
-    let totalMinutes = h * 60 + m
-    totalMinutes -= c * 90 + 15 // 15 min to fall asleep
-    if (totalMinutes < 0) totalMinutes += 24 * 60
-    const bedH = Math.floor(totalMinutes / 60)
-    const bedM = totalMinutes % 60
-    return [`${String(bedH).padStart(2, '0')}:${String(bedM).padStart(2, '0')}`, wake]
-  }
-
-  function calculateWaketime(bed: string, c: number) {
-    const [h, m] = bed.split(':').map(Number)
-    let totalMinutes = h * 60 + m + 15 + c * 90
-    if (totalMinutes >= 24 * 60) totalMinutes -= 24 * 60
-    const wakeH = Math.floor(totalMinutes / 60)
-    const wakeM = totalMinutes % 60
-    return [bed, `${String(wakeH).padStart(2, '0')}:${String(wakeM).padStart(2, '0')}`]
-  }
-
-  const times = Array.from({ length: 10 }, (_, i) => {
-    const base = mode === 'waketime' ? bedtime : waketime
-    if (!base) return null
-    const [h, m] = base.split(':').map(Number)
-    let totalMinutes = h * 60 + m - (i - 4) * 90
-    if (totalMinutes < 0) totalMinutes += 24 * 60
-    if (totalMinutes >= 24 * 60) totalMinutes -= 24 * 60
-    const h2 = Math.floor(totalMinutes / 60)
-    const m2 = totalMinutes % 60
-    const isOptimal = i === 4
-    return { time: `${String(h2).padStart(2, '0')}:${String(m2).padStart(2, '0')}`, isOptimal }
-  }).filter(Boolean)
+  // Each option is a whole number of 90-minute cycles plus ~15 minutes to fall asleep.
+  // Entering a wake-up time gives bedtimes; entering a bedtime gives wake-up times.
+  const valid = /^\d{1,2}:\d{2}/.test(time)
+  const times = valid
+    ? Array.from({ length: 6 }, (_, i) => i + 3).map(c => {
+        const offset = c * 90 + 15
+        return { time: shiftTime(time, mode === 'waketime' ? -offset : offset), cycles: c, isOptimal: c === cycles }
+      })
+    : []
+  if (mode === 'waketime') times.reverse() // earliest bedtime first
 
   return (
     <div>
       <div className="row" style={{ gap: 16, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 16 }}>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
           <span>I want to</span>
-          <select value={mode} onChange={e => setMode(e.target.value as any)} className="btn" style={{ width: '100%' }}>
+          <select value={mode} onChange={e => setMode(e.target.value as typeof mode)} className="btn" style={{ width: '100%' }}>
             <option value="waketime">Wake up at</option>
             <option value="bedtime">Go to bed at</option>
           </select>
@@ -66,20 +41,20 @@ export default function SleepCalculator() {
       <div style={{ marginBottom: 16 }}>
         <div className="row" style={{ gap: 8, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 8 }}>
           {times.map((t, i) => (
-            <div key={i} className={`pop-row ${t!.isOptimal ? 'settle' : ''}`} style={{
+            <div key={t.cycles} className={`pop-row ${t.isOptimal ? 'settle' : ''}`} style={{
               display: 'flex', alignItems: 'center', gap: 8, padding: '12px 16px',
-              background: t!.isOptimal ? 'color-mix(in srgb, var(--ok) 10%, transparent)' : 'var(--sunken)',
-              border: t!.isOptimal ? '2px solid var(--ok)' : '1px solid var(--border)',
+              background: t.isOptimal ? 'color-mix(in srgb, var(--ok) 10%, transparent)' : 'var(--sunken)',
+              border: t.isOptimal ? '2px solid var(--ok)' : '1px solid var(--border)',
               borderRadius: 'var(--radius)',
               animation: reducedMotion() ? 'none' : 'pop 0.4s var(--spring-bouncy) both',
               animationDelay: `${i * 60}ms`,
             }}>
-              <span style={{ fontFamily: 'var(--mono)', fontSize: '1.5rem', fontWeight: 700, color: t!.isOptimal ? 'var(--ok)' : 'var(--text)' }}>
-                <Roll>{t!.time}</Roll>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: '1.5rem', fontWeight: 700, color: t.isOptimal ? 'var(--ok)' : 'var(--text)' }}>
+                <Roll>{t.time}</Roll>
               </span>
               <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>
-                {mode === 'waketime' ? 'Wake up' : 'Go to bed'} {' '}
-                {t!.isOptimal && <span className="chip good" style={{ fontSize: '0.65rem', marginLeft: 8 }}>Optimal</span>}
+                {mode === 'waketime' ? 'Go to bed' : 'Wake up'} · {t.cycles} cycles ({Math.floor(t.cycles * 1.5)}h{t.cycles % 2 ? ' 30m' : ''})
+                {t.isOptimal && <span className="chip good" style={{ fontSize: '0.65rem', marginLeft: 8 }}>Optimal</span>}
               </span>
             </div>
           ))}
@@ -93,13 +68,19 @@ export default function SleepCalculator() {
           <li>Each cycle = 90 min (light → deep → REM)</li>
           <li>Wake at cycle end for best alertness</li>
           <li>Avoid screens 1 hr before bed</li>
-          <li>Keep room cool (18-20°C)</li>
+          <li>Keep room cool (65-68°F / 18-20°C)</li>
         </ul>
       </div>
 
-      <Hint>Choose wake-up or bedtime. Drag to adjust cycles. Green cards = optimal sleep times (cycle boundaries).</Hint>
+      <Hint>Choose wake-up or bedtime and how many cycles you want. Green cards = optimal sleep times (cycle boundaries).</Hint>
     </div>
   )
+}
+
+function shiftTime(hhmm: string, minutes: number): string {
+  const [h, m] = hhmm.split(':').map(Number)
+  const total = (((h * 60 + m + minutes) % 1440) + 1440) % 1440
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
 }
 
 function Hint({ children }: { children: React.ReactNode }) {

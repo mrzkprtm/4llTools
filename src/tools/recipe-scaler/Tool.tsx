@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 const INGREDIENTS = [
-  { name: 'Flour', amount: 2, unit: 'cups' },
+  { name: 'Flour', amount: 2, unit: 'cup' },
   { name: 'Sugar', amount: 1, unit: 'cup' },
   { name: 'Butter', amount: 0.5, unit: 'cup' },
   { name: 'Eggs', amount: 2, unit: 'pcs' },
@@ -25,9 +25,20 @@ const UNIT_CONVERSIONS: Record<string, { base: string; factor: number }> = {
   'pcs': { base: 'pcs', factor: 1 },
 }
 
+interface Ingredient {
+  id: number
+  name: string
+  amount: number
+  unit: string
+  originalAmount: number
+  originalUnit: string
+}
+
+const round2 = (n: number) => Math.round(n * 100) / 100
+
 function formatAmount(amount: number, unit: string): string {
   const conv = UNIT_CONVERSIONS[unit]
-  if (!conv) return `${amount} ${unit}`
+  if (!conv) return `${round2(amount)} ${unit}`
   const baseAmount = amount * conv.factor
   // Convert to best unit
   if (conv.base === 'ml') {
@@ -40,14 +51,17 @@ function formatAmount(amount: number, unit: string): string {
     if (baseAmount >= 1000) return `${(baseAmount / 1000).toFixed(2)} kg`
     return `${baseAmount.toFixed(1)} g`
   }
-  return `${amount} ${unit}`
+  return `${round2(amount)} ${unit}`
 }
 
 export default function RecipeScaler() {
   const [servings, setServings] = useState(4)
-  const [ingredients, setIngredients] = useState(() => {
-    const saved = localStorage.getItem('recipe-scaler')
-    return saved ? JSON.parse(saved) : INGREDIENTS.map((i, idx) => ({ ...i, id: idx, originalAmount: i.amount, originalUnit: i.unit }))
+  const [ingredients, setIngredients] = useState<Ingredient[]>(() => {
+    try {
+      const saved = localStorage.getItem('recipe-scaler')
+      if (saved) return JSON.parse(saved) as Ingredient[]
+    } catch {}
+    return INGREDIENTS.map((i, idx) => ({ ...i, id: idx, originalAmount: i.amount, originalUnit: i.unit }))
   })
   const originalServings = 4
 
