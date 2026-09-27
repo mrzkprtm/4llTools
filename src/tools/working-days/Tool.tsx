@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Roll } from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
@@ -144,7 +144,7 @@ export default function WorkingDays() {
         <details style={{ background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 12 }}>
           <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Day-by-day Breakdown</summary>
           <div style={{ marginTop: 12, maxHeight: 300, overflowY: 'auto', fontSize: '0.8rem', fontFamily: 'var(--mono)' }}>
-            {mode === 'between' ? betweenResult.details : addSubResult.details}.map((d, i) => (
+            {(mode === 'between' ? betweenResult.details : addSubResult.details).map((d, i) => (
               <div key={i} style={{ padding: '2px 8px', borderBottom: '1px solid var(--border)' }}>{d}</div>
             ))}
           </div>

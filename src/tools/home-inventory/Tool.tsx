@@ -214,9 +214,9 @@ export default function HomeInventory() {
               <details key={item.id} defaultOpen={editingId === item.id} style={{ background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
                 <summary style={{ padding: 12, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div className="row" style={{ gap: 12, alignItems: 'center', flex: 1 }}>
-                    <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>{item.name}</div>
-                    <span className="muted" style={{ fontSize: '0.85rem' }}>{item.room} • {item.category}</div>
-                    <span className="muted">{fmt(item.currentValue)}</div>
+                    <span style={{ fontWeight: 600, fontSize: '1.1rem' }}>{item.name}</span>
+                    <span className="muted" style={{ fontSize: '0.85rem' }}>{item.room} • {item.category}</span>
+                    <span className="muted">{fmt(item.currentValue)}</span>
                     {item.warrantyExpiry && new Date(item.warrantyExpiry) <= new Date(Date.now() + 30 * 86400000) && (
                       <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: 'var(--danger)20', color: 'var(--danger)', borderRadius: 4 }}>Warranty Expiring Soon!</span>
                     )}
@@ -302,15 +302,15 @@ export default function HomeInventory() {
                       )}
                     </div>
                   )}
-                </details>
-              ))}
-            )}
-          </div>
-
-          <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-            Catalog your belongings by room and category. Track purchase price, current value, warranty, and serial numbers. Export for insurance claims.
-          </p>
+                </div>
+              </details>
+            ))
+          )}
         </div>
+
+        <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
+          Catalog your belongings by room and category. Track purchase price, current value, warranty, and serial numbers. Export for insurance claims.
+        </p>
       </div>
     </div>
   )

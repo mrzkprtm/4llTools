@@ -160,7 +160,7 @@ export default function FlightLayover() {
           <div style={{ textAlign: 'right' }}>
             <div className="muted" style={{ fontSize: '0.8rem', marginBottom: 4 }}>Buffer</div>
             <div style={{ fontSize: '2.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: riskColors[riskLevel] }}>
-              <Roll value={buffer >= 0 ? '+' : ''} {buffer} /> minutes
+              {buffer >= 0 ? '+' : ''}<Roll value={buffer} /> minutes
             </div>
           </div>
         </div>

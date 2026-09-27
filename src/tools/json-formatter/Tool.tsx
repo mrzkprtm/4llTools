@@ -103,11 +103,11 @@ export default function JSONFormatter() {
     }
 
     const keys = Object.keys(obj)
-    if (keys.length === 0) return <span style={{ color: '#9ca3af' }}>{{}}</span>
+    if (keys.length === 0) return <span style={{ color: '#9ca3af' }}>{"{}"}</span>
 
     return (
       <div style={{ marginLeft: depth * 20 }}>
-        <span style={{ color: '#9ca3af' }}>{{</span>
+        <span style={{ color: '#9ca3af' }}>{"{"}</span>
         {keys.map((key, i) => (
           <div key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
             <span style={{ color: '#eab308', fontFamily: 'var(--mono)' }}>"{key}"</span>
@@ -116,7 +116,7 @@ export default function JSONFormatter() {
             {i < keys.length - 1 && <span style={{ color: '#9ca3af' }}> ,</span>}
           </div>
         ))}
-        <div style={{ color: '#9ca3af', marginLeft: depth * 20 }}>}}</div>
+        <div style={{ color: '#9ca3af', marginLeft: depth * 20 }}>{"}"}</div>
       </div>
     )
   }
@@ -230,7 +230,7 @@ export default function JSONFormatter() {
           <code>$.store.book[*].author</code>
           <code>$..author</code>
           <code>$.store.*</code>
-          <code>$..book[?(@.price<10)]</code>
+          <code>$..book[?(@.price&lt;10)]</code>
         </div>
         <p className="muted" style={{ marginTop: 8, fontSize: '0.8rem' }}>Supports basic JSONPath syntax. Use $ for root, . for properties, [n] for array index, [*] for all, [?()] for filters.</p>
       </div>

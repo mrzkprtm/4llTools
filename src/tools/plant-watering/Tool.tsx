@@ -21,7 +21,7 @@ const PLANT_TYPES = [
 ] as const
 
 export default function PlantWatering() {
-  const [plants, setPlants] = useState(() => {
+  const [plants, setPlants] = useState<Plant[]>(() => {
     const saved = localStorage.getItem('plant-watering')
     return saved ? JSON.parse(saved) : [
       { id: 1, name: 'Monstera', type: 'Tropical', waterInterval: 5, lastWatered: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0], color: '#06b6d4' },
@@ -37,7 +37,7 @@ export default function PlantWatering() {
   }, [plants])
 
   const today = new Date()
-  const plantStatus = plants.map(plant => {
+  const plantStatus = plants.map((plant: Plant) => {
     const last = new Date(plant.lastWatered)
     const daysSince = Math.floor((today.getTime() - last.getTime()) / 86400000)
     const due = daysSince >= plant.waterInterval
@@ -60,12 +60,12 @@ export default function PlantWatering() {
   }
 
   const waterPlant = (id: number) => {
-    setPlants(plants.map(p => p.id === id ? { ...p, lastWatered: today.toISOString().split('T')[0] } : p))
+    setPlants(plants.map((p: Plant) => p.id === id ? { ...p, lastWatered: today.toISOString().split('T')[0] } : p))
     playSplash()
   }
 
   const removePlant = (id: number) => {
-    setPlants(plants.filter(p => p.id !== id))
+    setPlants(plants.filter((p: Plant) => p.id !== id))
   }
 
   const playSplash = () => {

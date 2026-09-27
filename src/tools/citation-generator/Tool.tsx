@@ -262,8 +262,8 @@ export default function CitationGenerator() {
     const entries = sources.map((s, i) => {
       const d = s.data
       const typeMap: Record<SourceType, string> = { book: 'book', journal: 'article', website: 'misc', conference: 'inproceedings', thesis: 'phdthesis', report: 'techreport', newspaper: 'article', video: 'misc' }
-      const key = d.authors?.split(' ')[0]?.toLowerCase() + year + i
       const year = d.year || 'n.d.'
+      const key = d.authors?.split(' ')[0]?.toLowerCase() + year + i
       let entry = `@${typeMap[s.type]}{${key},\n`
       entry += `  author = {${d.authors || ''}},\n`
       entry += `  title = {${d.title || ''}},\n`

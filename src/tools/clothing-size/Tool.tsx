@@ -30,7 +30,7 @@ const SHOE_SIZE_CHARTS = {
   CN: [33, 34, 35, 36, 37, 38, 39, 40, 41, 41.5, 42, 42.5, 43, 43.5, 44, 44.5, 45, 45.5, 46, 46.5, 47, 48],
 }
 
-const CATEGORIES = {
+const CATEGORIES: Record<string, { charts: Record<string, (string | number)[]>; icon: string }> = {
   'Women\'s Clothing': { charts: WOMEN_SIZE_CHARTS, icon: '👗' },
   'Men\'s Clothing': { charts: MEN_SIZE_CHARTS, icon: '👔' },
   'Men\'s Shoes': { charts: { US: SHOE_SIZE_CHARTS.US_M, UK: SHOE_SIZE_CHARTS.UK_M, EU: SHOE_SIZE_CHARTS.EU, JP: SHOE_SIZE_CHARTS.JP, CN: SHOE_SIZE_CHARTS.CN }, icon: '👞' },
@@ -49,7 +49,7 @@ export default function ClothingSize() {
   const convertedSizes = useMemo(() => {
     if (!fromSize) return {}
     const fromSizes = charts[fromSystem]
-    const idx = fromSizes.indexOf(fromSize)
+    const idx = fromSizes.indexOf(fromSize as string | number)
     if (idx === -1) return {}
 
     const result: Record<string, string> = {}
@@ -124,9 +124,9 @@ export default function ClothingSize() {
               <span className="muted">{sizes.length} sizes</span>
             </summary>
             <div style={{ padding: 12, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: 8 }}>
-              {sizes.map((size, idx) => (
+              {(sizes as (string | number)[]).map((size: string | number, idx: number) => (
                 <div key={`${system}-${idx}`} style={{
-                  padding: '8px 12px', background: 'var(--bg)', borderRadius: 4, textAlign: 'center',
+                  padding: '8px 12px', borderRadius: 4, textAlign: 'center',
                   fontWeight: String(size) === fromSize ? 700 : 400,
                   color: String(size) === fromSize ? 'var(--accent)' : 'var(--text)',
                   background: String(size) === fromSize ? 'var(--accent)20' : 'var(--bg)',
@@ -166,7 +166,7 @@ export default function ClothingSize() {
                   <td style={{ padding: '8px 12px', fontWeight: 500 }}>{row.label}</td>
                   {['women', 'men'].map(gender => (
                     <td key={gender} style={{ padding: '8px 12px', textAlign: 'center' }}>
-                      {row[gender as keyof typeof row].map(v => <div key={v}>{v} cm</div>)}
+                      {(row[gender as keyof typeof row] as number[]).map((v: number) => <div key={v}>{v} cm</div>)}
                     </td>
                   ))}
                 </tr>

@@ -115,7 +115,7 @@ export default function ProjectEstimator() {
         <div className="stat"><b style={{ color: 'var(--ok)' }}>$<Roll value={totals.subtotal.toLocaleString()} /></b><span className="muted">Base Cost</span></div>
         <div className="stat"><b style={{ color: 'var(--accent)' }}>$<Roll value={totals.riskTotal.toLocaleString()} /></b><span className="muted">Risk Buffer</span></div>
         <div className="stat"><b style={{ color: 'var(--accent)' }}>$<Roll value={totals.contingencyAmount.toLocaleString()} /></b><span className="muted">Contingency ({contingency}%)</span></div>
-        <div className="stat"><b style={{ color: 'var(--accent)', fontSize: '1.2rem' }>$<Roll value={totals.grandTotal.toLocaleString()} /></b><span className="muted">Grand Total</span></div>
+        <div className="stat"><b style={{ color: 'var(--accent)' }}>$<Roll value={totals.grandTotal.toLocaleString()} /></b><span className="muted">Grand Total</span></div>
       </div>
 
       <div style={{ display: 'grid', gap: 16 }}>
@@ -155,7 +155,7 @@ export default function ProjectEstimator() {
             const catRisk = catTasks.reduce((s, t) => s + t.riskCost, 0)
 
             return (
-              <details key={cat.id} defaultOpen style={{ background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
+              <details key={cat.id} open style={{ background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
                 <summary style={{ padding: 12, background: cat.color + '20', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div className="row" style={{ gap: 8, alignItems: 'center' }}>
                     <span style={{ fontSize: '1.2rem', fontWeight: 600, color: cat.color }}>{cat.name}</span>

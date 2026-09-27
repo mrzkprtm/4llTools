@@ -1,0 +1,514 @@
+﻿src/tools/ac-size-calculator/Tool.tsx(20,9): error TS6133: 'volume' is declared but its value is never read.
+src/tools/ac-size-calculator/Tool.tsx(32,9): error TS6133: 'btuPerPk' is declared but its value is never read.
+src/tools/audio-waveform/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/audio-waveform/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/audio-waveform/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/audio-waveform/Tool.tsx(21,24): error TS2554: Expected 1 arguments, but got 0.
+src/tools/audio-waveform/Tool.tsx(104,31): error TS2339: Property 'stop' does not exist on type 'AudioBufferSourceNode | MediaStreamAudioSourceNode'.
+  Property 'stop' does not exist on type 'MediaStreamAudioSourceNode'.
+src/tools/audio-waveform/Tool.tsx(119,11): error TS2451: Cannot redeclare block-scoped variable 'dataArray'.
+src/tools/audio-waveform/Tool.tsx(175,11): error TS2451: Cannot redeclare block-scoped variable 'dataArray'.
+src/tools/audio-waveform/Tool.tsx(185,11): error TS6133: 'sliceWidth' is declared but its value is never read.
+src/tools/base64-encoder/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/base64-encoder/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/base64-encoder/Tool.tsx(75,9): error TS2451: Cannot redeclare block-scoped variable 'handleFileChange'.
+src/tools/base64-encoder/Tool.tsx(101,9): error TS2451: Cannot redeclare block-scoped variable 'handleFileChange'.
+src/tools/base64-encoder/Tool.tsx(106,9): error TS6133: 'swapFiles' is declared but its value is never read.
+src/tools/bpm-tapper/Tool.tsx(13,9): error TS6198: All destructured elements are unused.
+src/tools/bpm-tapper/Tool.tsx(15,9): error TS6133: 'animationRef' is declared but its value is never read.
+src/tools/bpm-tapper/Tool.tsx(15,24): error TS2554: Expected 1 arguments, but got 0.
+src/tools/bpm-tapper/Tool.tsx(160,35): error TS6133: 'tap' is declared but its value is never read.
+src/tools/break-even/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/budget-envelope/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/budget-envelope/Tool.tsx(61,9): error TS6133: 'startEdit' is declared but its value is never read.
+src/tools/budget-envelope/Tool.tsx(63,125): error TS2322: Type '"monthly" | "weekly" | "yearly"' is not assignable to type '"monthly"'.
+  Type '"weekly"' is not assignable to type '"monthly"'.
+src/tools/budget-envelope/Tool.tsx(98,40): error TS6133: 'index' is declared but its value is never read.
+src/tools/budget-envelope/Tool.tsx(99,11): error TS6133: 'envelopeTxns' is declared but its value is never read.
+src/tools/budget-envelope/Tool.tsx(105,34): error TS2322: Type '{ key: number; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/budget-envelope/Tool.tsx(109,64): error TS6133: 'e' is declared but its value is never read.
+src/tools/budget-envelope/Tool.tsx(109,140): error TS2339: Property 'target' does not exist on type 'Envelope'.
+src/tools/budget-envelope/Tool.tsx(215,9): error TS6133: 'renderEnvelopeContent' is declared but its value is never read.
+src/tools/budget-planner/Tool.tsx(36,45): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(36,50): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(38,35): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(38,125): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(38,128): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(39,35): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(39,88): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(39,91): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(40,37): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(49,19): error TS7006: Parameter 'cats' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(61,19): error TS7006: Parameter 'cats' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(61,36): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(97,26): error TS7006: Parameter 'cat' implicitly has an 'any' type.
+src/tools/budget-planner/Tool.tsx(97,31): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/chord-transposer/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/chord-transposer/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/chord-transposer/Tool.tsx(8,7): error TS6133: 'CHORD_QUALITIES' is declared but its value is never read.
+src/tools/chord-transposer/Tool.tsx(30,10): error TS6133: 'transposeChord' is declared but its value is never read.
+src/tools/chore-rotation/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/chore-rotation/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/chore-rotation/Tool.tsx(116,9): error TS6133: 'today' is declared but its value is never read.
+src/tools/chore-rotation/Tool.tsx(154,21): error TS6133: 'stats' is declared but its value is never read.
+src/tools/citation-generator/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/citation-generator/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/citation-generator/Tool.tsx(64,9): error TS6133: 'updateSource' is declared but its value is never read.
+src/tools/citation-generator/Tool.tsx(265,61): error TS2448: Block-scoped variable 'year' used before its declaration.
+src/tools/citation-generator/Tool.tsx(265,61): error TS2454: Variable 'year' is used before being assigned.
+src/tools/clothing-size/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/clothing-size/Tool.tsx(46,18): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ 'Women\'s Clothing': { charts: { US: number[]; UK: number[]; EU: number[]; JP: number[]; CN: number[]; AU: number[]; }; icon: string; }; 'Men\'s Clothing': { charts: { US: number[]; UK: number[]; EU: number[]; JP: string[]; CN: number[]; AU: number[]; }; icon: string; }; 'Men\'s Shoes': { ...; }; 'Women\'s Shoes':...'.
+  No index signature with a parameter of type 'string' was found on type '{ 'Women\'s Clothing': { charts: { US: number[]; UK: number[]; EU: number[]; JP: number[]; CN: number[]; AU: number[]; }; icon: string; }; 'Men\'s Clothing': { charts: { US: number[]; UK: number[]; EU: number[]; JP: string[]; CN: number[]; AU: number[]; }; icon: string; }; 'Men\'s Shoes': { ...; }; 'Women\'s Shoes':...'.
+src/tools/clothing-size/Tool.tsx(47,9): error TS6133: 'systems' is declared but its value is never read.
+src/tools/clothing-size/Tool.tsx(57,11): error TS18046: 'sizes' is of type 'unknown'.
+src/tools/clothing-size/Tool.tsx(58,33): error TS18046: 'sizes' is of type 'unknown'.
+src/tools/clothing-size/Tool.tsx(64,9): error TS6133: 'allSizes' is declared but its value is never read.
+src/tools/clothing-size/Tool.tsx(68,24): error TS18046: 'sizes' is of type 'unknown'.
+src/tools/clothing-size/Tool.tsx(68,34): error TS7006: Parameter 's' implicitly has an 'any' type.
+src/tools/clothing-size/Tool.tsx(121,33): error TS2322: Type '{ key: string; defaultOpen: boolean; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/clothing-size/Tool.tsx(124,40): error TS18046: 'sizes' is of type 'unknown'.
+src/tools/clothing-size/Tool.tsx(127,16): error TS18046: 'sizes' is of type 'unknown'.
+src/tools/clothing-size/Tool.tsx(127,27): error TS7006: Parameter 'size' implicitly has an 'any' type.
+src/tools/clothing-size/Tool.tsx(127,33): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+src/tools/clothing-size/Tool.tsx(132,19): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/clothing-size/Tool.tsx(169,56): error TS2339: Property 'map' does not exist on type 'string | number[]'.
+  Property 'map' does not exist on type 'string'.
+src/tools/clothing-size/Tool.tsx(169,60): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/tools/color-picker/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/color-picker/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/color-picker/Tool.tsx(98,5): error TS2588: Cannot assign to 'r' because it is a constant.
+src/tools/color-picker/Tool.tsx(98,15): error TS2588: Cannot assign to 'g' because it is a constant.
+src/tools/color-picker/Tool.tsx(98,25): error TS2588: Cannot assign to 'b' because it is a constant.
+src/tools/color-picker/Tool.tsx(126,19): error TS2451: Cannot redeclare block-scoped variable 'b'.
+src/tools/color-picker/Tool.tsx(138,11): error TS2451: Cannot redeclare block-scoped variable 'b'.
+src/tools/color-picker/Tool.tsx(223,9): error TS6133: 'saveColor' is declared but its value is never read.
+src/tools/color-picker/Tool.tsx(227,9): error TS6133: 'removeSaved' is declared but its value is never read.
+src/tools/color-picker/Tool.tsx(231,9): error TS6133: 'copyFormat' is declared but its value is never read.
+src/tools/color-picker/Tool.tsx(336,63): error TS6133: 'e' is declared but its value is never read.
+src/tools/contract-generator/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/contract-generator/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/cron-parser/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/cron-parser/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/cron-parser/Tool.tsx(13,7): error TS6133: 'MONTHS' is declared but its value is never read.
+src/tools/cron-parser/Tool.tsx(14,7): error TS6133: 'DAYS' is declared but its value is never read.
+src/tools/cron-parser/Tool.tsx(50,17): error TS2552: Cannot find name 'getNextRun'. Did you mean 'nextRun'?
+src/tools/cron-parser/Tool.tsx(70,9): error TS6133: 'nextRun' is declared but its value is never read.
+src/tools/cron-parser/Tool.tsx(190,38): error TS6133: 'fieldIndex' is declared but its value is never read.
+src/tools/cron-parser/Tool.tsx(199,14): error TS2451: Cannot redeclare block-scoped variable 'range'.
+src/tools/cron-parser/Tool.tsx(199,21): error TS2451: Cannot redeclare block-scoped variable 'step'.
+src/tools/cron-parser/Tool.tsx(200,13): error TS2451: Cannot redeclare block-scoped variable 'step'.
+src/tools/cron-parser/Tool.tsx(201,11): error TS2451: Cannot redeclare block-scoped variable 'range'.
+src/tools/cron-parser/Tool.tsx(203,9): error TS2588: Cannot assign to 'range' because it is a constant.
+src/tools/cron-parser/Tool.tsx(206,9): error TS2588: Cannot assign to 'range' because it is a constant.
+src/tools/cron-parser/Tool.tsx(208,9): error TS2588: Cannot assign to 'range' because it is a constant.
+src/tools/cron-parser/Tool.tsx(211,13): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/tools/cron-parser/Tool.tsx(211,19): error TS2363: The right-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/tools/cron-parser/Tool.tsx(233,38): error TS6133: 'field' is declared but its value is never read.
+src/tools/currency-converter/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/day-planner/Tool.tsx(63,9): error TS6133: 'occupiedSlots' is declared but its value is never read.
+src/tools/debt-payoff/Tool.tsx(13,7): error TS6133: 'METHOD_LABELS' is declared but its value is never read.
+src/tools/debt-payoff/Tool.tsx(30,11): error TS6133: 'balances' is declared but its value is never read.
+src/tools/debt-payoff/Tool.tsx(60,19): error TS6133: 'timeline' is declared but its value is never read.
+src/tools/debt-payoff/Tool.tsx(139,21): error TS6133: 'maxMonth' is declared but its value is never read.
+src/tools/debt-payoff/Tool.tsx(147,40): error TS2339: Property 'color' does not exist on type 'Debt'.
+src/tools/discount-stacker/Tool.tsx(22,9): error TS6133: 'before' is declared but its value is never read.
+src/tools/discount-stacker/Tool.tsx(71,18): error TS2322: Type 'Voucher | { value?: number | undefined; maxCap?: number | undefined; id: number; type: "cap" | "cashback" | "fixed" | "percent"; active: boolean; }' is not assignable to type 'Voucher'.
+  Type '{ value?: number | undefined; maxCap?: number; id: number; type: "cap" | "cashback" | "fixed" | "percent"; active: boolean; }' is not assignable to type 'Voucher'.
+    Types of property 'value' are incompatible.
+      Type 'number | undefined' is not assignable to type 'number'.
+        Type 'undefined' is not assignable to type 'number'.
+src/tools/discount-stacker/Tool.tsx(71,31): error TS2322: Type '{ value?: number | undefined; maxCap?: number; id: number; type: "cap" | "cashback" | "fixed" | "percent"; active: boolean; }' is not assignable to type 'Voucher'.
+  Types of property 'value' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+src/tools/distance-calculator/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/distance-calculator/Tool.tsx(28,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(29,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(30,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(31,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(32,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(33,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(34,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(35,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(36,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(37,18): error TS1117: An object literal cannot have multiple properties with the same name.
+src/tools/distance-calculator/Tool.tsx(62,10): error TS6133: 'formatTime' is declared but its value is never read.
+src/tools/distance-calculator/Tool.tsx(157,94): error TS2339: Property 'type' does not exist on type '{ name: string; lat: number; lng: number; type: string; country: string; } | { name: string; lat: string; lng: string; }'.
+  Property 'type' does not exist on type '{ name: string; lat: string; lng: string; }'.
+src/tools/distance-calculator/Tool.tsx(166,90): error TS2339: Property 'type' does not exist on type '{ name: string; lat: number; lng: number; type: string; country: string; } | { name: string; lat: string; lng: string; }'.
+  Property 'type' does not exist on type '{ name: string; lat: string; lng: string; }'.
+src/tools/egg-timer/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/egg-timer/Tool.tsx(72,9): error TS6133: 'toggle' is declared but its value is never read.
+src/tools/egg-timer/Tool.tsx(77,9): error TS6133: 'reset' is declared but its value is never read.
+src/tools/egg-timer/Tool.tsx(81,9): error TS2451: Cannot redeclare block-scoped variable 'totalTime'.
+src/tools/egg-timer/Tool.tsx(85,9): error TS6133: 'fmt' is declared but its value is never read.
+src/tools/egg-timer/Tool.tsx(100,13): error TS6133: 'centerX' is declared but its value is never read.
+src/tools/egg-timer/Tool.tsx(101,13): error TS6133: 'centerY' is declared but its value is never read.
+src/tools/egg-timer/Tool.tsx(134,9): error TS2451: Cannot redeclare block-scoped variable 'totalTime'.
+src/tools/eisenhower-matrix/Tool.tsx(58,28): error TS6133: 'qi' is declared but its value is never read.
+src/tools/eisenhower-matrix/Tool.tsx(69,54): error TS2322: Type '{ value: number; style: { fontWeight: number; color: string; fontSize: string; }; }' is not assignable to type 'IntrinsicAttributes & RollProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & RollProps'.
+src/tools/electricity-cost/Tool.tsx(39,38): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(39,62): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(39,67): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(48,37): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(52,34): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(68,26): error TS7006: Parameter 'app' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(68,31): error TS6133: 'i' is declared but its value is never read.
+src/tools/electricity-cost/Tool.tsx(68,31): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(99,30): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(100,20): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(100,23): error TS7006: Parameter 'b' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(101,31): error TS7006: Parameter 'app' implicitly has an 'any' type.
+src/tools/electricity-cost/Tool.tsx(101,36): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/event-countdown/Tool.tsx(96,51): error TS2322: Type '{ value: number; style: { fontSize: string; fontWeight: number; color: string; lineHeight: number; }; }' is not assignable to type 'IntrinsicAttributes & RollProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & RollProps'.
+src/tools/event-countdown/Tool.tsx(100,52): error TS2322: Type '{ value: number; style: { fontSize: string; fontWeight: number; color: string; lineHeight: number; }; }' is not assignable to type 'IntrinsicAttributes & RollProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & RollProps'.
+src/tools/event-countdown/Tool.tsx(104,54): error TS2322: Type '{ value: number; style: { fontSize: string; fontWeight: number; color: string; lineHeight: number; }; }' is not assignable to type 'IntrinsicAttributes & RollProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & RollProps'.
+src/tools/event-countdown/Tool.tsx(108,54): error TS2322: Type '{ value: number; style: { fontSize: string; fontWeight: number; color: string; lineHeight: number; }; }' is not assignable to type 'IntrinsicAttributes & RollProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & RollProps'.
+src/tools/event-rsvp/Tool.tsx(47,9): error TS6133: 'removeGuest' is declared but its value is never read.
+src/tools/event-rsvp/Tool.tsx(58,11): error TS6133: 'headers' is declared but its value is never read.
+src/tools/expense-tracker/Tool.tsx(44,9): error TS6133: 'removeExpense' is declared but its value is never read.
+src/tools/expense-tracker/Tool.tsx(71,11): error TS6133: 'headers' is declared but its value is never read.
+src/tools/expense-tracker/Tool.tsx(86,9): error TS6133: 'fmtCurrency' is declared but its value is never read.
+src/tools/eye-break-timer/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/eye-break-timer/Tool.tsx(6,10): error TS6133: 'interval' is declared but its value is never read.
+src/tools/eye-break-timer/Tool.tsx(12,9): error TS6133: 'audioRef' is declared but its value is never read.
+src/tools/eye-break-timer/Tool.tsx(26,25): error TS2552: Cannot find name 'intervalMin'. Did you mean 'intervalId'?
+src/tools/eye-break-timer/Tool.tsx(31,37): error TS2552: Cannot find name 'intervalMin'. Did you mean 'intervalId'?
+src/tools/eye-break-timer/Tool.tsx(37,33): error TS2552: Cannot find name 'intervalMin'. Did you mean 'interval'?
+src/tools/eye-break-timer/Tool.tsx(53,9): error TS6133: 'toggle' is declared but its value is never read.
+src/tools/eye-break-timer/Tool.tsx(54,9): error TS6133: 'reset' is declared but its value is never read.
+src/tools/eye-break-timer/Tool.tsx(54,74): error TS2552: Cannot find name 'intervalMin'. Did you mean 'interval'?
+src/tools/eye-break-timer/Tool.tsx(63,56): error TS2552: Cannot find name 'intervalMin'. Did you mean 'interval'?
+src/tools/eye-break-timer/Tool.tsx(88,67): error TS2552: Cannot find name 'intervalMin'. Did you mean 'interval'?
+src/tools/eye-break-timer/Tool.tsx(100,81): error TS2552: Cannot find name 'intervalMin'. Did you mean 'interval'?
+src/tools/fire-planner/Tool.tsx(1,31): error TS6133: 'useRef' is declared but its value is never read.
+src/tools/fire-planner/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/fire-planner/Tool.tsx(15,10): error TS6133: 'formatNumber' is declared but its value is never read.
+src/tools/fire-planner/Tool.tsx(123,19): error TS6133: 'maxAge' is declared but its value is never read.
+src/tools/flashcards/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/flashcards/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/flight-layover/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/flight-layover/Tool.tsx(71,9): error TS6133: 'terminals' is declared but its value is never read.
+src/tools/formula-sheet/Tool.tsx(152,85): error TS6133: 'ci' is declared but its value is never read.
+src/tools/formula-sheet/Tool.tsx(153,35): error TS2322: Type '{ key: string; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/freelance-rate/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/freelance-rate/Tool.tsx(42,9): error TS6198: All destructured elements are unused.
+src/tools/freelance-rate/Tool.tsx(72,9): error TS6133: 'fmt' is declared but its value is never read.
+src/tools/freelance-rate/Tool.tsx(135,36): error TS2322: Type '{ key: string; defaultOpen: true; style: { background: string; border: string; borderRadius: string; padding: number; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/frequency-analyzer/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/frequency-analyzer/Tool.tsx(37,17): error TS6133: 'setMinDb' is declared but its value is never read.
+src/tools/frequency-analyzer/Tool.tsx(38,17): error TS6133: 'setMaxDb' is declared but its value is never read.
+src/tools/frequency-analyzer/Tool.tsx(43,24): error TS2554: Expected 1 arguments, but got 0.
+src/tools/frequency-analyzer/Tool.tsx(104,13): error TS6133: 'note' is declared but its value is never read.
+src/tools/gift-idea/Tool.tsx(68,7): error TS6133: 'ALL_TAGS' is declared but its value is never read.
+src/tools/gift-idea/Tool.tsx(100,9): error TS6133: 'toggleTag' is declared but its value is never read.
+src/tools/grade-calculator/Tool.tsx(93,27): error TS2339: Property 'a' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'a' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(94,27): error TS2339: Property 'aMinus' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'aMinus' does not exist on type '{ name: string; a: number; b: number; c: number; d: number; }'.
+src/tools/grade-calculator/Tool.tsx(95,27): error TS2339: Property 'bPlus' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'bPlus' does not exist on type '{ name: string; a: number; b: number; c: number; d: number; }'.
+src/tools/grade-calculator/Tool.tsx(96,27): error TS2339: Property 'b' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'b' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(97,27): error TS2339: Property 'bMinus' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'bMinus' does not exist on type '{ name: string; a: number; b: number; c: number; d: number; }'.
+src/tools/grade-calculator/Tool.tsx(98,27): error TS2339: Property 'cPlus' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'cPlus' does not exist on type '{ name: string; a: number; b: number; c: number; d: number; }'.
+src/tools/grade-calculator/Tool.tsx(99,27): error TS2339: Property 'c' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'c' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(100,27): error TS2339: Property 'cMinus' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'cMinus' does not exist on type '{ name: string; a: number; b: number; c: number; d: number; }'.
+src/tools/grade-calculator/Tool.tsx(101,27): error TS2339: Property 'dPlus' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'dPlus' does not exist on type '{ name: string; a: number; b: number; c: number; d: number; }'.
+src/tools/grade-calculator/Tool.tsx(102,27): error TS2339: Property 'd' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'd' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(103,27): error TS2339: Property 'dMinus' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'dMinus' does not exist on type '{ name: string; a: number; b: number; c: number; d: number; }'.
+src/tools/grade-calculator/Tool.tsx(107,27): error TS2339: Property 'a' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'a' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(108,27): error TS2339: Property 'b' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'b' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(109,27): error TS2339: Property 'c' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'c' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(110,27): error TS2339: Property 'd' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'd' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(114,27): error TS2339: Property 'a' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'a' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(115,27): error TS2339: Property 'b' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'b' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(116,27): error TS2339: Property 'c' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'c' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(117,27): error TS2339: Property 'd' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'd' does not exist on type '{ name: string; first: number; upperSecond: number; lowerSecond: number; third: number; }'.
+src/tools/grade-calculator/Tool.tsx(121,27): error TS2339: Property 'first' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'first' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; }'.
+src/tools/grade-calculator/Tool.tsx(122,27): error TS2339: Property 'upperSecond' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'upperSecond' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; }'.
+src/tools/grade-calculator/Tool.tsx(123,27): error TS2339: Property 'lowerSecond' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'lowerSecond' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; }'.
+src/tools/grade-calculator/Tool.tsx(124,27): error TS2339: Property 'third' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; } | { name: string; a: number; b: number; c: number; d: number; } | { ...; } | { ...; } | { ...; }'.
+  Property 'third' does not exist on type '{ name: string; a: number; aMinus: number; bPlus: number; b: number; bMinus: number; cPlus: number; c: number; cMinus: number; dPlus: number; d: number; dMinus: number; }'.
+src/tools/grade-calculator/Tool.tsx(135,11): error TS6133: 'target' is declared but its value is never read.
+src/tools/grade-calculator/Tool.tsx(186,31): error TS6133: 'ci' is declared but its value is never read.
+src/tools/grade-calculator/Tool.tsx(189,35): error TS2322: Type '{ key: number; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/grocery-list/Tool.tsx(144,31): error TS6133: 'ci' is declared but its value is never read.
+src/tools/grocery-list/Tool.tsx(150,40): error TS2322: Type '{ key: string; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/habit-tracker/Tool.tsx(30,26): error TS7006: Parameter 'h' implicitly has an 'any' type.
+src/tools/habit-tracker/Tool.tsx(88,26): error TS7006: Parameter 'habit' implicitly has an 'any' type.
+src/tools/habit-tracker/Tool.tsx(88,33): error TS7006: Parameter 'hi' implicitly has an 'any' type.
+src/tools/habit-tracker/Tool.tsx(92,93): error TS7006: Parameter 'h' implicitly has an 'any' type.
+src/tools/habit-tracker/Tool.tsx(93,82): error TS7006: Parameter 'h' implicitly has an 'any' type.
+src/tools/hash-generator/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/hash-generator/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(54,9): error TS6133: 'removeItem' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(77,9): error TS6133: 'addRoom' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(82,9): error TS6133: 'removeRoom' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(87,9): error TS6133: 'addCategory' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(92,9): error TS6133: 'removeCategory' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(213,38): error TS6133: 'i' is declared but its value is never read.
+src/tools/home-inventory/Tool.tsx(214,38): error TS2322: Type '{ key: number; defaultOpen: boolean; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/interval-calculator/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/interval-calculator/Tool.tsx(67,9): error TS6133: 'note1Display' is declared but its value is never read.
+src/tools/interval-calculator/Tool.tsx(68,9): error TS6133: 'note2Display' is declared but its value is never read.
+src/tools/interval-timer/Tool.tsx(25,9): error TS6133: 'audioRef' is declared but its value is never read.
+src/tools/interval-timer/Tool.tsx(95,9): error TS6133: 'totalRounds' is declared but its value is never read.
+src/tools/interval-timer/Tool.tsx(96,9): error TS6133: 'currentRound' is declared but its value is never read.
+src/tools/invoice-generator/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/invoice-generator/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/invoice-generator/Tool.tsx(116,9): error TS6133: 'addClient' is declared but its value is never read.
+src/tools/invoice-generator/Tool.tsx(215,11): error TS6133: 'totals' is declared but its value is never read.
+src/tools/json-formatter/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/json-formatter/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/json-formatter/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/json-formatter/Tool.tsx(10,9): error TS6198: All destructured elements are unused.
+src/tools/json-formatter/Tool.tsx(30,9): error TS6133: 'formatJSON' is declared but its value is never read.
+src/tools/json-formatter/Tool.tsx(34,9): error TS6133: 'minifyJSON' is declared but its value is never read.
+src/tools/json-formatter/Tool.tsx(79,57): error TS2503: Cannot find namespace 'JSX'.
+src/tools/json-formatter/Tool.tsx(200,65): error TS2367: This comparison appears to be unintentional because the types '"code"' and '"minify"' have no overlap.
+src/tools/kanban-board/Tool.tsx(26,28): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(30,28): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(34,28): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(50,34): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(51,35): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(55,28): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(63,38): error TS7006: Parameter 'sum' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(63,43): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(75,23): error TS7006: Parameter 'col' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(75,28): error TS6133: 'ci' is declared but its value is never read.
+src/tools/kanban-board/Tool.tsx(75,28): error TS7006: Parameter 'ci' implicitly has an 'any' type.
+src/tools/kanban-board/Tool.tsx(88,48): error TS2322: Type '{ value: any; style: { fontWeight: number; color: any; }; }' is not assignable to type 'IntrinsicAttributes & RollProps'.
+  Property 'style' does not exist on type 'IntrinsicAttributes & RollProps'.
+src/tools/kanban-board/Tool.tsx(96,42): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/key-finder/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/key-finder/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/key-finder/Tool.tsx(80,9): error TS6198: All destructured elements are unused.
+src/tools/key-finder/Tool.tsx(98,26): error TS6133: 'i' is declared but its value is never read.
+src/tools/key-finder/Tool.tsx(181,66): error TS6133: 'prog' is declared but its value is never read.
+src/tools/kitchen-timers/Tool.tsx(1,31): error TS6133: 'useRef' is declared but its value is never read.
+src/tools/meal-planner/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/meal-planner/Tool.tsx(124,9): error TS6133: 'addIngredient' is declared but its value is never read.
+src/tools/meal-planner/Tool.tsx(128,9): error TS6133: 'removeIngredient' is declared but its value is never read.
+src/tools/meal-planner/Tool.tsx(138,9): error TS6133: 'removeMeal' is declared but its value is never read.
+src/tools/meal-planner/Tool.tsx(142,9): error TS6133: 'formatDay' is declared but its value is never read.
+src/tools/meal-planner/Tool.tsx(234,21): error TS6133: 'meals' is declared but its value is never read.
+src/tools/meal-planner/Tool.tsx(255,45): error TS6133: 'i' is declared but its value is never read.
+src/tools/meeting-notes/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/meeting-notes/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/metronome/Tool.tsx(35,23): error TS2554: Expected 1 arguments, but got 0.
+src/tools/metronome/Tool.tsx(64,21): error TS2304: Cannot find name 'useMemo'.
+src/tools/metronome/Tool.tsx(106,9): error TS6133: 'formatTime' is declared but its value is never read.
+src/tools/mind-map/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/mind-map/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/mind-map/Tool.tsx(45,9): error TS6133: 'getChildren' is declared but its value is never read.
+src/tools/mind-map/Tool.tsx(229,11): error TS2322: Type '(e: WheelEvent) => void' is not assignable to type 'WheelEventHandler<SVGSVGElement>'.
+  Types of parameters 'e' and 'event' are incompatible.
+    Type 'WheelEvent<SVGSVGElement>' is missing the following properties from type 'WheelEvent': DOM_DELTA_PIXEL, DOM_DELTA_LINE, DOM_DELTA_PAGE, cancelBubble, and 19 more.
+src/tools/mind-map/Tool.tsx(253,36): error TS6133: 'i' is declared but its value is never read.
+src/tools/packing-list/Tool.tsx(126,24): error TS7006: Parameter 'a' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(160,20): error TS7006: Parameter 'prev' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(168,40): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(168,43): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(172,37): error TS7006: Parameter 'ci' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(172,41): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(214,160): error TS7006: Parameter 'x' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(228,38): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/packing-list/Tool.tsx(248,31): error TS6133: 'ci' is declared but its value is never read.
+src/tools/packing-list/Tool.tsx(252,35): error TS2322: Type '{ key: string; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/packing-list/Tool.tsx(261,49): error TS6133: 'i' is declared but its value is never read.
+src/tools/paint-calculator/Tool.tsx(1,31): error TS6133: 'useRef' is declared but its value is never read.
+src/tools/paint-calculator/Tool.tsx(126,44): error TS6133: 'oi' is declared but its value is never read.
+src/tools/paint-calculator/Tool.tsx(131,106): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+  Type 'string' is not assignable to type 'number'.
+src/tools/pet-care/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/pet-care/Tool.tsx(99,14): error TS2322: Type 'Pet | { name: string; type: string; breed: string; birthDate: string; weight: number; color: string; microchip: string; vet: string; id: number; }' is not assignable to type 'Pet'.
+  Property 'photo' is missing in type '{ name: string; type: string; breed: string; birthDate: string; weight: number; color: string; microchip: string; vet: string; id: number; }' but required in type 'Pet'.
+src/tools/pet-care/Tool.tsx(99,23): error TS2741: Property 'photo' is missing in type '{ name: string; type: string; breed: string; birthDate: string; weight: number; color: string; microchip: string; vet: string; id: number; }' but required in type 'Pet'.
+src/tools/pet-care/Tool.tsx(123,9): error TS6133: 'feedingsToday' is declared but its value is never read.
+src/tools/pet-care/Tool.tsx(128,9): error TS6133: 'activeMeds' is declared but its value is never read.
+src/tools/pet-care/Tool.tsx(133,9): error TS6133: 'upcomingVet' is declared but its value is never read.
+src/tools/pet-care/Tool.tsx(218,76): error TS2345: Argument of type '(Pet | { name: string; type: string; breed: string; birthDate: string; weight: number; color: string; microchip: string; vet: string; id: number; })[]' is not assignable to parameter of type 'SetStateAction<Pet[]>'.
+  Type '(Pet | { name: string; type: string; breed: string; birthDate: string; weight: number; color: string; microchip: string; vet: string; id: number; })[]' is not assignable to type 'Pet[]'.
+    Type 'Pet | { name: string; type: string; breed: string; birthDate: string; weight: number; color: string; microchip: string; vet: string; id: number; }' is not assignable to type 'Pet'.
+      Property 'photo' is missing in type '{ name: string; type: string; breed: string; birthDate: string; weight: number; color: string; microchip: string; vet: string; id: number; }' but required in type 'Pet'.
+src/tools/plant-care/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/plant-care/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/plant-care/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/plant-care/Tool.tsx(47,11): error TS2741: Property 'photo' is missing in type '{ name: string; species: string; location: string; wateringInterval: number; fertilizingInterval: number; repottingInterval: number; sunlight: 'partial'; acquiredDate: string; notes: string; id: number; lastWatered: string; lastFertilized: string; lastRepotted: string; }' but required in type 'Plant'.
+src/tools/plant-care/Tool.tsx(64,17): error TS2345: Argument of type '{ id: number; name: string; species: string; location: string; wateringInterval: number; fertilizingInterval: number; repottingInterval: number; sunlight: 'full' | 'partial' | 'shade'; ... 5 more ...; photo: string; }' is not assignable to parameter of type 'SetStateAction<{ name: string; species: string; location: string; wateringInterval: number; fertilizingInterval: number; repottingInterval: number; sunlight: "partial"; acquiredDate: string; notes: string; }>'.
+  Type '{ id: number; name: string; species: string; location: string; wateringInterval: number; fertilizingInterval: number; repottingInterval: number; sunlight: 'full' | 'partial' | 'shade'; ... 5 more ...; photo: string; }' is not assignable to type '{ name: string; species: string; location: string; wateringInterval: number; fertilizingInterval: number; repottingInterval: number; sunlight: 'partial'; acquiredDate: string; notes: string; }'.
+    Types of property 'sunlight' are incompatible.
+      Type '"full" | "partial" | "shade"' is not assignable to type '"partial"'.
+        Type '"full"' is not assignable to type '"partial"'.
+src/tools/plant-care/Tool.tsx(111,9): error TS6133: 'fmt' is declared but its value is never read.
+src/tools/plant-care/Tool.tsx(154,30): error TS6133: 'i' is declared but its value is never read.
+src/tools/plant-care/Tool.tsx(158,39): error TS2322: Type '{ key: number; defaultOpen: boolean; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/plant-watering/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/plant-watering/Tool.tsx(5,11): error TS6196: 'Plant' is declared but never used.
+src/tools/plant-watering/Tool.tsx(40,34): error TS7006: Parameter 'plant' implicitly has an 'any' type.
+src/tools/plant-watering/Tool.tsx(63,26): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/tools/plant-watering/Tool.tsx(68,29): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/tools/plant-watering/Tool.tsx(101,27): error TS7006: Parameter 'plant' implicitly has an 'any' type.
+src/tools/plant-watering/Tool.tsx(101,34): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/tools/pomodoro-timer/Tool.tsx(37,23): error TS2554: Expected 1 arguments, but got 0.
+src/tools/pomodoro-timer/Tool.tsx(199,53): error TS6133: 'i' is declared but its value is never read.
+src/tools/project-estimator/Tool.tsx(56,9): error TS6133: 'addTask' is declared but its value is never read.
+src/tools/project-estimator/Tool.tsx(158,37): error TS2322: Type '{ key: number; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/qr-generator/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/qr-generator/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/qr-generator/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/qr-generator/Tool.tsx(20,7): error TS6133: 'ERROR_CORRECTION' is declared but its value is never read.
+src/tools/qr-generator/Tool.tsx(85,5): error TS6133: 'ecLevel' is declared but its value is never read.
+src/tools/qr-generator/Tool.tsx(154,9): error TS6133: 'handleFileChange' is declared but its value is never read.
+src/tools/qr-generator/Tool.tsx(159,30): error TS6133: 'type' is declared but its value is never read.
+src/tools/qr-generator/Tool.tsx(160,11): error TS6133: 'templates' is declared but its value is never read.
+src/tools/quiz-generator/Tool.tsx(278,40): error TS2322: Type '{ key: number; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/quiz-generator/Tool.tsx(327,38): error TS2322: Type 'string | number | number[]' is not assignable to type 'string | number | readonly string[] | undefined'.
+  Type 'number[]' is not assignable to type 'string | number | readonly string[] | undefined'.
+    Type 'number[]' is not assignable to type 'readonly string[]'.
+      Type 'number' is not assignable to type 'string'.
+src/tools/quiz-generator/Tool.tsx(415,40): error TS2322: Type 'string | number | number[]' is not assignable to type 'string | number | readonly string[] | undefined'.
+  Type 'number[]' is not assignable to type 'string | number | readonly string[] | undefined'.
+    Type 'number[]' is not assignable to type 'readonly string[]'.
+      Type 'number' is not assignable to type 'string'.
+src/tools/recipe-scaler/Tool.tsx(71,9): error TS6133: 'addIngredient' is declared but its value is never read.
+src/tools/recipe-scaler/Tool.tsx(75,9): error TS6133: 'removeIngredient' is declared but its value is never read.
+src/tools/recipe-scaler/Tool.tsx(79,9): error TS6133: 'updateIngredient' is declared but its value is never read.
+src/tools/recipe-scaler/Tool.tsx(105,9): error TS6133: 'scaledIngredients' is declared but its value is never read.
+src/tools/recipe-scaler/Tool.tsx(132,9): error TS6133: 'scaledTotalWeight' is declared but its value is never read.
+src/tools/recipe-scaler/Tool.tsx(134,9): error TS6133: 'cookingTimeAdjustment' is declared but its value is never read.
+src/tools/recipe-scaler/Tool.tsx(140,9): error TS6133: 'formatAmount' is declared but its value is never read.
+src/tools/recipe-scaler/Tool.tsx(246,23): error TS6133: 'scaledBase' is declared but its value is never read.
+src/tools/regex-tester/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/regex-tester/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/regex-tester/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/regex-tester/Tool.tsx(5,7): error TS6133: 'FLAGS' is declared but its value is never read.
+src/tools/regex-tester/Tool.tsx(248,24): error TS2304: Cannot find name 'n'.
+src/tools/regex-tester/Tool.tsx(248,24): error TS2695: Left side of comma operator is unused and has no side effects.
+src/tools/regex-tester/Tool.tsx(248,24): error TS18007: JSX expressions may not use the comma operator. Did you mean to write an array?
+src/tools/regex-tester/Tool.tsx(248,26): error TS2304: Cannot find name 'm'.
+src/tools/roi-calculator/Tool.tsx(43,9): error TS6133: 'updateScenario' is declared but its value is never read.
+src/tools/roi-calculator/Tool.tsx(101,35): error TS6133: 'i' is declared but its value is never read.
+src/tools/room-planner/Tool.tsx(31,7): error TS6133: 'COLORS' is declared but its value is never read.
+src/tools/room-planner/Tool.tsx(45,9): error TS6133: 'canvasRef' is declared but its value is never read.
+src/tools/room-planner/Tool.tsx(67,9): error TS6133: 'removeFurniture' is declared but its value is never read.
+src/tools/room-planner/Tool.tsx(120,9): error TS6133: 'canvasScale' is declared but its value is never read.
+src/tools/room-planner/Tool.tsx(229,12): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/tools/room-planner/Tool.tsx(248,13): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/tools/running-pace/Tool.tsx(19,9): error TS6133: 'timeH' is declared but its value is never read.
+src/tools/running-pace/Tool.tsx(20,9): error TS6133: 'timeM' is declared but its value is never read.
+src/tools/running-pace/Tool.tsx(21,9): error TS6133: 'timeS' is declared but its value is never read.
+src/tools/running-pace/Tool.tsx(27,9): error TS6133: 'marathonTime' is declared but its value is never read.
+src/tools/running-pace/Tool.tsx(28,9): error TS6133: 'halfMarathonTime' is declared but its value is never read.
+src/tools/running-pace/Tool.tsx(29,9): error TS6133: 'tenKTime' is declared but its value is never read.
+src/tools/running-pace/Tool.tsx(30,9): error TS6133: 'fiveKTime' is declared but its value is never read.
+src/tools/running-pace/Tool.tsx(109,10): error TS6133: 'fmtTime' is declared but its value is never read.
+src/tools/salary-calculator/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/salary-calculator/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/salary-calculator/Tool.tsx(89,36): error TS2552: Cannot find name 'periodsPerPeriod'. Did you mean 'periodsPerYear'?
+src/tools/salary-calculator/Tool.tsx(90,36): error TS2552: Cannot find name 'periodsPerPeriod'. Did you mean 'periodsPerYear'?
+src/tools/salary-calculator/Tool.tsx(91,50): error TS2552: Cannot find name 'periodsPerPeriod'. Did you mean 'periodsPerYear'?
+src/tools/savings-goal/Tool.tsx(39,24): error TS2554: Expected 1 arguments, but got 0.
+src/tools/savings-goal/Tool.tsx(115,15): error TS2322: Type 'Goal | { name: string; target: string; targetDate: string; color: string; current: number; }' is not assignable to type 'Goal'.
+  Type '{ name: string; target: string; targetDate: string; color: string; current: number; }' is not assignable to type 'Goal'.
+    Types of property 'target' are incompatible.
+      Type 'string' is not assignable to type 'number'.
+src/tools/savings-goal/Tool.tsx(115,25): error TS2322: Type '{ name: string; target: string; targetDate: string; color: string; current: number; }' is not assignable to type 'Goal'.
+  Types of property 'target' are incompatible.
+    Type 'string' is not assignable to type 'number'.
+src/tools/savings-goal/Tool.tsx(120,9): error TS6133: 'updateCurrent' is declared but its value is never read.
+src/tools/savings-goal/Tool.tsx(124,9): error TS6133: 'deleteGoal' is declared but its value is never read.
+src/tools/savings-goal/Tool.tsx(131,9): error TS6133: 'weeksLeft' is declared but its value is never read.
+src/tools/scale-finder/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/scale-finder/Tool.tsx(67,22): error TS6133: 'setShowGuitar' is declared but its value is never read.
+src/tools/scale-finder/Tool.tsx(78,9): error TS6133: 'scaleNoteNames' is declared but its value is never read.
+src/tools/scale-finder/Tool.tsx(113,9): error TS6133: 'degrees' is declared but its value is never read.
+src/tools/scale-finder/Tool.tsx(171,38): error TS6133: 'i' is declared but its value is never read.
+src/tools/scale-finder/Tool.tsx(184,195): error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
+src/tools/setlist-manager/Tool.tsx(1,31): error TS6133: 'useMemo' is declared but its value is never read.
+src/tools/setlist-manager/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/setlist-manager/Tool.tsx(221,36): error TS2322: Type '{ key: number; defaultOpen: boolean; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: (false | Element)[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/sleep-calculator/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/sleep-calculator/Tool.tsx(36,25): error TS2339: Property 'split' does not exist on type 'string | string[]'.
+  Property 'split' does not exist on type 'string[]'.
+src/tools/spaced-repetition/Tool.tsx(165,52): error TS6133: 'i' is declared but its value is never read.
+src/tools/study-planner/Tool.tsx(111,9): error TS6133: 'weekTotalHours' is declared but its value is never read.
+src/tools/study-planner/Tool.tsx(117,9): error TS6133: 'weekCompletedHours' is declared but its value is never read.
+src/tools/study-planner/Tool.tsx(171,68): error TS2339: Property 'progress' does not exist on type 'Subject'.
+src/tools/study-planner/Tool.tsx(173,129): error TS2339: Property 'progress' does not exist on type 'Subject'.
+src/tools/study-planner/Tool.tsx(177,27): error TS2339: Property 'completedHours' does not exist on type 'Subject'.
+src/tools/subscription-tracker/Tool.tsx(55,9): error TS6133: 'today' is declared but its value is never read.
+src/tools/subscription-tracker/Tool.tsx(56,9): error TS6133: 'daysInYear' is declared but its value is never read.
+src/tools/subscription-tracker/Tool.tsx(101,38): error TS6133: 'i' is declared but its value is never read.
+src/tools/take-home-pay/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/text-diff/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/text-diff/Tool.tsx(3,10): error TS6133: 'reducedMotion' is declared but its value is never read.
+src/tools/tile-calculator/Tool.tsx(1,31): error TS6133: 'useRef' is declared but its value is never read.
+src/tools/tile-calculator/Tool.tsx(28,54): error TS6133: 'tileSizes' is declared but its value is never read.
+src/tools/tile-calculator/Tool.tsx(31,9): error TS6133: 'roomArea' is declared but its value is never read.
+src/tools/tile-calculator/Tool.tsx(36,9): error TS6133: 'fullTiles' is declared but its value is never read.
+src/tools/tile-calculator/Tool.tsx(59,9): error TS6133: 'removeRoom' is declared but its value is never read.
+src/tools/tile-calculator/Tool.tsx(64,9): error TS6133: 'updateRoom' is declared but its value is never read.
+src/tools/tile-calculator/Tool.tsx(68,9): error TS6133: 'fmt' is declared but its value is never read.
+src/tools/timesheet/Tool.tsx(84,17): error TS2322: Type 'Entry | { projectId: number; date: string; task: string; startTime: string; endTime: string; billable: boolean; description: string; id: number; hours: number; }' is not assignable to type 'Entry'.
+  Type '{ projectId: number; date: string; task: string; startTime: string; endTime: string; billable: boolean; description: string; id: number; hours: number; }' is missing the following properties from type 'Entry': project, client
+src/tools/timesheet/Tool.tsx(84,29): error TS2739: Type '{ projectId: number; date: string; task: string; startTime: string; endTime: string; billable: boolean; description: string; id: number; hours: number; }' is missing the following properties from type 'Entry': project, client
+src/tools/timesheet/Tool.tsx(113,58): error TS2532: Object is possibly 'undefined'.
+src/tools/timesheet/Tool.tsx(123,9): error TS6133: 'formatTime' is declared but its value is never read.
+src/tools/timesheet/Tool.tsx(213,35): error TS2322: Type '{ key: string; defaultOpen: boolean; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/travel-budget/Tool.tsx(109,31): error TS6133: 'ci' is declared but its value is never read.
+src/tools/travel-budget/Tool.tsx(113,35): error TS2322: Type '{ key: string; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/travel-insurance/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/travel-itinerary/Tool.tsx(53,31): error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+src/tools/travel-itinerary/Tool.tsx(105,30): error TS6133: 'di' is declared but its value is never read.
+src/tools/travel-itinerary/Tool.tsx(108,32): error TS2322: Type '{ key: number; defaultOpen: true; style: { background: string; border: string; borderRadius: string; overflow: "hidden"; }; children: Element[]; }' is not assignable to type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+  Property 'defaultOpen' does not exist on type 'DetailedHTMLProps<DetailsHTMLAttributes<HTMLDetailsElement>, HTMLDetailsElement>'.
+src/tools/tuner/Tool.tsx(1,20): error TS6133: 'useEffect' is declared but its value is never read.
+src/tools/tuner/Tool.tsx(2,10): error TS6133: 'Roll' is declared but its value is never read.
+src/tools/tuner/Tool.tsx(6,7): error TS6133: 'FLAT_NAMES' is declared but its value is never read.
+src/tools/tuner/Tool.tsx(56,24): error TS2554: Expected 1 arguments, but got 0.
+src/tools/tuner/Tool.tsx(57,24): error TS2554: Expected 1 arguments, but got 0.
+src/tools/tuner/Tool.tsx(110,36): error TS2345: Argument of type 'Uint8Array<ArrayBufferLike>' is not assignable to parameter of type 'Uint8Array<ArrayBuffer>'.
+  Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'.
+    Type 'SharedArrayBuffer' is not assignable to type 'ArrayBuffer'.
+      Types of property '[Symbol.toStringTag]' are incompatible.
+        Type '"SharedArrayBuffer"' is not assignable to type '"ArrayBuffer"'.

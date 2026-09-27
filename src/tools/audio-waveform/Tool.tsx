@@ -1,6 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useState, useRef } from 'react'
 
 export default function AudioWaveform() {
   const [running, setRunning] = useState(false)
@@ -16,9 +14,9 @@ export default function AudioWaveform() {
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
-  const sourceRef = useRef<AudioBufferSourceNode | MediaStreamAudioSourceNode | null>(null)
+  const sourceRef = useRef<AudioBufferSourceNode | null>(null)
   const bufferRef = useRef<AudioBuffer | null>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number>(0)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const getAudioContext = () => {
@@ -40,7 +38,7 @@ export default function AudioWaveform() {
       source.connect(analyser)
 
       analyserRef.current = analyser
-      sourceRef.current = source
+      sourceRef.current = source as any
       setRunning(true)
       requestAnimationFrame(draw)
     } catch (err) {
@@ -172,8 +170,8 @@ export default function AudioWaveform() {
 
     // Waveform
     const bufferLen = 2048 // analyser.fftSize
-    const dataArray = new Uint8Array(2048)
-    analyser.getByteTimeDomainData(dataArray)
+    const waveData = new Uint8Array(2048)
+    analyser.getByteTimeDomainData(waveData)
 
     const samplesPerPixel = Math.max(1, Math.floor(bufferLen / (width * timeScale)))
     ctx.strokeStyle = 'var(--accent)'
@@ -182,12 +180,11 @@ export default function AudioWaveform() {
     ctx.lineJoin = 'round'
 
     ctx.beginPath()
-    const sliceWidth = width / (bufferLen / samplesPerPixel)
 
     for (let i = 0; i < bufferLen; i += samplesPerPixel) {
       let sum = 0
       for (let j = 0; j < samplesPerPixel && i + j < bufferLen; j++) {
-        sum += dataArray[i + j] - 128
+        sum += waveData[i + j] - 128
       }
       const avg = sum / Math.min(samplesPerPixel, bufferLen - i)
       const v = (avg / 128) * amplitudeScale

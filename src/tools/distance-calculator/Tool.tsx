@@ -143,7 +143,7 @@ export default function DistanceCalculator() {
               {airDist < 1000 ? (
                 <Roll value={formatTime(airDist / 250 + 0.5)} />
               ) : (
-                <span className="muted">N/A (>1000km)</span>
+                <span className="muted">N/A (&gt;1000km)</span>
               )}
             </div>
             <div className="muted" style={{ fontSize: '0.75rem' }}>Only viable for {'>'}1000km corridors</div>
@@ -231,7 +231,6 @@ export default function DistanceCalculator() {
           )}
         </div>
       </div>
-    </div>
 
       {airDist > 0 && <>{renderResults()}</>}
     </div>

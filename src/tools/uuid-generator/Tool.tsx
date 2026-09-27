@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { Roll } from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
@@ -51,7 +51,7 @@ export default function UUIDGenerator() {
       bytes[8] = (bytes[8] & 0x3f) | 0x80
     } else if (ver === 'v7') {
       const now = Date.now()
-      const timeMs = BigInt(now)
+      let timeMs = BigInt(now)
       const timeBytes = new Uint8Array(6)
       for (let i = 5; i >= 0; i--) {
         timeBytes[i] = Number(timeMs & 0xffn)
@@ -122,7 +122,7 @@ export default function UUIDGenerator() {
             <option value="standard">Standard (xxxx-xxxx-xxxx-xxxx)</option>
             <option value="compact">Compact (xxxxxxxxxxxxxxxx)</option>
             <option value="urn">URN (urn:uuid:...)</option>
-            <option value="braced">Braced {...}</option>
+            <option value="braced">Braced {"{...}"}</option>
           </select>
         </label>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 100 }}>
@@ -170,7 +170,7 @@ export default function UUIDGenerator() {
       <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', marginTop: 16 }}>
         <h4 style={{ margin: '0 0 12px' }}>Validate UUID</h4>
         <div className="row" style={{ gap: 8 }}>
-          <input type="text" placeholder="Paste UUID to validate" style={{ flex: 1 }} onKeyDown={e => { if (e.key === 'Enter') { const valid = validate(e.currentTarget.value); alert(valid ? 'Valid UUID ✓' : 'Invalid UUID ✗') }} />
+          <input type="text" placeholder="Paste UUID to validate" style={{ flex: 1 }} onKeyDown={e => { if (e.key === 'Enter') { const valid = validate(e.currentTarget.value); alert(valid ? 'Valid UUID ✓' : 'Invalid UUID ✗') } }} />
           <button className="btn" onClick={() => { const input = document.querySelector('input[type="text"]') as HTMLInputElement; const valid = validate(input.value); alert(valid ? 'Valid UUID ✓' : 'Invalid UUID ✗') }}>Validate</button>
         </div>
         <div className="muted" style={{ marginTop: 8, fontSize: '0.85rem' }}>

@@ -138,14 +138,13 @@ export default function TileCalculator() {
                 </div>
               </div>
             </div>
-          ))}
+          )})}
         </div>
 
-        <button className="btn" onClick={() => setRooms([...rooms, { id: Date.now(), name: `Room ${rooms.length + 1}`, length: 4, width: 3, tileIdx: 1, customW: 0.4, customH: 0.4, waste: 10, boxSize: 1.44, pricePerBox: 80000 })]} style={{ marginTop: 16 }}>+ Add Room</button>
+        <button className="btn" onClick={() => setRooms([...rooms, { id: Date.now(), name: `Room ${rooms.length + 1}`, length: 4, width: 3, tileIdx: 1, customW: 0.4, customH: 0.4, waste: 10, boxSize: 1.44, pricePerBox: 80000 }])} style={{ marginTop: 16 }}>+ Add Room</button>
 
         <Hint>Draw walls, set dimensions, add doors/windows. Tiles lay themselves across the floor. Cut pieces highlighted, waste %, boxes to buy.</Hint>
       </div>
-    </div>
   )
 }
 

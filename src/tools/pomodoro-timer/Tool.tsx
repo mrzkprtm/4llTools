@@ -34,7 +34,7 @@ export default function PomodoroTimer() {
   const [timeLeft, setTimeLeft] = useState(settings.workMinutes * 60)
   const [running, setRunning] = useState(false)
   const [completedPomodoros, setCompletedPomodoros] = useState(0)
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<any>(null)
 
   useEffect(() => {
     try { localStorage.setItem('pomodoro-settings', JSON.stringify(settings)) } catch {}

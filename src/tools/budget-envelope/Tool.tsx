@@ -36,7 +36,7 @@ export default function BudgetEnvelope() {
   })
   const [newEnvelope, setNewEnvelope] = useState({ name: '', allocated: 0, color: COLORS[0], recurring: true, frequency: 'monthly' as const })
   const [editingId, setEditingId] = useState<number | null>(null)
-  const [editForm, setEditForm] = useState({ name: '', allocated: 0, color: COLORS[0], recurring: true, frequency: 'monthly' as const })
+  const [editForm, setEditForm] = useState<{ name: string; allocated: number; color: string; recurring: boolean; frequency: 'weekly' | 'monthly' | 'yearly' }>({ name: '', allocated: 0, color: COLORS[0], recurring: true, frequency: 'monthly' })
   const [transactions, setTransactions] = useState<{ id: number; envelopeId: number; amount: number; description: string; date: string }[]>(() => {
     const saved = localStorage.getItem('budget-envelope-transactions')
     return saved ? JSON.parse(saved) : []
@@ -106,7 +106,7 @@ export default function BudgetEnvelope() {
         <summary style={{ padding: 12, background: envelope.color + '20', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="row" style={{ gap: 8, alignItems: 'center' }}>
             <span style={{ width: 16, height: 16, borderRadius: '50%', background: envelope.color }} />
-            <input type="text" value={envelope.name} onChange={e => setEnvelopes(envelopes.map(e => e.id === envelope.id ? { ...e, name: e.target.value } : e))} style={{ background: 'transparent', border: 'none', color: 'var(--text)', fontWeight: 600, fontSize: '1rem', width: 150 }} />
+            <input type="text" value={envelope.name} onChange={ev => setEnvelopes(envelopes.map(en => en.id === envelope.id ? { ...en, name: ev.target.value } : en))} style={{ background: 'transparent', border: 'none', color: 'var(--text)', fontWeight: 600, fontSize: '1rem', width: 150 }} />
             <span style={{ fontSize: '0.75rem', padding: '2px 8px', background: envelope.recurring ? 'var(--ok)20' : 'var(--muted)20', color: envelope.recurring ? 'var(--ok)' : 'var(--muted)', borderRadius: 4 }}>
               {envelope.frequency}
             </span>

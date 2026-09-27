@@ -98,37 +98,6 @@ export default function Base64Encoder() {
     URL.revokeObjectURL(url)
   }
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) setFile(file)
-  }
-
-  const swapFiles = () => {
-    setMode(m => m === 'encode' ? 'decode' : 'encode')
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = e => {
-        const arrayBuffer = e.target?.result as ArrayBuffer
-        const bytes = new Uint8Array(arrayBuffer)
-        let binary = ''
-        for (let i = 0; i < bytes.length; i++) {
-          binary += String.fromCharCode(bytes[i])
-        }
-        let b64 = btoa(binary)
-        if (urlSafe) {
-          b64 = b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-        }
-        setInput(b64)
-        setOutput('')
-        setFile(null)
-      }
-      reader.readAsArrayBuffer(file)
-    } else {
-      setInput(output)
-      setOutput('')
-    }
-  }
-
   return (
     <div>
       <h3 style={{ marginBottom: 16 }}>Base64 Encoder/Decoder</h3>

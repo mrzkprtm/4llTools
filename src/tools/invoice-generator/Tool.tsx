@@ -330,7 +330,7 @@ export default function InvoiceGenerator() {
                           <button className="btn" onClick={() => removeItem(activeInvoice.id, item.id)} style={{ color: 'var(--danger)', padding: '2px 8px', fontSize: '0.75rem' }}>×</button>
                         </td>
                       </tr>
-                    ))}
+                    )})}
                   <tr style={{ borderBottom: '2px solid var(--border)' }}>
                     <td colSpan={6} style={{ padding: '12px', textAlign: 'right', fontWeight: 600 }}>Subtotal</td>
                     <td style={{ padding: '12px', textAlign: 'right', fontWeight: 700, fontFamily: 'var(--mono)' }}>Rp{Math.round(activeInvoice.items.reduce((s, i) => s + i.quantity * i.unitPrice * (1 - i.discount / 100), 0)).toLocaleString('id-ID')}</td>

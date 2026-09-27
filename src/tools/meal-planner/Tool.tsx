@@ -264,7 +264,7 @@ export default function MealPlanner() {
                             )
                           })}
                         </div>
-                    ))}
+                      )})}
                   </div>
                   <div style={{ padding: 8, borderTop: '1px solid var(--border)' }}>
                     <select value={newMeal.date} onChange={e => setNewMeal({ ...newMeal, date: e.target.value })} style={{ width: '100%', display: 'none' }} />

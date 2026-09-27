@@ -244,7 +244,7 @@ export default function PetCare() {
         <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', marginBottom: 16 }}>
           <h4 style={{ margin: '0 0 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             Add Feeding Time
-            <button className="btn" onClick={() => { setFeedings([...feedings, { id: Date.now(), petId: activePet!.id, time: '07:00', food: '', amount: '', completed: false }])} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>+ Add</button>
+            <button className="btn" onClick={() => { setFeedings([...feedings, { id: Date.now(), petId: activePet!.id, time: '07:00', food: '', amount: '', completed: false }])}} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>+ Add</button>
           </h4>
           <div style={{ display: 'grid', gap: 8 }}>
             <div className="row" style={{ gap: 8 }}>
@@ -298,7 +298,7 @@ export default function PetCare() {
         <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', marginBottom: 16 }}>
           <h4 style={{ margin: '0 0 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             Add Medication
-            <button className="btn" onClick={() => { setMedications([...medications, { id: Date.now(), petId: activePet!.id, name: '', dosage: '', frequency: 'daily', startDate: new Date().toISOString().split('T')[0], endDate: '', instructions: '' }])} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>+ Add</button>
+            <button className="btn" onClick={() => { setMedications([...medications, { id: Date.now(), petId: activePet!.id, name: '', dosage: '', frequency: 'daily', startDate: new Date().toISOString().split('T')[0], endDate: '', instructions: '' }])}} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>+ Add</button>
           </h4>
           <div style={{ display: 'grid', gap: 8 }}>
             <div className="row" style={{ gap: 8 }}>
@@ -364,7 +364,7 @@ export default function PetCare() {
         <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', marginBottom: 16 }}>
           <h4 style={{ margin: '0 0 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             Add Vet Visit
-            <button className="btn" onClick={() => { setVetVisits([...vetVisits, { id: Date.now(), petId: activePet!.id, date: new Date().toISOString().split('T')[0], reason: '', vet: '', notes: '', cost: 0, nextVisit: '' }])} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>+ Add</button>
+            <button className="btn" onClick={() => { setVetVisits([...vetVisits, { id: Date.now(), petId: activePet!.id, date: new Date().toISOString().split('T')[0], reason: '', vet: '', notes: '', cost: 0, nextVisit: '' }])}} style={{ padding: '6px 12px', fontSize: '0.8rem' }}>+ Add</button>
           </h4>
           <div style={{ display: 'grid', gap: 8 }}>
             <div className="row" style={{ gap: 8 }}>

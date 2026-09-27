@@ -80,11 +80,6 @@ export default function WorldClockMap() {
     setSelectedCities(selectedCities.filter(c => c !== city))
   }
 
-  const toggleCity = (city: string) => {
-    if (selectedCities.includes(city)) removeCity(city)
-    else addCity(city)
-  }
-
   return (
     <div>
       <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>

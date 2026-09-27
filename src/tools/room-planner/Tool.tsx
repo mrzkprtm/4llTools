@@ -222,7 +222,7 @@ export default function RoomPlanner() {
           >
             {item.name}
           </div>
-        )}
+        ))}
 
 {/* Clearance warnings */}
         {furniture.length > 1 && (

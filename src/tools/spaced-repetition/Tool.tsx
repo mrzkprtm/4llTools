@@ -114,7 +114,7 @@ export default function SpacedRepetition() {
         <div className="stat"><b><Roll value={stats.total} /></b><span className="muted">Total Items</span></div>
         <div className="stat"><b style={{ color: 'var(--danger)' }}><Roll value={stats.due} /></b><span className="muted">Due Now</span></div>
         <div className="stat"><b style={{ color: 'var(--ok)' }}><Roll value={stats.mature} /></b><span className="muted">Mature (≥21d)</span></div>
-        <div className="stat"><b style={{ color: 'var(--accent)' }}><Roll value={stats.young} /></b><span className="muted">Young (<21d)</span></div>
+        <div className="stat"><b style={{ color: 'var(--accent)' }}><Roll value={stats.young} /></b><span className="muted">Young (&lt;21d)</span></div>
         <div className="stat"><b><Roll value={stats.new} /></b><span className="muted">New (0 reviews)</span></div>
       </div>
 

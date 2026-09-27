@@ -12,7 +12,7 @@ export default function BPMTapper() {
   const [beatPhase, setBeatPhase] = useState(0)
   const [running, setRunning] = useState(false)
   const lastTapRef = useRef<number>(0)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number>(undefined)
 
   useEffect(() => {
     try { localStorage.setItem('bpm-tapper', JSON.stringify(taps)) } catch {}

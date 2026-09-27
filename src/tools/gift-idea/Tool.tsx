@@ -208,7 +208,8 @@ export default function GiftIdea() {
                   <button className="btn" style={{ background: 'var(--bg)' }}>View Details</button>
                 </div>
               </div>
-            ))}
+            </div>
+          ))
         )}
       </div>
 
@@ -230,7 +231,7 @@ export default function GiftIdea() {
             ))}
           </div>
         </div>
-      </div>
+      )}
 
       <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
         Filter by recipient, occasion, interests, budget, and categories. Save favorites. 100+ curated gift ideas across all price ranges.

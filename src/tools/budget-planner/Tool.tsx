@@ -20,7 +20,7 @@ function formatCurrency(n: number): string {
 
 export default function BudgetPlanner() {
   const [income, setIncome] = useState(5000)
-  const [categories, setCategories] = useState(() => {
+  const [categories, setCategories] = useState<{ id: number; name: string; color: string; percent: number; amount: number }[]>(() => {
     const saved = localStorage.getItem('budget-planner-categories')
     if (saved) return JSON.parse(saved)
     return DEFAULT_CATEGORIES.map((c, i) => ({ ...c, id: i, amount: Math.round(income * c.percent / 100) }))

@@ -116,7 +116,6 @@ export default function UnitPriceComparer() {
               ctx.scale(dpr, dpr)
 
               const w = canvas.width / dpr
-              const h = canvas.height / dpr
               const maxPerUnit = Math.max(...normalized.map(p => p.perUnit))
               const barH = 30
               const gap = 10

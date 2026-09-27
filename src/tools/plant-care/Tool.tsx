@@ -269,16 +269,15 @@ export default function PlantCare() {
                       )}
                     </div>
                   )}
-                </details>
-              )
-            )}
-          </div>
-        )}
+                </div>
+              </details>
+            )
+          }))}
+        </div>
 
         <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
           Track watering, fertilizing, and repotting schedules for all your plants. Overdue tasks highlighted in red. One-click to mark tasks complete.
         </p>
       </div>
     )
-  }
 }

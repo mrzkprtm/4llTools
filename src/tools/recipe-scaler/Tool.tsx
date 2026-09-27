@@ -37,7 +37,7 @@ UNITS.forEach(u1 => {
       UNIT_CONVERSIONS[u1.name][u2.name] = u1.toBase / u2.toBase
     }
   })
-}
+})
 
 interface Ingredient {
   id: number
@@ -209,7 +209,7 @@ export default function RecipeScaler() {
       <div className="stats" style={{ marginBottom: 16 }}>
         <div className="stat"><b>Scale Factor: </b><Roll value={scaleFactor.toFixed(2)} />x</div>
         <div className="stat"><b>Cooking Time: </b>×<Roll value={Math.pow(scaleFactor, 2/3).toFixed(2)} /> (approx for baking)</div>
-        <div className="stat"><b>Total Weight: </b><Roll value={ingredients.reduce((s, i) => s + (UNITS.find(u => u.name === i.unit)?.toBase || 1) * i.amount, 0).toFixed(1)} g → <Roll value={(ingredients.reduce((s, i) => s + (UNITS.find(u => u.name === i.unit)?.toBase || 1) * i.amount, 0) * scaleFactor).toFixed(1)} /> g</div>
+        <div className="stat"><b>Total Weight: </b><Roll value={ingredients.reduce((s, i) => s + (UNITS.find(u => u.name === i.unit)?.toBase || 1) * i.amount, 0).toFixed(1)} /> g → <Roll value={(ingredients.reduce((s, i) => s + (UNITS.find(u => u.name === i.unit)?.toBase || 1) * i.amount, 0) * scaleFactor).toFixed(1)} /> g</div>
       </div>
 
       <div style={{ display: 'grid', gap: 16 }}>

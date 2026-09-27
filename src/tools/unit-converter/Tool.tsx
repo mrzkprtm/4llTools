@@ -2,7 +2,13 @@ import { useState, useEffect, useMemo } from 'react'
 import { Roll } from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
-const CATEGORIES = {
+interface CategoryDef {
+  base: string
+  units: Record<string, number>
+  special?: boolean
+}
+
+const CATEGORIES: Record<string, CategoryDef> = {
   Length: {
     base: 'm',
     units: {
@@ -105,7 +111,7 @@ export default function UnitConverter() {
 
   const convert = useMemo(() => {
     if (category === 'Temperature') {
-      const fromC = toCelsius(value, fromUnit)
+      const fromC = toCelsius(fromUnit, value)
       const toC = fromCelsius(toUnit, fromC)
       return toC
     }
@@ -137,8 +143,6 @@ export default function UnitConverter() {
     setFromUnit(toUnit)
     setToUnit(fromUnit)
   }
-
-  const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: precision })
 
   const quickValues = [1, 10, 100, 1000, 10000]
 
@@ -231,8 +235,7 @@ export default function UnitConverter() {
                     <td style={{ textAlign: 'right', padding: '8px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--mono)' }}>{val.toLocaleString()}</td>
                     <td style={{ textAlign: 'right', padding: '8px 12px', borderBottom: '1px solid var(--border)', fontFamily: 'var(--mono)', fontWeight: 600, color: 'var(--accent)' }}>{category === 'Temperature' ? fromCelsius(fromUnit, toCelsius(toUnit, val)).toFixed(precision) : fromVal.toLocaleString(undefined, { minimumFractionDigits: precision, maximumFractionDigits: precision })}</td>
                   </tr>
-                )}
-              ))}
+                )})}
             </tbody>
           </table>
         </div>
@@ -255,8 +258,7 @@ export default function UnitConverter() {
                   1 {firstUnit} = {conv.toFixed(4)} {secondUnit}
                 </div>
               </div>
-            )}
-          </div>
+            )})}
         </div>
       </div>
 

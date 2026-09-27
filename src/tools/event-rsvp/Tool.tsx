@@ -259,9 +259,9 @@ export default function EventRSVP() {
                   <button className="btn" onClick={() => setGuests(guests.filter(g => g.id !== guest.id))} style={{ color: 'var(--danger)', padding: '2px 8px', fontSize: '0.7rem' }}>Remove</button>
                 </div>
               </div>
-            ))}
-          )}
-        </div>
+            ))
+          )
+        )}
       </div>
 
       <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>

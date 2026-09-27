@@ -227,7 +227,7 @@ export default function GradeCalculator() {
                 )}
               </div>
             </details>
-          ))}
+          )})}
       </div>
 
       {showWhatIf && neededScore !== null && (

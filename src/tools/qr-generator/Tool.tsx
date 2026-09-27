@@ -15,7 +15,7 @@ const QR_TYPES: { value: QRType; label: string; fields: string[] }[] = [
   { value: 'event', label: 'Calendar Event', fields: ['summary', 'description', 'location', 'start', 'end'] },
   { value: 'geo', label: 'Geo Location', fields: ['lat', 'lng', 'query'] },
   { value: 'bitcoin', label: 'Bitcoin', fields: ['address', 'amount', 'label', 'message'] },
-}
+]
 
 const ERROR_CORRECTION = ['L', 'M', 'Q', 'H'] as const
 
@@ -148,7 +148,7 @@ export default function QRGenerator() {
       img.onload = () => resolve(img)
       img.onerror = reject
       img.src = URL.createObjectURL(file)
-    }
+    })
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
