@@ -17,7 +17,7 @@ export interface Dot {
  * Radii go from large to small in passes, and a spatial hash keeps each
  * overlap check to the few neighbors in adjacent cells.
  */
-export function packDots(random: () => number, R: number, radii: readonly number[] = [9, 7.5, 6, 4.5, 3.2], gap = 1.2, attemptsPerPass = 5000): Dot[] {
+export function packDots(random: () => number, R: number, radii: readonly number[] = [9, 7.5, 6, 4.8, 3.8, 3, 2.4], gap = 1.1, attemptsPerPass = 9000): Dot[] {
   const maxR = Math.max(...radii)
   const cell = 2 * maxR + gap
   const n = Math.ceil((2 * R) / cell)

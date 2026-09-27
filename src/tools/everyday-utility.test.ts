@@ -1,5 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import * as dp from './dead-pixel-test/logic'
+import * as rr from './refresh-rate-test/logic'
+import * as kb from './keyboard-tester/logic'
+import * as gp from './gamepad-tester/logic'
+import * as mt from './mouse-tester/logic'
+import * as tt from './touch-tester/logic'
+import * as sr from './screen-ruler/logic'
+import * as sl from './screen-light/logic'
+import * as ht from './hearing-test/logic'
+import * as cb from './color-blind-test/logic'
+import { rng } from '../sim/math'
 
 describe('dead-pixel-test', () => {
   it('steps through colors and wraps both ways', () => {
@@ -20,8 +30,6 @@ describe('dead-pixel-test', () => {
     for (let x = 0; x < 4; x++) for (let y = 0; y < 4; y++) expect(dp.pixelOn('checker', x, y)).toBe(!dp.pixelOn('checker-inv', x, y))
   })
 })
-
-import * as rr from './refresh-rate-test/logic'
 
 describe('refresh-rate-test', () => {
   it('snaps a noisy 144 Hz run to 144 and ignores skipped frames', () => {
@@ -44,8 +52,6 @@ describe('refresh-rate-test', () => {
     expect(rr.liveFps(stamps, 1000)).toBeCloseTo(60, 0)
   })
 })
-
-import * as kb from './keyboard-tester/logic'
 
 describe('keyboard-tester', () => {
   it('has a full 104-key ANSI layout with unique codes and no overlapping keys', () => {
@@ -76,8 +82,6 @@ describe('keyboard-tester', () => {
   })
 })
 
-import * as gp from './gamepad-tester/logic'
-
 describe('gamepad-tester', () => {
   it('measures resting drift and suggests a deadzone that covers it', () => {
     const d = gp.computeDrift([{ x: 0.03, y: 0 }, { x: 0.05, y: -0.12 }, { x: 0.04, y: -0.1 }])
@@ -102,8 +106,6 @@ describe('gamepad-tester', () => {
   })
 })
 
-import * as mt from './mouse-tester/logic'
-
 describe('mouse-tester', () => {
   it('computes clicks per second', () => {
     expect(mt.cps(42, 5000)).toBeCloseTo(8.4, 6)
@@ -125,8 +127,6 @@ describe('mouse-tester', () => {
   })
 })
 
-import * as tt from './touch-tester/logic'
-
 describe('touch-tester', () => {
   it('paints cells under a touch and reports coverage', () => {
     const g = tt.makeGrid(100, 50, 10)
@@ -144,8 +144,6 @@ describe('touch-tester', () => {
   })
 })
 
-import * as sr from './screen-ruler/logic'
-
 describe('screen-ruler', () => {
   it('calibrates from a card and converts px to mm and inches', () => {
     const k = sr.calibrate(323.5)
@@ -162,8 +160,6 @@ describe('screen-ruler', () => {
     expect(sr.angleAt(v, { x: 1, y: 0 }, { x: 1, y: 1 }).deg).toBeCloseTo(45, 6)
   })
 })
-
-import * as sl from './screen-light/logic'
 
 describe('screen-light', () => {
   it('maps color temperature to the expected RGB', () => {
@@ -184,8 +180,6 @@ describe('screen-light', () => {
     expect(sl.fromHex('#ffd6e8')).toEqual([255, 214, 232])
   })
 })
-
-import * as ht from './hearing-test/logic'
 
 describe('hearing-test', () => {
   it('converts between dB and gain', () => {
@@ -214,5 +208,49 @@ describe('hearing-test', () => {
     expect(s.done).toBe(true)
     expect(s.threshold).toBeNull()
     expect(ht.sweepFreq(8000, 16000, 10, 5)).toBeCloseTo(8000 * Math.SQRT2, 6)
+  })
+})
+
+describe('color-blind-test', () => {
+  it('packs many dots inside the plate with no overlaps', () => {
+    const R = 180
+    const dots = cb.packDots(rng(3), R)
+    expect(dots.length).toBeGreaterThan(400)
+    for (const d of dots) expect(Math.hypot(d.x - R, d.y - R) + d.r).toBeLessThanOrEqual(R + 1e-9)
+    for (let i = 0; i < dots.length; i++)
+      for (let j = i + 1; j < dots.length; j++) {
+        const a = dots[i]
+        const b = dots[j]
+        expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThanOrEqual(a.r + b.r)
+      }
+  })
+
+  it('samples the digit mask to pick figure dots', () => {
+    const w = 20
+    const h = 20
+    const data = new Uint8ClampedArray(w * h * 4)
+    for (let y = 5; y < 15; y++) for (let x = 5; x < 15; x++) data[(y * w + x) * 4 + 3] = 255
+    expect(cb.maskAt(data, w, h, 10, 10)).toBe(true)
+    expect(cb.maskAt(data, w, h, 2, 2)).toBe(false)
+    expect(cb.maskAt(data, w, h, -1, 30)).toBe(false)
+    expect(cb.inFigure(data, w, h, { x: 10, y: 10, r: 3 })).toBe(true)
+    expect(cb.inFigure(data, w, h, { x: 4, y: 4, r: 2 })).toBe(false)
+  })
+
+  it('makes confusion colors that differ only in the missing cone, and scores a protan pattern', () => {
+    const base: cb.RGB = [150, 160, 100]
+    const fig = cb.confuse(base, 'protan', 0.2)
+    const a = cb.rgbToLms(base)
+    const b = cb.rgbToLms(fig)
+    expect(fig).not.toEqual(base)
+    expect(Math.abs(b[1] - a[1]) / a[1]).toBeLessThan(0.02)
+    expect(Math.abs(b[2] - a[2]) / a[2]).toBeLessThan(0.05)
+    const plan = cb.buildPlan(9)
+    expect(plan[0].kind).toBe('control')
+    const answers = plan.map((p) => (p.kind === 'protan' ? (p.digit === 1 ? 2 : 1) : p.digit))
+    const s = cb.score(plan, answers)
+    expect(s.reliable).toBe(true)
+    expect(s.likely).toBe('protan')
+    expect(s.severity).toBe('strong')
   })
 })
