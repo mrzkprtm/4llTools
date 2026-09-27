@@ -11,6 +11,8 @@ import { additionSteps, beadsToValue, valueToBeads } from './abacus/logic'
 import { COUNTRIES } from './flag-quiz/countries'
 import { flagEmoji, makeQuestion } from './flag-quiz/logic'
 import { makeQuestion as mathQuestion, points, summarize } from './mental-math/logic'
+import { checkAnswer, firstWrong, scramble } from './word-scramble/logic'
+import { WORDS, playable } from './word-scramble/words'
 
 /** Deterministic generator in [0, 1) for tests. */
 const seeded = (seed = 7) => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32)
@@ -254,5 +256,37 @@ describe('mental math', () => {
     expect(s.score).toBe(21)
     expect(s.bestStreak).toBe(2)
     expect(s.accuracy).toBeCloseTo(2 / 3)
+  })
+})
+
+describe('word scramble', () => {
+  it('never shows the word unscrambled', () => {
+    const r = seeded(9)
+    for (const w of ['cat', 'ab', 'apple', 'aab', 'noon']) {
+      for (let i = 0; i < 50; i++) {
+        const tiles = scramble(w, r)
+        const s = tiles.map((t) => t.letter).join('')
+        expect(s).not.toBe(w)
+        expect([...s].sort().join('')).toBe([...w].sort().join(''))
+        expect(new Set(tiles.map((t) => t.id)).size).toBe(w.length)
+      }
+    }
+    expect(scramble('aaa', r).map((t) => t.letter).join('')).toBe('aaa')
+  })
+
+  it('checks answers and finds the next hint', () => {
+    expect(checkAnswer(' Apple ', 'apple')).toBe(true)
+    expect(checkAnswer('appel', 'apple')).toBe(false)
+    expect(firstWrong(['a', 'p', null, null, null], 'apple')).toBe(2)
+    expect(firstWrong(['a', 'l', 'p', 'p', 'e'], 'apple')).toBe(1)
+    expect(firstWrong([...'apple'], 'apple')).toBe(-1)
+  })
+
+  it('has about 150 playable words per language', () => {
+    for (const lang of ['en', 'id'] as const) {
+      const all = (['easy', 'medium', 'hard'] as const).flatMap((d) => playable(lang, d))
+      expect(all.length).toBeGreaterThanOrEqual(130)
+      expect(Object.values(WORDS[lang]).flat().length).toBeGreaterThanOrEqual(145)
+    }
   })
 })
