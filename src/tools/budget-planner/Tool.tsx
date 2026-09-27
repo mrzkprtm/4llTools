@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { useFlip } from '../../motion/useFlip'
 import { reducedMotion } from '../../motion/springs'
 
@@ -14,15 +14,25 @@ const DEFAULT_CATEGORIES = [
   { name: 'Other', color: '#a16207', percent: 5 },
 ]
 
+interface Category {
+  id: number
+  name: string
+  color: string
+  percent: number
+  amount: number
+}
+
 function formatCurrency(n: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
 }
 
 export default function BudgetPlanner() {
   const [income, setIncome] = useState(5000)
-  const [categories, setCategories] = useState(() => {
-    const saved = localStorage.getItem('budget-planner-categories')
-    if (saved) return JSON.parse(saved)
+  const [categories, setCategories] = useState<Category[]>(() => {
+    try {
+      const saved = localStorage.getItem('budget-planner-categories')
+      if (saved) return JSON.parse(saved) as Category[]
+    } catch {}
     return DEFAULT_CATEGORIES.map((c, i) => ({ ...c, id: i, amount: Math.round(income * c.percent / 100) }))
   })
   const [draggedId, setDraggedId] = useState<number | null>(null)
@@ -105,7 +115,7 @@ export default function BudgetPlanner() {
               animation: reducedMotion() ? 'none' : 'pop 0.4s var(--spring-bouncy) both',
               animationDelay: `${i * 40}ms`,
             }}
-            draggable={!reducedMotion()}
+            draggable
             onDragStart={() => handleDragStart(cat.id)}
             onDragOver={handleDragOver}
             onDrop={() => handleDrop(cat.id)}

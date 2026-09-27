@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 
 const INGREDIENT_DENSITIES: Record<string, number> = {
   'All-purpose flour': 125,

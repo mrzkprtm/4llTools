@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import { useState, useEffect } from 'react'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Wall {
@@ -22,8 +22,11 @@ const ROLL_COVERAGE = 5.2 // m² per roll (0.53m × 10m)
 
 export default function PaintCalculator() {
   const [walls, setWalls] = useState<Wall[]>(() => {
-    const saved = localStorage.getItem('paint-calculator')
-    return saved ? JSON.parse(saved) : [{ id: 1, width: 4, height: 2.5, openings: [] }]
+    try {
+      const saved = localStorage.getItem('paint-calculator')
+      if (saved) return JSON.parse(saved) as Wall[]
+    } catch {}
+    return [{ id: 1, width: 4, height: 2.5, openings: [] }]
   })
   const [paintPrice, setPaintPrice] = useState(150000) // per liter
   const [rollPrice, setRollPrice] = useState(80000) // per roll
@@ -35,7 +38,7 @@ export default function PaintCalculator() {
 
   const totalWallArea = walls.reduce((sum, w) => sum + w.width * w.height, 0)
   const totalOpeningArea = walls.reduce((sum, w) => sum + w.openings.reduce((s, o) => s + o.width * o.height, 0), 0)
-  const paintableArea = totalWallArea - totalOpeningArea
+  const paintableArea = Math.max(0, totalWallArea - totalOpeningArea)
   const totalPaintLiters = Math.ceil((paintableArea * coats) / PAINT_COVERAGE)
   const totalRolls = Math.ceil(paintableArea / ROLL_COVERAGE)
 
@@ -43,7 +46,7 @@ export default function PaintCalculator() {
     setWalls([...walls, { id: Date.now(), width: 3, height: 2.5, openings: [] }])
   }
 
-  const updateWall = (id: number, field: string, value: number) => {
+  const updateWall = (id: number, field: 'width' | 'height', value: number) => {
     setWalls(walls.map(w => w.id === id ? { ...w, [field]: value } : w))
   }
 
@@ -60,7 +63,7 @@ export default function PaintCalculator() {
     setWalls(walls.map(w => w.id === wallId ? { ...w, openings: w.openings.filter(o => o.id !== openingId) } : w))
   }
 
-  const updateOpening = (wallId: number, openingId: number, field: string, value: number) => {
+  const updateOpening = <K extends 'type' | 'width' | 'height' | 'x'>(wallId: number, openingId: number, field: K, value: Opening[K]) => {
     setWalls(walls.map(w => w.id === wallId ? {
       ...w,
       openings: w.openings.map(o => o.id === openingId ? { ...o, [field]: value } : o)
@@ -89,8 +92,8 @@ export default function PaintCalculator() {
         <div className="stat"><b><Roll>{paintableArea.toFixed(1)}</Roll></b><span className="muted">m² Paintable</span></div>
         <div className="stat"><b><Roll>{totalPaintLiters}</Roll></b><span className="muted">Liters Paint</span></div>
         <div className="stat"><b><Roll>{totalRolls}</Roll></b><span className="muted">Rolls Wallpaper</span></div>
-        <div className="stat"><b><Roll>{(totalPaintLiters * paintPrice).toLocaleString()}</Roll></b><span className="muted">Est. Paint Cost</span></div>
-        <div className="stat"><b><Roll>{(totalRolls * rollPrice).toLocaleString()}</Roll></b><span className="muted">Est. Wallpaper Cost</span></div>
+        <div className="stat"><b><Roll>{(totalPaintLiters * paintPrice).toLocaleString('en-US')}</Roll></b><span className="muted">Est. Paint Cost</span></div>
+        <div className="stat"><b><Roll>{(totalRolls * rollPrice).toLocaleString('en-US')}</Roll></b><span className="muted">Est. Wallpaper Cost</span></div>
       </div>
 
       <div style={{ display: 'grid', gap: 8 }}>
@@ -123,7 +126,7 @@ export default function PaintCalculator() {
                 <span style={{ fontWeight: 500 }}>Openings (doors/windows)</span>
                 <button className="btn" onClick={() => addOpening(wall.id)} style={{ fontSize: '0.8rem' }}>+ Add</button>
               </div>
-              {wall.openings.map((opening, oi) => (
+              {wall.openings.map(opening => (
                 <div key={opening.id} className="pop-row" style={{
                   display: 'flex', gap: 8, padding: 8,
                   background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',

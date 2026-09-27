@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Subscription {
@@ -14,8 +14,13 @@ interface Subscription {
 
 const COLORS = ['#e11d48', '#f97316', '#84cc16', '#06b6d4', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e']
 
-function formatCurrency(n: number): string {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
+function formatCurrency(n: number, digits = 0): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: digits, maximumFractionDigits: digits }).format(n)
+}
+
+/** Parse YYYY-MM-DD as a local date so the month/day never shift with the time zone. */
+function parseLocal(s: string): Date {
+  return new Date(`${s}T00:00`)
 }
 
 function getMonthlyCost(sub: Subscription): number {
@@ -24,8 +29,11 @@ function getMonthlyCost(sub: Subscription): number {
 
 export default function SubscriptionTracker() {
   const [subs, setSubs] = useState<Subscription[]>(() => {
-    const saved = localStorage.getItem('subscription-tracker')
-    return saved ? JSON.parse(saved) : [
+    try {
+      const saved = localStorage.getItem('subscription-tracker')
+      if (saved) return JSON.parse(saved) as Subscription[]
+    } catch {}
+    return [
       { id: 1, name: 'Netflix', cost: 15.99, cycle: 'monthly', renewalDate: '2025-01-15', active: true, color: COLORS[0] },
       { id: 2, name: 'Spotify', cost: 9.99, cycle: 'monthly', renewalDate: '2025-01-20', active: true, color: COLORS[1] },
       { id: 3, name: 'Amazon Prime', cost: 139, cycle: 'yearly', renewalDate: '2025-03-01', active: true, color: COLORS[2] },
@@ -51,9 +59,6 @@ export default function SubscriptionTracker() {
   const deleteSub = (id: number) => {
     setSubs(subs.filter(s => s.id !== id))
   }
-
-  const today = new Date()
-  const daysInYear = 365
 
   return (
     <div>
@@ -98,8 +103,8 @@ export default function SubscriptionTracker() {
             const radius = Math.min(w, h) / 2 - 20
 
             // Draw ring segments for each month
-            activeSubs.forEach((sub, i) => {
-              const renewal = new Date(sub.renewalDate)
+            activeSubs.forEach(sub => {
+              const renewal = parseLocal(sub.renewalDate)
               const month = renewal.getMonth()
               const angle = (month / 12) * Math.PI * 2 - Math.PI / 2
               ctx.beginPath()
@@ -117,13 +122,15 @@ export default function SubscriptionTracker() {
               ctx.fill()
             })
 
-            // Center text
-            ctx.fillStyle = 'var(--text)'
-            ctx.font = 'bold 24px var(--mono)'
+            // Center text (canvas can't read CSS variables directly)
+            const css = getComputedStyle(canvas)
+            const mono = css.getPropertyValue('--mono').trim() || 'monospace'
+            ctx.fillStyle = css.getPropertyValue('--text').trim() || '#222'
+            ctx.font = `bold 24px ${mono}`
             ctx.textAlign = 'center'
             ctx.fillText(formatCurrency(yearlyTotal), centerX, centerY + 8)
-            ctx.font = '11px var(--mono)'
-            ctx.fillStyle = 'var(--muted)'
+            ctx.font = `11px ${mono}`
+            ctx.fillStyle = css.getPropertyValue('--muted').trim() || '#888'
             ctx.fillText('Yearly Total', centerX, centerY + 28)
           }}
         />
@@ -140,8 +147,8 @@ export default function SubscriptionTracker() {
           }}>
             <span style={{ width: 12, height: 12, borderRadius: '50%', background: sub.color, flexShrink: 0 }} />
             <span style={{ flex: 1, fontWeight: 500 }}>{sub.name}</span>
-            <span style={{ fontFamily: 'var(--mono)' }}><Roll>{formatCurrency(getMonthlyCost(sub))}</Roll>/mo</span>
-            <span className="muted" style={{ minWidth: 120 }}>{new Date(sub.renewalDate).toLocaleDateString()}</span>
+            <span style={{ fontFamily: 'var(--mono)' }}><Roll>{formatCurrency(getMonthlyCost(sub), 2)}</Roll>/mo</span>
+            <span className="muted" style={{ minWidth: 120 }}>{parseLocal(sub.renewalDate).toLocaleDateString('en-US')}</span>
             <label style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
               <input type="checkbox" checked={sub.active} onChange={() => toggleSub(sub.id)} />
               {sub.active ? 'Active' : 'Paused'}
@@ -151,7 +158,7 @@ export default function SubscriptionTracker() {
         ))}
       </div>
 
-      <Hint>Toggle subscriptions off to animate savings. Ring shows renewal dates around the year.</Hint>
+      <Hint>Toggle subscriptions off to see what you'd save. Ring shows renewal dates around the year.</Hint>
     </div>
   )
 }

@@ -88,7 +88,11 @@ export default function SeatingPlanner() {
       window.removeEventListener('pointerup', onUp)
       window.removeEventListener('pointercancel', onUp)
       setGhost(null)
-      if (!moved) return setSelGuest((s) => (s === id ? null : id))
+      if (!moved) {
+        const target = seatOf.get(id)
+        if (selGuest !== null && selGuest !== id && target) return place(selGuest, target)
+        return setSelGuest((s) => (s === id ? null : id))
+      }
       const el = document.elementFromPoint(ev.clientX, ev.clientY)
       const seat = el?.closest('[data-seat]')?.getAttribute('data-seat')
       if (seat) place(id, seat)
@@ -171,7 +175,7 @@ export default function SeatingPlanner() {
           <h3 className="sp-h">Unseated guests <span className="muted">tap one, then a seat, or drag</span></h3>
           <div className={`sp-pool ${selGuest !== null && seatOf.has(selGuest) ? 'target' : ''}`} data-unseat onClick={() => { if (selGuest !== null && seatOf.has(selGuest)) place(selGuest, null) }}>
             {unseated.map((g) => (
-              <button key={g.id} type="button" className={`sp-chip ${selGuest === g.id ? 'sel' : ''} ${bad.has(g.id) ? 'bad' : ''}`} style={{ borderColor: colorOf(g.group) }} onPointerDown={(e) => guestDown(e, g.id)}>
+              <button key={g.id} type="button" className={`sp-chip ${selGuest === g.id ? 'sel' : ''} ${bad.has(g.id) ? 'bad' : ''}`} style={{ borderColor: colorOf(g.group) }} onPointerDown={(e) => guestDown(e, g.id)} onClick={(e) => e.stopPropagation()}>
                 <i style={{ background: colorOf(g.group) }} />{g.name}
               </button>
             ))}

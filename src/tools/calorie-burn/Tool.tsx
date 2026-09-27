@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 
 const ACTIVITIES = [
   { name: 'Walking (3 mph)', met: 3.5 },

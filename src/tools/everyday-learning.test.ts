@@ -7,6 +7,12 @@ import { ELEMENTS } from './periodic-table/elements'
 import { position, scaleColor, STOPS } from './periodic-table/logic'
 import { GLYPHS, SETS } from './handwriting-tracing/glyphs'
 import { pathLength, samplePath, traceScore } from './handwriting-tracing/logic'
+import { additionSteps, beadsToValue, valueToBeads } from './abacus/logic'
+import { COUNTRIES } from './flag-quiz/countries'
+import { flagEmoji, makeQuestion } from './flag-quiz/logic'
+import { makeQuestion as mathQuestion, points, summarize } from './mental-math/logic'
+import { checkAnswer, firstWrong, scramble } from './word-scramble/logic'
+import { WORDS, playable } from './word-scramble/words'
 
 /** Deterministic generator in [0, 1) for tests. */
 const seeded = (seed = 7) => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32)
@@ -174,6 +180,113 @@ describe('handwriting tracing', () => {
         expect(y).toBeGreaterThanOrEqual(8)
         expect(y).toBeLessThanOrEqual(100)
       }
+    }
+  })
+})
+
+describe('abacus', () => {
+  it('converts values to beads and back', () => {
+    const rods = valueToBeads(2067, 9)
+    expect(rods).toHaveLength(9)
+    expect(rods.slice(-4)).toEqual([{ heaven: false, earth: 2 }, { heaven: false, earth: 0 }, { heaven: true, earth: 1 }, { heaven: true, earth: 2 }])
+    for (const v of [0, 7, 58, 123456789]) expect(beadsToValue(valueToBeads(v, 9))).toBe(v)
+    expect(beadsToValue(valueToBeads(1e12, 9))).toBe(999999999)
+  })
+
+  it('uses complements in addition steps', () => {
+    const s = additionSteps(3, 4)
+    expect(s).toHaveLength(1)
+    expect(s[0].rule).toBe('five')
+    expect(s[0].after).toBe(7)
+    expect(additionSteps(2, 2)[0].rule).toBe('direct')
+    expect(additionSteps(7, 5)[0].rule).toBe('ten')
+    const long = additionSteps(26, 38)
+    expect(long.map((x) => [x.place, x.digit, x.rule])).toEqual([[1, 3, 'five'], [0, 8, 'ten']])
+    expect(long[1].after).toBe(64)
+  })
+})
+
+describe('flag quiz', () => {
+  it('builds emoji flags from ISO codes', () => {
+    expect(flagEmoji('ID')).toBe('🇮🇩')
+    expect(flagEmoji('jp')).toBe('🇯🇵')
+    expect(flagEmoji('X1')).toBe('')
+    expect(new Set(COUNTRIES.map((c) => c.code)).size).toBe(COUNTRIES.length)
+    expect(COUNTRIES.length).toBeGreaterThanOrEqual(190)
+  })
+
+  it('picks distractors from the same region', () => {
+    const r = seeded(11)
+    const indo = COUNTRIES.find((c) => c.code === 'ID')!
+    for (let i = 0; i < 20; i++) {
+      const q = makeQuestion(indo, COUNTRIES, 'flag', r)
+      expect(q.options).toHaveLength(4)
+      expect(q.options.filter((c) => c.code === 'ID')).toHaveLength(1)
+      expect(new Set(q.options.map((c) => c.code)).size).toBe(4)
+      expect(q.options.every((c) => c.region === 'Asia')).toBe(true)
+    }
+    const lux = COUNTRIES.find((c) => c.code === 'LU')!
+    const q = makeQuestion(lux, COUNTRIES, 'capital', r)
+    expect(new Set(q.options.map((c) => c.capital)).size).toBe(4)
+  })
+})
+
+describe('mental math', () => {
+  it('only makes whole-number division and non-negative subtraction', () => {
+    const r = seeded(5)
+    for (const level of [1, 2, 3] as const) {
+      for (let i = 0; i < 200; i++) {
+        const d = mathQuestion('÷', level, r)
+        expect(Number.isInteger(d.answer)).toBe(true)
+        expect(d.a).toBe(d.answer * d.b)
+        const s = mathQuestion('-', level, r)
+        expect(s.answer).toBeGreaterThanOrEqual(0)
+        const p = mathQuestion('+', level, r)
+        expect(String(p.a)).toHaveLength(level)
+      }
+    }
+  })
+
+  it('scores level, speed and streak', () => {
+    expect(points(false, 1000, 2, 5)).toBe(0)
+    expect(points(true, 0, 1, 0)).toBe(20)
+    expect(points(true, 10_000, 2, 3)).toBe(23)
+    const q = { a: 2, b: 3, op: '+' as const, answer: 5 }
+    const s = summarize([{ q, given: 5, correct: true, ms: 5000 }, { q, given: 5, correct: true, ms: 5000 }, { q, given: 4, correct: false, ms: 2000 }], 1)
+    expect(s.score).toBe(21)
+    expect(s.bestStreak).toBe(2)
+    expect(s.accuracy).toBeCloseTo(2 / 3)
+  })
+})
+
+describe('word scramble', () => {
+  it('never shows the word unscrambled', () => {
+    const r = seeded(9)
+    for (const w of ['cat', 'ab', 'apple', 'aab', 'noon']) {
+      for (let i = 0; i < 50; i++) {
+        const tiles = scramble(w, r)
+        const s = tiles.map((t) => t.letter).join('')
+        expect(s).not.toBe(w)
+        expect([...s].sort().join('')).toBe([...w].sort().join(''))
+        expect(new Set(tiles.map((t) => t.id)).size).toBe(w.length)
+      }
+    }
+    expect(scramble('aaa', r).map((t) => t.letter).join('')).toBe('aaa')
+  })
+
+  it('checks answers and finds the next hint', () => {
+    expect(checkAnswer(' Apple ', 'apple')).toBe(true)
+    expect(checkAnswer('appel', 'apple')).toBe(false)
+    expect(firstWrong(['a', 'p', null, null, null], 'apple')).toBe(2)
+    expect(firstWrong(['a', 'l', 'p', 'p', 'e'], 'apple')).toBe(1)
+    expect(firstWrong([...'apple'], 'apple')).toBe(-1)
+  })
+
+  it('has about 150 playable words per language', () => {
+    for (const lang of ['en', 'id'] as const) {
+      const all = (['easy', 'medium', 'hard'] as const).flatMap((d) => playable(lang, d))
+      expect(all.length).toBeGreaterThanOrEqual(130)
+      expect(Object.values(WORDS[lang]).flat().length).toBeGreaterThanOrEqual(145)
     }
   })
 })

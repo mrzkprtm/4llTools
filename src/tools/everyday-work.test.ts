@@ -7,6 +7,8 @@ import { boundsAll, hitTest, pick, smoothStroke, type El, type Pt } from './whit
 import { freshShuffle, planTurns, shuffle, turnAt } from './standup-timer/logic'
 import { overtimeBasis, overtimePay, weekPay, weightedHours } from './overtime-pay/logic'
 import { freelanceRate } from './freelance-rate/logic'
+import { brokenRules, optimize, type Guest, type Rule, type Table as SeatTable } from './seating-planner/logic'
+import { autoFill, coverage, hoursPerStaff, shiftHours, type Shift } from './shift-scheduler/logic'
 
 describe('speaker-timer', () => {
   const cfg = { total: 600, yellow: 300, red: 60 }
@@ -186,5 +188,51 @@ describe('freelance-rate', () => {
   it('flags impossible inputs', () => {
     expect(freelanceRate({ ...base, taxPct: 60, savingsPct: 40 }).ok).toBe(false)
     expect(freelanceRate({ ...base, billablePct: 0 }).ok).toBe(false)
+  })
+})
+
+describe('seating-planner', () => {
+  const guests: Guest[] = Array.from({ length: 12 }, (_, i) => ({ id: i + 1, name: `G${i + 1}`, group: i < 6 ? 'A' : 'B' }))
+  const tables: SeatTable[] = [1, 2, 3].map((id) => ({ id, name: `T${id}`, shape: 'round', seats: 4, x: 0, y: 0 }))
+  const rules: Rule[] = [
+    { a: 1, b: 12, kind: 'together' },
+    { a: 2, b: 3, kind: 'apart' },
+    { a: 7, b: 8, kind: 'together' },
+    { a: 4, b: 5, kind: 'apart' },
+  ]
+  it('scores broken rules on a seating', () => {
+    expect(brokenRules({ '1:0': 1, '1:1': 12, '2:0': 2, '2:1': 3 }, rules)).toEqual([1, 2])
+  })
+  it('auto-arranges everyone without breaking satisfiable rules', () => {
+    const s = optimize(guests, tables, rules, 3)
+    expect(Object.keys(s)).toHaveLength(12)
+    expect(new Set(Object.values(s)).size).toBe(12)
+    expect(brokenRules(s, rules)).toEqual([])
+  })
+})
+
+describe('shift-scheduler', () => {
+  const shifts: Shift[] = [
+    { id: 'm', name: 'Morning', start: 7, end: 15, color: '', need: 1 },
+    { id: 'n', name: 'Night', start: 23, end: 7, color: '', need: 1 },
+  ]
+  it('handles overnight shifts in hours and coverage, wrapping Sunday into Monday', () => {
+    expect(shiftHours(shifts[1])).toBe(8)
+    const cov = coverage({ '1:0': 'n', '2:6': 'n', '3:0': 'm' }, shifts)
+    expect(cov[0][23]).toBe(1)
+    expect(cov[1][0]).toBe(1)
+    expect(cov[1][6]).toBe(1)
+    expect(cov[1][7]).toBe(0)
+    expect(cov[0][3]).toBe(1) // Sunday night spills into Monday
+    expect(cov[0][7]).toBe(1)
+    expect(hoursPerStaff({ '1:0': 'n', '1:1': 'm' }, shifts).get(1)).toBe(16)
+  })
+  it('auto-fills needs within max hours and rest gaps', () => {
+    const staff = [1, 2, 3].map((id) => ({ id, name: `S${id}`, maxHours: 40 }))
+    const g = autoFill({}, staff, shifts)
+    const cov = coverage(g, shifts)
+    expect(cov.every((row) => row[10] >= 1)).toBe(true)
+    const h = hoursPerStaff(g, shifts)
+    for (const p of staff) expect(h.get(p.id) ?? 0).toBeLessThanOrEqual(40)
   })
 })

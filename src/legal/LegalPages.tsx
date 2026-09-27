@@ -66,19 +66,60 @@ function Privacy() {
         Links you choose to open, such as a map link in the EXIF tool, take you to other sites with their own policies.
       </p>
 
-      <h2>Camera, microphone and screen</h2>
+      <h2>Camera, microphone and device features</h2>
       <p>
-        Tools like the QR reader, webcam and mic test, audio visualizer and screen recorder ask your browser for access
-        first, and you can refuse or revoke it at any time in your browser settings. The feed stays on your device.
-        Recordings are only saved if you download them.
+        Some tools ask your browser for access to a device feature first, and only when you press a button. You can
+        refuse or revoke it at any time in your browser settings, and everything is processed on your device:
       </p>
+      <ul>
+        <li>
+          <b>Camera:</b> the QR reader, the webcam and mic test, the screen recorder (your screen), and the parking timer
+          when you take a photo of your parking spot.
+        </li>
+        <li>
+          <b>Microphone:</b> the webcam and mic test, audio visualizer, screen recorder, speech to text, instrument tuner
+          and vocal range test. Sound is analysed live and never recorded unless you download a recording.
+        </li>
+        <li>
+          <b>Location and compass:</b> prayer times can use your location to work out the schedule, and your
+          phone&apos;s compass to point to the qibla. You can type a city instead.
+        </li>
+        <li>
+          <b>Notifications and vibration:</b> the parking timer can send a reminder notification. The parking timer,
+          digital tasbih and a few timers can vibrate your phone.
+        </li>
+        <li>
+          <b>Game controllers, full screen and keeping the screen on:</b> the gamepad tester reads connected
+          controllers; the screen and display testers, screen light, scoreboard and speaker timer can go full screen,
+          and the screen light and scoreboard can keep your screen awake.
+        </li>
+      </ul>
 
-      <h2>Settings saved in your browser</h2>
+      <h2>Things saved in your browser</h2>
       <p>
-        Some tools remember small preferences in your browser's local storage so they are there next time: recent emoji,
-        Pomodoro settings, the time zones you picked and your typing-test best scores. This data never leaves your
-        device, we cannot read it, and you can delete it by clearing site data for {siteHost}. We do not set cookies.
+        Some tools keep your settings or your work in your browser&apos;s local storage so they are there next time.
+        This data never leaves your device, we cannot read it, and you can delete it by clearing site data for{' '}
+        {siteHost}. We do not set cookies. These tools save something:
       </p>
+      <ul>
+        <li>
+          <b>Settings and scores:</b> emoji picker (recent emoji), Pomodoro, time zone converter, typing test, mental
+          math, reaction time, mouse tester, screen ruler (calibration), screen light, ambient noise, tip calculator,
+          speaker timer, standup timer and world clock map.
+        </li>
+        <li>
+          <b>Your plans and lists:</b> habit tracker, kanban board, event countdown, day planner, Eisenhower matrix,
+          decision matrix, chore rotation, packing list, travel budget, trip itinerary, parking timer (including the
+          spot photo), flashcards, drum machine, Gantt chart, org chart, whiteboard, seating planner, shift scheduler,
+          room planner and tile calculator.
+        </li>
+        <li>
+          <b>Personal details you type in:</b> meeting cost, overtime pay and freelance rate (pay figures), invoice
+          generator (business, client and bank details), life in weeks and pregnancy week (dates), clothing size (body
+          measurements), prayer times (your location), digital tasbih (counts), weton calculator and scoreboard.
+        </li>
+        {/* everyday-owner-tools */}
+      </ul>
 
       <h2>Hosting and visitor statistics</h2>
       <p>
@@ -199,7 +240,7 @@ function Licenses() {
       </p>
       <p>Anything you create with the tools is yours.</p>
 
-      <h2>Icons and fonts</h2>
+      <h2>Icons, fonts and map data</h2>
       <ul>
         <li>
           Icons: <a href="https://majesticons.com" target="_blank" rel="noreferrer noopener">Majesticons</a> by Gerrit
@@ -208,6 +249,11 @@ function Licenses() {
         <li>
           Fonts: Bricolage Grotesque by Mathieu Triay, and JetBrains Mono by JetBrains, both under the SIL Open Font
           Licence 1.1, self-hosted via Fontsource.
+        </li>
+        <li>
+          Map: the world clock map&apos;s land outlines come from{' '}
+          <a href="https://www.naturalearthdata.com" target="_blank" rel="noreferrer noopener">Natural Earth</a>, which is in
+          the public domain.
         </li>
       </ul>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 const PRESETS = [
@@ -13,10 +13,10 @@ type Phase = 'work' | 'rest' | 'idle' | 'done'
 
 export default function IntervalTimer() {
   const [presetIdx, setPresetIdx] = useState(0)
-  const [work, setWork] = useState(30)
-  const [rest, setRest] = useState(30)
-  const [rounds, setRounds] = useState(8)
-  const [cycles, setCycles] = useState(1)
+  const [work, setWork] = useState<number>(PRESETS[0].work)
+  const [rest, setRest] = useState<number>(PRESETS[0].rest)
+  const [rounds, setRounds] = useState<number>(PRESETS[0].rounds)
+  const [cycles, setCycles] = useState<number>(PRESETS[0].cycles)
   const [phase, setPhase] = useState<Phase>('idle')
   const [phaseTime, setPhaseTime] = useState(0)
   const [round, setRound] = useState(0)
@@ -42,7 +42,14 @@ export default function IntervalTimer() {
     const phaseDuration = phase === 'work' ? totalWork : totalRest
 
     if (phaseTime >= phaseDuration) {
-      if (phase === 'work') {
+      const lastRound = round + 1 >= rounds && cycle + 1 >= cycles
+      if (phase === 'work' && lastRound) {
+        // No rest after the final work interval
+        setPhase('done')
+        setRunning(false)
+        playSound(880)
+        navigator.vibrate?.([200, 100, 200])
+      } else if (phase === 'work') {
         setPhase('rest')
         setPhaseTime(0)
         playSound(220)
@@ -72,7 +79,8 @@ export default function IntervalTimer() {
 
   const playSound = (freq: number) => {
     try {
-      const ctx = new AudioContext()
+      if (!audioRef.current) audioRef.current = new AudioContext()
+      const ctx = audioRef.current
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
       osc.frequency.value = freq
@@ -85,9 +93,12 @@ export default function IntervalTimer() {
     navigator.vibrate?.(phase === 'work' ? 100 : 50)
   }
 
+  useEffect(() => () => { audioRef.current?.close().catch(() => {}) }, [])
+
   const toggle = () => {
     if (running) setRunning(false)
-    else { setPhase('work'); setPhaseTime(0); setRound(0); setCycle(0); setRunning(true) }
+    else if (phase === 'idle' || phase === 'done') { setPhase('work'); setPhaseTime(0); setRound(0); setCycle(0); setRunning(true) }
+    else setRunning(true) // resume where we paused
   }
 
   const reset = () => { setRunning(false); setPhase('idle'); setPhaseTime(0); setRound(0); setCycle(0) }
@@ -100,7 +111,7 @@ export default function IntervalTimer() {
     <div>
       <div className="row" style={{ gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 16 }}>
         {PRESETS.map((p, i) => (
-          <button key={p.name} className={`btn ${presetIdx === i ? 'primary' : ''}`} onClick={() => { setPresetIdx(i); if (!isCustom) { setWork(p.work); setRest(p.rest); setRounds(p.rounds); setCycles(p.cycles) } }}>
+          <button key={p.name} className={`btn ${presetIdx === i ? 'primary' : ''}`} onClick={() => { setPresetIdx(i); if (p.name !== 'Custom') { reset(); setWork(p.work); setRest(p.rest); setRounds(p.rounds); setCycles(p.cycles) } }}>
             {p.name}
           </button>
         ))}
@@ -127,7 +138,7 @@ export default function IntervalTimer() {
             <div style={{ fontSize: '1.2rem', fontWeight: 600, color: phase === 'work' ? 'var(--accent)' : phase === 'rest' ? 'var(--ok)' : 'var(--text)', textTransform: 'uppercase' }}>{phase === 'idle' ? 'Ready' : phase === 'done' ? 'Done!' : phase}</div>
             <div style={{ fontSize: '1rem', color: 'var(--muted)' }}>Round {round + 1}/{rounds} · Cycle {cycle + 1}/{cycles}</div>
           </div>
-          <svg width="280" height="280" viewBox="0 0 280 280" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+          <svg width="100%" height="100%" viewBox="0 0 280 280" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
             <circle cx="140" cy="140" r="120" fill="none" stroke="var(--border)" strokeWidth="16" />
             <circle
               cx="140" cy="140" r="120"
@@ -141,14 +152,14 @@ export default function IntervalTimer() {
       </div>
 
       <div className="row" style={{ justifyContent: 'center', gap: 12, marginBottom: 16 }}>
-        <button className="btn primary" style={{ minWidth: 140 }} onClick={toggle} disabled={phase === 'done'}>
-          {running ? 'Pause' : phase === 'idle' ? 'Start' : phase === 'done' ? 'Done' : 'Resume'}
+        <button className="btn primary" style={{ minWidth: 140 }} onClick={toggle}>
+          {running ? 'Pause' : phase === 'idle' ? 'Start' : phase === 'done' ? 'Restart' : 'Resume'}
         </button>
         <button className="btn" onClick={reset} disabled={phase === 'idle'}>Reset</button>
       </div>
 
       <div style={{ textAlign: 'center', color: 'var(--muted)', fontSize: '0.9rem' }}>
-        {phase !== 'idle' && phase !== 'done' && `${phase === 'work' ? 'Work' : 'Rest'} · Round ${round + 1}/${rounds} · Cycle ${cycle + 1}/${cycles}`}
+        {phase !== 'idle' && phase !== 'done' && `${phase === 'work' ? 'Work' : 'Rest'} · Round ${round + 1}/${rounds} · Cycle ${cycle + 1}/${cycles} · Overall ${currentRound}/${totalRounds}`}
       </div>
 
       <Hint>Choose preset or customize. Work/rest intervals with sound cues. Tracks rounds and cycles.</Hint>

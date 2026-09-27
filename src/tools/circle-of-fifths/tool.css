@@ -1,0 +1,48 @@
+.co-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 720px) { .co-layout { grid-template-columns: 1fr; } }
+.co-wheel-wrap { position: relative; display: grid; justify-items: center; }
+.co-pointer { color: var(--accent); font-size: 1.1rem; line-height: 1; margin-bottom: 2px; }
+.co-wheel { width: 100%; max-width: 420px; height: auto; touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+.co-wheel:active { cursor: grabbing; }
+.co-rot { transform-origin: 180px 180px; transform-box: view-box; transition: transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.co-rot text { transition: transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.co-rot.drag, .co-rot.drag text { transition: none; }
+.co-seg { stroke: var(--bg); stroke-width: 2; cursor: pointer; transition: fill 0.25s; }
+.co-seg.out { fill: var(--surface); }
+.co-seg.in { fill: var(--sunken); }
+.co-seg.key { fill: var(--accent-soft); }
+.co-seg.sel { fill: var(--accent); }
+.co-seg:hover { filter: brightness(0.97); }
+.co-lbl { text-anchor: middle; dominant-baseline: central; pointer-events: none; fill: var(--text); }
+.co-lbl.out { font: 700 17px inherit; }
+.co-lbl.out.small { font-size: 12px; }
+.co-lbl.in { font: 600 12px inherit; fill: var(--muted); }
+.co-hub { fill: var(--surface); stroke: var(--border); }
+.co-hub-key { text-anchor: middle; font: 800 28px inherit; fill: var(--accent); }
+.co-hub-sig { text-anchor: middle; font: 600 11px var(--mono); fill: var(--muted); }
+.co-turn { justify-content: center; margin: 8px 0 0; }
+.co-turn .btn { min-height: 42px; }
+.co-info { display: grid; gap: 12px; }
+.co-enh { justify-self: start; min-height: 40px; }
+.co-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; margin-top: 12px; }
+.co-info .co-card { margin-top: 0; }
+.co-staff { width: 100%; max-width: 300px; display: block; }
+.co-staff-line { stroke: var(--muted); stroke-width: 1; }
+.co-clef { font-size: 58px; fill: var(--text); }
+.co-acc { font-size: 20px; fill: var(--accent); font-weight: 700; animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; transform-box: fill-box; transform-origin: center; }
+.co-sig { margin: 4px 0 0; font-family: var(--mono); }
+.co-notes { display: flex; flex-wrap: wrap; gap: 6px; }
+.co-notes .chip { font-family: var(--mono); font-size: 1rem; }
+.co-chords { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; margin-top: 6px; }
+.co-chord {
+  min-height: 60px; border-radius: var(--radius-sm, 8px); border: 1px solid var(--border); background: var(--sunken); color: var(--text);
+  display: grid; place-content: center; gap: 2px; cursor: pointer; transition: transform var(--spring-bouncy-ms) var(--spring-bouncy), background-color 0.2s;
+}
+.co-chord small { color: var(--muted); font: 600 0.75rem var(--mono); }
+.co-chord b { font-size: 1.15rem; }
+.co-chord.on { background: var(--accent); color: var(--accent-text, #fff); transform: scale(1.07); }
+.co-chord.on small { color: inherit; }
+.co-nb { margin: 10px 0 0; font-size: 0.9rem; }
+@media (prefers-reduced-motion: reduce) {
+  .co-rot, .co-rot text { transition: none; }
+}

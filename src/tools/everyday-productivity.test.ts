@@ -10,6 +10,7 @@ import * as matrix from './eisenhower-matrix/logic'
 import * as decision from './decision-matrix/logic'
 import * as world from './world-clock-map/logic'
 import { LAND } from './world-clock-map/land'
+import * as chores from './chore-rotation/logic'
 
 describe('habit tracker', () => {
   it('counts the current streak, keeping it alive before today is checked', () => {
@@ -244,5 +245,26 @@ describe('world clock map', () => {
     expect(LAND.length).toBeLessThan(30_000)
     expect(world.tzOffset('Asia/Jayapura', new Date(Date.UTC(2026, 0, 1)))).toBe(540)
     expect(world.offsetLabel(-210)).toBe('UTC−3:30')
+  })
+})
+
+describe('chore rotation', () => {
+  it('gives every person every chore exactly once per cycle', () => {
+    for (const [people, n] of [[3, 3], [4, 6], [5, 2]] as const) {
+      const plan = chores.schedule(people, n, chores.cycleLength(people), 7)
+      const t = chores.tally(plan, people, n)
+      for (const row of t) expect(row.every((x) => x === 1)).toBe(true)
+    }
+  })
+
+  it('keeps weekly loads within one chore and turns one step per week', () => {
+    const plan = chores.schedule(4, 6, 8)
+    for (const week of plan) {
+      const l = chores.load(week, 4)
+      expect(Math.max(...l) - Math.min(...l)).toBeLessThanOrEqual(1)
+    }
+    expect(plan[1]).toEqual(plan[0].map((p) => (p + 1) % 4))
+    expect(chores.schedule(0, 3, 2)[0]).toEqual([-1, -1, -1])
+    expect(chores.mondayOf(new Date(2026, 8, 26)).getDate()).toBe(21)
   })
 })

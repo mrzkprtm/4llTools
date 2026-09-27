@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 export default function EyeBreakTimer() {
-  const [interval, setIntervalMin] = useState(20)
+  const [intervalMin, setIntervalMin] = useState(20)
   const [duration, setDuration] = useState(20)
   const [running, setRunning] = useState(false)
   const [timeLeft, setTimeLeft] = useState(20 * 60)
@@ -13,32 +13,40 @@ export default function EyeBreakTimer() {
 
   useEffect(() => {
     if (!running) return
-    const intervalId = setInterval(() => {
-      setTimeLeft(t => {
-        if (t <= 1) {
-          if (phase === 'work') {
-            setPhase('break')
-            setTimeLeft(duration)
-            playSound(880)
-            navigator.vibrate?.(200)
-          } else {
-            setPhase('work')
-            setTimeLeft(intervalMin * 60)
-            setBreaksDone(b => b + 1)
-            playSound(440)
-            navigator.vibrate?.(100)
-          }
-          return phase === 'work' ? intervalMin * 60 : duration
-        }
-        return t - 1
-      })
-    }, 1000)
+    const intervalId = setInterval(() => setTimeLeft(t => Math.max(0, t - 1)), 1000)
     return () => clearInterval(intervalId)
-  }, [running, phase, timeLeft, intervalMin, duration])
+  }, [running])
+
+  // Switch between work and break when the countdown reaches zero
+  useEffect(() => {
+    if (!running || timeLeft > 0) return
+    if (phase === 'work') {
+      setPhase('break')
+      setTimeLeft(duration)
+      playSound(880)
+      navigator.vibrate?.(200)
+    } else {
+      setPhase('work')
+      setTimeLeft(intervalMin * 60)
+      setBreaksDone(b => b + 1)
+      playSound(440)
+      navigator.vibrate?.(100)
+    }
+  }, [running, timeLeft, phase, intervalMin, duration])
+
+  // Changing the settings while stopped updates the countdown right away
+  useEffect(() => {
+    if (running) return
+    setTimeLeft(phase === 'work' ? intervalMin * 60 : duration)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [intervalMin, duration])
+
+  useEffect(() => () => { audioRef.current?.close().catch(() => {}) }, [])
 
   const playSound = (freq: number) => {
     try {
-      const ctx = new AudioContext()
+      if (!audioRef.current) audioRef.current = new AudioContext()
+      const ctx = audioRef.current
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
       osc.frequency.value = freq
@@ -73,31 +81,31 @@ export default function EyeBreakTimer() {
           width: 240, height: 240, borderRadius: '50%',
           border: '8px solid var(--border)', position: 'relative',
           background: phase === 'work' ? 'color-mix(in srgb, var(--accent) 10%, transparent)' : 'color-mix(in srgb, var(--ok) 10%, transparent)',
-          transition: 'background 0.3s ease',
+          transition: reducedMotion() ? 'none' : 'background 0.3s ease',
         }}>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
             <div style={{ fontFamily: 'var(--mono)', fontSize: '4rem', fontWeight: 700, color: phase === 'work' ? 'var(--accent)' : 'var(--ok)' }}><Roll>{fmt(timeLeft)}</Roll></div>
             <div style={{ fontSize: '1.2rem', fontWeight: 600, color: phase === 'work' ? 'var(--accent)' : 'var(--ok)', textTransform: 'uppercase' }}>{phase === 'work' ? 'Work' : 'Break'}</div>
             <div style={{ fontSize: '1rem', color: 'var(--muted)' }}>{breaksDone} breaks done</div>
           </div>
-          <svg width="280" height="280" viewBox="0 0 280 280" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
+          <svg width="100%" height="100%" viewBox="0 0 280 280" style={{ position: 'absolute', inset: 0, transform: 'rotate(-90deg)' }}>
             <circle cx="140" cy="140" r="120" fill="none" stroke="var(--border)" strokeWidth="16" />
             <circle
               cx="140" cy="140" r="120"
               fill="none" stroke={phase === 'work' ? 'var(--accent)' : 'var(--ok)'} strokeWidth="16" strokeLinecap="round"
               strokeDasharray={`${(phase === 'work' ? timeLeft / (intervalMin * 60) : timeLeft / duration) * 753.6} 753.6`}
               strokeDashoffset={0}
-              style={{ transition: 'stroke-dasharray 0.1s linear' }}
+              style={{ transition: reducedMotion() ? 'none' : 'stroke-dasharray 0.3s linear' }}
             />
           </svg>
         </div>
       </div>
 
       <div className="row" style={{ justifyContent: 'center', gap: 12, marginBottom: 16 }}>
-        <button className="btn primary" onClick={() => setRunning(r => !r)} style={{ minWidth: 140 }}>
+        <button className="btn primary" onClick={toggle} style={{ minWidth: 140 }}>
           {running ? 'Pause' : 'Start'}
         </button>
-        <button className="btn" onClick={() => { setRunning(false); setTimeLeft(intervalMin * 60); setPhase('work'); setBreaksDone(0) }}>Reset</button>
+        <button className="btn" onClick={reset}>Reset</button>
       </div>
 
       <div style={{ textAlign: 'center', marginTop: 16 }}>
@@ -109,11 +117,11 @@ export default function EyeBreakTimer() {
               <style>body{font-family:sans-serif;padding:20px;text-align:center} h1{color:#e11d48} .step{margin:20px 0;padding:20px;border:1px solid #ddd;border-radius:8px} </style></head>
               <body>
                 <h1>20-20-20 Eye Exercise</h1>
-                <div class="step"><h3>1. Look Far</h3><p>Look at something 20 feet (6m) away for 20 seconds.</p></div>
+                <div class="step"><h3>1. Look Far</h3><p>Look at something 20 feet (6 m) away for 20 seconds.</p></div>
                 <div class="step"><h3>2. Blink</h3><p>Blink slowly 10 times to lubricate eyes.</p></div>
                 <div class="step"><h3>3. Palming</h3><p>Rub hands together, place warm palms over closed eyes for 20 seconds.</p></div>
                 <div class="step"><h3>4. Eye Rolls</h3><p>Roll eyes slowly: up, down, left, right. Repeat 5 times.</p></div>
-                <div class="step"><h3>5. Focus Shift</h3><p>Hold thumb 10cm away, focus on it, then focus on distant object. Repeat 10x.</p></div>
+                <div class="step"><h3>5. Focus Shift</h3><p>Hold your thumb 4 inches (10 cm) away, focus on it, then focus on distant object. Repeat 10x.</p></div>
               </body></html>
             `)
           }

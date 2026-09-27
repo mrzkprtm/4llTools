@@ -1,13 +1,18 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
+
+function readNumber(key: string): number {
+  try { return Number(localStorage.getItem(key)) } catch { return 0 }
+}
 
 export default function CycleTracker() {
   const [lastPeriod, setLastPeriod] = useState(() => {
-    const saved = localStorage.getItem('cycle-tracker-last')
+    let saved: string | null = null
+    try { saved = localStorage.getItem('cycle-tracker-last') } catch {}
     return saved || new Date(Date.now() - 14 * 86400000).toISOString().split('T')[0]
   })
-  const [cycleLength, setCycleLength] = useState(() => Number(localStorage.getItem('cycle-tracker-length')) || 28)
-  const [periodLength, setPeriodLength] = useState(() => Number(localStorage.getItem('cycle-tracker-period')) || 5)
+  const [cycleLength, setCycleLength] = useState(() => readNumber('cycle-tracker-length') || 28)
+  const [periodLength, setPeriodLength] = useState(() => readNumber('cycle-tracker-period') || 5)
   const [showCalendar, setShowCalendar] = useState(false)
 
   useEffect(() => {
@@ -17,14 +22,17 @@ export default function CycleTracker() {
   }, [lastPeriod, cycleLength, periodLength])
 
   const today = new Date()
-  const last = new Date(lastPeriod)
+  const last = new Date(`${lastPeriod}T00:00`) // local midnight, same as the calendar days
   const diffDays = Math.floor((today.getTime() - last.getTime()) / 86400000)
   const dayInCycle = ((diffDays % cycleLength) + cycleLength) % cycleLength + 1
   const isPeriod = dayInCycle <= periodLength
   const ovulationDay = Math.round(cycleLength / 2)
   const isFertile = dayInCycle >= ovulationDay - 4 && dayInCycle <= ovulationDay + 1
-  const nextPeriod = new Date(last.getTime() + Math.ceil(diffDays / cycleLength) * cycleLength * 86400000)
-  const nextOvulation = new Date(last.getTime() + (Math.floor((diffDays + cycleLength - ovulationDay) / cycleLength) + 1) * ovulationDay * 86400000)
+  // Ovulation in the current cycle, or in the next one if it has already passed
+  const cycleStart = last.getTime() + (diffDays - (dayInCycle - 1)) * 86400000
+  const nextPeriod = new Date(cycleStart + cycleLength * 86400000)
+  const ovulationThisCycle = cycleStart + (ovulationDay - 1) * 86400000
+  const nextOvulation = new Date(dayInCycle > ovulationDay ? ovulationThisCycle + cycleLength * 86400000 : ovulationThisCycle)
 
   const daysUntilPeriod = Math.ceil((nextPeriod.getTime() - today.getTime()) / 86400000)
   const daysUntilOvulation = Math.ceil((nextOvulation.getTime() - today.getTime()) / 86400000)

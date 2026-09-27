@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Debt {
@@ -16,36 +16,59 @@ function formatCurrency(n: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
 }
 
+const LINE_COLORS = ['#e11d48', '#f97316', '#84cc16', '#06b6d4', '#8b5cf6']
+
+/**
+ * Month-by-month payoff. Every debt gets its minimum payment; the extra payment plus the
+ * minimums freed by paid-off debts roll onto the first unpaid debt in priority order.
+ * Timeline balances are listed in the same order as `debts`.
+ */
 function calculatePayoff(debts: Debt[], extraPayment: number, method: 'snowball' | 'avalanche') {
-  const sorted = [...debts].sort((a, b) => method === 'snowball' ? a.balance - b.balance : b.rate - a.rate)
+  const order = [...debts.keys()].sort((a, b) => method === 'snowball' ? debts[a].balance - debts[b].balance : debts[b].rate - debts[a].rate)
+  const balances = debts.map(d => Math.max(0, d.balance))
+  const budget = debts.reduce((s, d) => s + d.minPayment, 0) + extraPayment
   let month = 0
-  const timeline: { month: number; balances: number[]; totalPaid: number; totalInterest: number }[] = []
+  const timeline: { month: number; balances: number[]; totalPaid: number; totalInterest: number }[] = [
+    { month: 0, balances: [...balances], totalPaid: 0, totalInterest: 0 },
+  ]
   let totalPaid = 0
   let totalInterest = 0
-  const working = sorted.map(d => ({ ...d }))
 
-  while (working.some(d => d.balance > 0.5) && month < 600) {
+  while (balances.some(b => b > 0.5) && month < 600) {
     month++
-    let extra = extraPayment
-    const balances = working.map(d => d.balance)
-    for (const debt of working) {
-      if (debt.balance <= 0.5) continue
-      const interest = debt.balance * debt.rate / 100 / 12
-      let payment = Math.min(debt.minPayment + extra, debt.balance + interest)
-      debt.balance = Math.max(0, debt.balance + interest - payment)
-      extra = Math.max(0, payment - debt.minPayment - interest)
-      totalPaid += payment
+    let available = budget
+    // Interest first, then minimum payments
+    for (const i of order) {
+      if (balances[i] <= 0.5) { balances[i] = 0; continue }
+      const interest = balances[i] * debts[i].rate / 100 / 12
+      balances[i] += interest
       totalInterest += interest
+      const pay = Math.min(debts[i].minPayment, balances[i], available)
+      balances[i] -= pay
+      available -= pay
+      totalPaid += pay
     }
-    timeline.push({ month, balances: working.map(d => d.balance), totalPaid, totalInterest })
+    // Whatever is left goes to the priority debt(s)
+    for (const i of order) {
+      if (available <= 0) break
+      if (balances[i] <= 0) continue
+      const pay = Math.min(balances[i], available)
+      balances[i] -= pay
+      available -= pay
+      totalPaid += pay
+    }
+    timeline.push({ month, balances: [...balances], totalPaid, totalInterest })
   }
   return { months: month, timeline, totalPaid, totalInterest }
 }
 
 export default function DebtPayoffPlanner() {
   const [debts, setDebts] = useState<Debt[]>(() => {
-    const saved = localStorage.getItem('debt-payoff-debts')
-    return saved ? JSON.parse(saved) : [
+    try {
+      const saved = localStorage.getItem('debt-payoff-debts')
+      if (saved) return JSON.parse(saved) as Debt[]
+    } catch {}
+    return [
       { id: 1, name: 'Credit Card A', balance: 3000, rate: 22, minPayment: 90 },
       { id: 2, name: 'Student Loan', balance: 15000, rate: 5, minPayment: 150 },
       { id: 3, name: 'Car Loan', balance: 8000, rate: 4.5, minPayment: 250 },
@@ -58,8 +81,7 @@ export default function DebtPayoffPlanner() {
   useEffect(() => { try { localStorage.setItem('debt-payoff-debts', JSON.stringify(debts)) } catch {} }, [debts])
 
   const { months, timeline, totalPaid, totalInterest } = calculatePayoff(debts, extraPayment, method)
-  const snowballResult = calculatePayoff(debts, extraPayment, 'snowball')
-  const avalancheResult = calculatePayoff(debts, extraPayment, 'avalanche')
+  const other = calculatePayoff(debts, extraPayment, method === 'snowball' ? 'avalanche' : 'snowball')
 
   const addDebt = () => {
     setDebts([...debts, { id: Date.now(), name: `Debt ${debts.length + 1}`, balance: 1000, rate: 10, minPayment: 50 }])
@@ -74,11 +96,11 @@ export default function DebtPayoffPlanner() {
       <div className="row" style={{ gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <input type="radio" value="snowball" checked={method === 'snowball'} onChange={() => setMethod('snowball')} />
-          Snowball
+          {METHOD_LABELS.snowball}
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <input type="radio" value="avalanche" checked={method === 'avalanche'} onChange={() => setMethod('avalanche')} />
-          Avalanche
+          {METHOD_LABELS.avalanche}
         </label>
         <div style={{ flex: 1, minWidth: 200 }}>
           <label>Extra Payment $/mo</label>
@@ -92,7 +114,7 @@ export default function DebtPayoffPlanner() {
         <div className="stat"><b><Roll>{formatCurrency(totalInterest)}</Roll></b><span className="muted">Total Interest</span></div>
         <div className="stat"><b><Roll>{months}</Roll></b><span className="muted">Months to Freedom</span></div>
         <div className="stat">
-          <b style={{ color: 'var(--ok)' }}><Roll>{formatCurrency(snowballResult.totalInterest - avalancheResult.totalInterest)}</Roll></b>
+          <b style={{ color: 'var(--ok)' }}><Roll>{formatCurrency(other.totalInterest - totalInterest)}</Roll></b>
           <span className="muted">Interest Saved vs Other</span>
         </div>
       </div>
@@ -135,20 +157,20 @@ export default function DebtPayoffPlanner() {
 
               const w = canvas.width / dpr
               const h = canvas.height / dpr
-              const data = method === 'snowball' ? snowballResult.timeline : avalancheResult.timeline
+              const data = timeline
               const maxMonth = data[data.length - 1]?.month || 1
-              const maxBal = Math.max(...debts.map(d => d.balance))
+              const maxBal = Math.max(1, ...debts.map(d => d.balance))
 
               ctx.clearRect(0, 0, w, h)
               ctx.font = '11px var(--mono)'
               ctx.textAlign = 'right'
 
-              debts.forEach((debt, i) => {
-                ctx.strokeStyle = debt.color || ['#e11d48', '#f97316', '#84cc16', '#06b6d4', '#8b5cf6'][i % 5]
+              debts.forEach((_debt, i) => {
+                ctx.strokeStyle = LINE_COLORS[i % LINE_COLORS.length]
                 ctx.lineWidth = 2
                 ctx.beginPath()
                 data.forEach((point, idx) => {
-                  const x = (idx / Math.max(1, data.length - 1)) * (w - 40) + 20
+                  const x = (point.month / maxMonth) * (w - 40) + 20
                   const y = h - 20 - (point.balances[i] / maxBal) * (h - 60)
                   if (idx === 0) ctx.moveTo(x, y)
                   else ctx.lineTo(x, y)

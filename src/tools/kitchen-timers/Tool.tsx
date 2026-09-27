@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Timer {
@@ -12,8 +12,12 @@ interface Timer {
 
 export default function KitchenTimers() {
   const [timers, setTimers] = useState<Timer[]>(() => {
-    const saved = localStorage.getItem('kitchen-timers')
-    return saved ? JSON.parse(saved) : [
+    try {
+      const saved = localStorage.getItem('kitchen-timers')
+      // Restored timers start paused: the page was closed, so no time was counted
+      if (saved) return (JSON.parse(saved) as Timer[]).map(t => ({ ...t, running: false }))
+    } catch {}
+    return [
       { id: 1, name: 'Pasta', duration: 600, remaining: 600, running: false },
       { id: 2, name: 'Rice', duration: 1200, remaining: 1200, running: false },
     ]
@@ -24,24 +28,34 @@ export default function KitchenTimers() {
     try { localStorage.setItem('kitchen-timers', JSON.stringify(timers)) } catch {}
   }, [timers])
 
+  const anyRunning = timers.some(t => t.running)
   useEffect(() => {
-    if (!timers.some(t => t.running)) return
+    if (!anyRunning) return
     const interval = setInterval(() => {
       setTimers(ts => ts.map(t => {
         if (!t.running) return t
-        if (t.remaining <= 1) {
-          if (t.remaining > 0) playSound()
-          return { ...t, remaining: 0, running: false }
-        }
+        if (t.remaining <= 1) return { ...t, remaining: 0, running: false }
         return { ...t, remaining: t.remaining - 1 }
       }))
     }, 1000)
     return () => clearInterval(interval)
+  }, [anyRunning])
+
+  // Ring once for each timer that just reached zero
+  const prevRemaining = useRef(new Map<number, number>())
+  useEffect(() => {
+    const prev = prevRemaining.current
+    if (timers.some(t => t.remaining === 0 && (prev.get(t.id) ?? 0) > 0)) playSound()
+    prevRemaining.current = new Map(timers.map(t => [t.id, t.remaining]))
   }, [timers])
+
+  const audioRef = useRef<AudioContext | null>(null)
+  useEffect(() => () => { audioRef.current?.close().catch(() => {}) }, [])
 
   const playSound = () => {
     try {
-      const ctx = new AudioContext()
+      if (!audioRef.current) audioRef.current = new AudioContext()
+      const ctx = audioRef.current
       for (let i = 0; i < 3; i++) {
         const osc = ctx.createOscillator()
         const gain = ctx.createGain()
@@ -70,7 +84,7 @@ export default function KitchenTimers() {
   }
 
   const toggleTimer = (id: number) => {
-    setTimers(timers.map(t => t.id === id ? { ...t, running: !t.running } : t))
+    setTimers(timers.map(t => t.id !== id ? t : t.remaining === 0 ? { ...t, remaining: t.duration, running: true } : { ...t, running: !t.running }))
   }
 
   const resetTimer = (id: number) => {
@@ -103,7 +117,7 @@ export default function KitchenTimers() {
             <div style={{ position: 'relative', height: 60, background: 'var(--surface)', border: '2px solid var(--border)', borderRadius: 'var(--radius)' }}>
               <div style={{
                 position: 'absolute', bottom: 0, left: 0, right: 0,
-                height: `${(timer.remaining / timer.duration) * 100}%`,
+                height: `${timer.duration > 0 ? (timer.remaining / timer.duration) * 100 : 0}%`,
                 background: timer.running ? 'linear-gradient(90deg, var(--accent), var(--ok))' : 'var(--border)',
                 borderRadius: '0 0 var(--radius) var(--radius)',
                 transition: reducedMotion() ? 'none' : 'height 0.5s ease',
@@ -115,7 +129,7 @@ export default function KitchenTimers() {
 
             <div className="row" style={{ gap: 8, justifyContent: 'center' }}>
               <button className="btn" onClick={() => toggleTimer(timer.id)} disabled={timer.remaining === 0 && timer.duration === 0}>
-                {timer.running ? 'Pause' : timer.remaining > 0 ? 'Resume' : 'Start'}
+                {timer.running ? 'Pause' : timer.remaining === 0 ? 'Restart' : timer.remaining < timer.duration ? 'Resume' : 'Start'}
               </button>
               <button className="btn" onClick={() => resetTimer(timer.id)} disabled={timer.remaining === timer.duration}>Reset</button>
               <div className="row" style={{ gap: 4 }}>
@@ -128,7 +142,7 @@ export default function KitchenTimers() {
         ))}
       </div>
 
-      <Hint>Each timer is a stove burner. Flame shrinks as time runs out. Add multiple timers for different dishes.</Hint>
+      <Hint>Each timer is a stove burner. The bar shrinks as time runs out. Add multiple timers for different dishes.</Hint>
     </div>
   )
 }

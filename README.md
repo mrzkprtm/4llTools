@@ -1,14 +1,14 @@
 <a href="https://4lltools.morizdigital.com">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/readme/banner-dark.svg">
-    <img alt="4llTools: 200 free tools and simulations that run in your browser" src="docs/readme/banner-light.svg" width="100%">
+    <img alt="4llTools: 300 free tools and simulations that run in your browser" src="docs/readme/banner-light.svg" width="100%">
   </picture>
 </a>
 
 <p align="center">
   <a href="https://4lltools.morizdigital.com"><b>Open the site</b></a> ·
   <a href="#-simulation-gallery">Gallery</a> ·
-  <a href="#-all-200-tools">All tools</a> ·
+  <a href="#-all-300-tools">All tools</a> ·
   <a href="#-how-it-works">How it works</a> ·
   <a href="#-the-simulation-kit">Simulation kit</a> ·
   <a href="#-add-a-new-tool">Add a tool</a> ·
@@ -17,7 +17,7 @@
 
 <p align="center">
   <a href="https://github.com/mrzkprtm/4llTools/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/mrzkprtm/4llTools/actions/workflows/ci.yml/badge.svg"></a>
-  <img alt="200 tools" src="https://img.shields.io/badge/tools-200-c2410c">
+  <img alt="300 tools" src="https://img.shields.io/badge/tools-300-c2410c">
   <img alt="100 simulations" src="https://img.shields.io/badge/simulations-100-1c7ed6">
   <img alt="0 uploads" src="https://img.shields.io/badge/uploads-0-17703a">
   <img alt="React 19" src="https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=white">
@@ -25,7 +25,7 @@
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white">
 </p>
 
-**4llTools** is a pocket workbench: **100 everyday tools** (QR codes, JSON, PDFs, images, passwords, calculators…) and **100 interactive simulations** of physics, math, algorithms, science and generative art. Every tool runs entirely in your browser. There's no sign-up, no upload, and nothing you type is sent anywhere.
+**4llTools** is a pocket workbench: **200 everyday tools** (budgets, bill splitting, timers, prayer times, flashcards, a tuner, device testers, QR codes, JSON, PDFs, images, passwords…) and **100 interactive simulations** of physics, math, algorithms, science and generative art. Every tool runs entirely in your browser. There's no sign-up, no upload, and nothing you type is sent anywhere.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/readme/screens/home-dark.webp">
@@ -38,7 +38,7 @@
 | --- | --- |
 | 🔒 **Private by design** | Text, files, images, camera and microphone are processed on your device. The few tools that must use the network (DNS lookup, CORS checker, live URL check, speech to text) say exactly what they send, and to whom. |
 | 🎬 **Live simulations** | 100 canvas simulations you can poke at: drag pendulums, paint walls for A\*, fling planets, stir smoke, breed pea plants, train a neural network. |
-| ⚡ **Fast** | Each tool's code loads only when you open it, so 200 tools cost the home page nothing. Every page is prerendered to HTML at build time. |
+| ⚡ **Fast** | Each tool's code loads only when you open it, so 300 tools cost the home page nothing. Every page is prerendered to HTML at build time. |
 | 🌗 **Light & dark** | A warm-paper theme that follows your system setting, including every canvas. |
 | ♿ **Motion-aware** | Spring animations everywhere, but simulations start paused and effects stay still when you ask your system for reduced motion. |
 | 🔎 **Found by search** | Per-page titles, descriptions, share images, JSON-LD, FAQs, sitemap, `robots.txt` and `llms.txt`, all generated from each tool's metadata. |
@@ -75,7 +75,7 @@ Real recordings from the site. Click any one to open it.
   </tr>
 </table>
 
-## 🧰 All 200 tools
+## 🧰 All 300 tools
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/readme/categories-dark.svg">
@@ -615,7 +615,7 @@ flowchart LR
 flowchart LR
   A["tsc -b<br/>typecheck"] --> B["vite build<br/>client bundle,<br/>one chunk per tool"]
   B --> C["prerender plugin"]
-  C --> D["/index.html<br/>/category/*.html<br/>/&lt;tool&gt;.html × 200"]
+  C --> D["/index.html<br/>/category/*.html<br/>/&lt;tool&gt;.html × 300"]
   C --> E["/og/*.png<br/>share images"]
   C --> F["sitemap.xml · robots.txt<br/>llms.txt · manifest"]
   C --> G["third-party-licenses.txt"]
@@ -647,7 +647,7 @@ flowchart LR
     └── tools/
         ├── registry.ts        # discovers every tool folder
         ├── types.ts           # ToolMeta and the Category list
-        ├── <slug>/            # one folder per tool × 200
+        ├── <slug>/            # one folder per tool × 300
         │   ├── meta.ts
         │   ├── Tool.tsx
         │   └── *.ts           # pure logic
@@ -757,7 +757,7 @@ export default function BouncingBall() {
 
 - **Local first.** Tools run on JavaScript in your tab. Camera, microphone and screen access (QR reader, webcam test, audio visualizer, screen recorder) are requested only when you use them and never leave your device.
 - **Honest network use.** A tool that has to call out sets `network` in its `meta.ts`. That text appears in its FAQ and on the [privacy page](https://4lltools.morizdigital.com/privacy) instead of the usual "nothing leaves your device" promise.
-- **No cookies.** A few tools remember small preferences (recent emoji, Pomodoro settings, time zones, typing best scores) in `localStorage`.
+- **No cookies.** Tools that keep your settings or work (habit tracker, kanban, flashcards, invoices and more) save it in `localStorage` on your device only; the [privacy page](https://4lltools.morizdigital.com/privacy) lists every one.
 - **Motion.** Transitions use real spring physics pre-computed into CSS `linear()` easings (see `src/motion/springs.ts`). Under reduced motion, animations are removed and simulations start paused with a note explaining why.
 
 ## 🚀 Run it locally
@@ -880,7 +880,7 @@ The build is a plain static folder (`dist/`), so any static host works. Both of 
 <details>
 <summary><b>Does anything I type or upload leave my device?</b></summary>
 
-Not for 196 of the 200 tools. Four tools need the network, and each says so in its FAQ and on the privacy page: **DNS Lookup** and **CORS & Security Header Checker** query the address you enter, **HTTP Status Code Reference** can check a live URL, and **Speech to Text** uses your browser's speech service. They send only what that job needs, straight to the named service.
+Not for 296 of the 300 tools. Four tools need the network, and each says so in its FAQ and on the privacy page: **DNS Lookup** and **CORS & Security Header Checker** query the address you enter, **HTTP Status Code Reference** can check a live URL, and **Speech to Text** uses your browser's speech service. They send only what that job needs, straight to the named service.
 
 </details>
 
