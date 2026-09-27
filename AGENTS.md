@@ -22,7 +22,7 @@ Each tool folder contains:
 - `*.test.ts` — Colocated unit tests (vitest)
 
 **Categories** (from `src/tools/types.ts`):
-`Scan & Code` | `Text` | `Developer` | `Security` | `Convert` | `Calculator` | `Design` | `Image` | `Network` | `Utility`
+`Scan & Code` | `Text` | `Developer` | `Security` | `Convert` | `Calculator` | `Design` | `Image` | `Network` | `Utility` | `Productivity` | `Travel` | `Learning` | `Music` | `Work` | `Everyday` | `Utility`
 
 **Icon**: Any Majesticons name (https://majesticons.com) without `-line` suffix. Rendered duotone via `Icon` component.
 
@@ -103,7 +103,7 @@ Each tool folder contains:
 - No `.env` needed locally (defaults in `src/seo.ts`)
 - Override site URL with `VITE_SITE_URL` at build time
 
-## All Tools (57)
+## All Tools (127+)
 
 ### Scan & Code
 | Tool | Slug | Description | Symbol | Icon |
@@ -192,3 +192,101 @@ Each tool folder contains:
 | Tool | Slug | Description | Symbol | Icon |
 |------|------|-------------|--------|------|
 | Stopwatch & Timer | stopwatch-timer | A stopwatch with laps and a countdown timer with an alarm | St | timer |
+
+### Productivity
+| Tool | Slug | Description | Symbol | Icon |
+|------|------|-------------|--------|------|
+| Habit Tracker | habit-tracker | A streak heatmap grid with a satisfying check animation and flame streak counters; stored locally | Ht | calendar |
+| Kanban Board | kanban-board | A drag-and-drop task board with columns, WIP limits, and local persistence | Kb | kanban |
+| Event Countdown | event-countdown | Create multiple countdowns to future dates with live ticking, progress bars, and shareable links | Ec | timer |
+| Day Planner | day-planner | Time-block your day in 30-min slots with drag-to-resize tasks, focus mode timer, and daily stats | Dp | calendar-clock |
+| Meeting Cost Calculator | meeting-cost | Calculate the real cost of meetings based on attendees, salaries, and duration | Mc | users |
+| Working Days Calculator | working-days | Calculate business days between dates, add/subtract work days, with Indonesian holiday support | Wd | calendar-check |
+| Eisenhower Matrix | eisenhower-matrix | Prioritize tasks in the Urgent/Important 2×2 matrix with drag-and-drop | Em | grid-2x2 |
+| Decision Matrix | decision-matrix | Score options against weighted criteria to make objective decisions | Dm | checklist |
+| World Clock Map | world-clock-map | Visual world map with clickable time zones, multiple city clocks, and meeting planner | Wc | globe |
+| Chore Rotation | chore-rotation | Fair rotation scheduler for recurring chores among housemates/team | Cr | refresh-cw |
+
+### Travel
+| Tool | Slug | Description | Symbol | Icon |
+|------|------|-------------|--------|------|
+| Travel Budget Planner | travel-budget | Plan trip expenses by category, track actual vs planned, see daily averages | Tb | wallet |
+| Packing List Generator | packing-list | Generate customized packing list based on trip type, duration, weather, and activities | Pl | suitcase |
+| Currency Converter | currency-converter | Convert between 150+ currencies with live rates, historical charts, and offline mode | Cc | currency |
+| Time Zone Planner | time-zone-planner | Find overlapping working hours across time zones with visual timeline and meeting scheduler | Tz | clock |
+| Flight Layover Calculator | flight-layover | Calculate minimum connection times, check if layover is sufficient, and see risk level | Fl | plane |
+| Visa Requirements Checker | visa-checker | Check visa requirements for any passport to any destination | Vc | shield-check |
+| Travel Itinerary Builder | travel-itinerary | Build day-by-day trip itinerary with activities, times, locations, and notes | Ti | calendar |
+| Fuel Cost Calculator | fuel-cost | Calculate fuel cost for road trips based on distance, fuel efficiency, and local fuel prices | Fc | fuel |
+| Distance Calculator | distance-calculator | Calculate distance between two points (cities, coordinates, airports) | Dc | map-pin |
+| Travel Insurance Comparator | travel-insurance | Compare travel insurance plans by coverage, price, and exclusions | Ti | shield |
+
+### Learning
+| Tool | Slug | Description | Symbol | Icon |
+|------|------|-------------|--------|------|
+| Flashcard Maker | flashcards | Create, study, and share flashcard decks with spaced repetition and Anki export | Fc | card |
+| Spaced Repetition Scheduler | spaced-repetition | SM-2 algorithm scheduler for any review items with optimal review dates | Sr | calendar-clock |
+| Pomodoro Timer | pomodoro-timer | Customizable Pomodoro timer with work/break cycles, task tracking, and ambient sounds | Pt | timer |
+| Language Vocabulary Builder | language-vocab | Build vocabulary lists with translations, example sentences, and spaced review | Lv | book-open |
+| Citation Generator | citation-generator | Generate citations in APA, MLA, Chicago, Harvard, IEEE formats for various sources | Cg | quote |
+| Grade Calculator | grade-calculator | Calculate weighted grades, GPA, and what you need on final exam | Gc | award |
+| Study Planner | study-planner | Plan study sessions by subject, set goals, track hours, and see progress | Sp | calendar |
+| Mind Map | mind-map | Visual mind mapping with nodes, connections, colors, and export to image | Mm | git-branch |
+| Formula Sheet | formula-sheet | Reference sheet for math, physics, chemistry, and engineering formulas with LaTeX | Fs | calculator |
+| Quiz Generator | quiz-generator | Create quizzes with multiple choice, true/false, short answer, timer, and scoring | Qg | help-circle |
+
+### Music
+| Tool | Slug | Description | Symbol | Icon |
+|------|------|-------------|--------|------|
+| BPM Tapper | bpm-tapper | Tap along to music to find the exact BPM with visual beat indicator and tap history | Bt | heart-pulse |
+| Chord Transposer | chord-transposer | Transpose chords to any key with chord charts, capo positions, and Nashville numbers | Ct | music |
+| Key Finder | key-finder | Identify the musical key from chords or notes with confidence scoring | Kf | key |
+| Scale Finder | scale-finder | Visualize any scale on piano keyboard and fretboard with 80+ scales | Sf | piano |
+| Interval Calculator | interval-calculator | Calculate intervals between any two notes with quality, inversion, and song examples | Ic | ruler |
+| Metronome | metronome | Precise metronome with visual pendulum, subdivision clicks, time signatures, and tap tempo | Mt | timer |
+| Tuner | tuner | Chromatic tuner with microphone input, visual needle, note detection, and reference tones | Tn | mic |
+| Frequency Analyzer | frequency-analyzer | Real-time spectrum analyzer with FFT visualization, peak detection, and note mapping | Fa | bar-chart |
+| Audio Waveform Visualizer | audio-waveform | Real-time oscilloscope and waveform display with zoom and measurements | Aw | waveform |
+| Setlist Manager | setlist-manager | Create and manage setlists for gigs with drag-to-reorder, notes, and duration tracking | Sl | list-music |
+
+### Work
+| Tool | Slug | Description | Symbol | Icon |
+|------|------|-------------|--------|------|
+| Salary Calculator | salary-calculator | Calculate net salary from gross with tax brackets, deductions, and allowances | Sc | wallet |
+| Invoice Generator | invoice-generator | Create professional invoices with line items, tax, discounts, and PDF export | Ig | file-text |
+| Contract Generator | contract-generator | Generate legal contracts from templates: NDA, Service Agreement, Employment, Freelance | Cg | file-contract |
+| Meeting Notes | meeting-notes | Take structured meeting notes with agenda, attendees, action items, and decisions | Mn | clipboard |
+| Project Estimator | project-estimator | Estimate project effort and cost using work breakdown structure with risk adjustment | Pe | calculator |
+| Freelance Rate Calculator | freelance-rate | Calculate your minimum hourly rate based on expenses, desired income, and billable hours | Fr | dollar-sign |
+| Timesheet | timesheet | Track work hours by project/client with weekly/monthly views and CSV export | Ts | clock |
+| Expense Tracker | expense-tracker | Track business expenses by category with receipt capture and monthly reports | Et | receipt |
+| ROI Calculator | roi-calculator | Calculate Return on Investment for projects, campaigns, or equipment | Rc | trending-up |
+| Break-Even Calculator | break-even | Calculate break-even point for products or services with fixed/variable costs | Be | target |
+
+### Everyday
+| Tool | Slug | Description | Symbol | Icon |
+|------|------|-------------|--------|------|
+| Grocery List | grocery-list | Smart grocery list with categories, quantities, price tracking, and store sections | Gl | shopping-cart |
+| Meal Planner | meal-planner | Weekly meal planner with recipes, grocery auto-generation, and nutrition tracking | Mp | calendar |
+| Recipe Scaler | recipe-scaler | Scale recipes up or down by servings, weight, or ingredient amount with unit conversion | Rs | scale |
+| Gift Idea Generator | gift-idea | Get personalized gift suggestions based on recipient, occasion, interests, and budget | Gi | gift |
+| Event RSVP Tracker | event-rsvp | Manage event invitations, track RSVPs, dietary restrictions, plus-ones, and send reminders | Er | calendar-plus |
+| Budget Envelope System | budget-envelope | Digital envelope budgeting with spending tracking and visual progress bars | Be | wallet |
+| Clothing Size Converter | clothing-size | Convert clothing sizes between US, UK, EU, JP, CN, AU standards for all categories | Cs | shirt |
+| Home Inventory | home-inventory | Catalog your belongings by room with value tracking, warranty tracking, and insurance reports | Hi | home |
+| Pet Care Tracker | pet-care | Track pet feeding, medication, vet visits, weight, and activities for multiple pets | Pc | heart |
+| Plant Care Tracker | plant-care | Track watering, fertilizing, repotting, and sunlight needs with reminders | Pc | leaf |
+
+### Utility
+| Tool | Slug | Description | Symbol | Icon |
+|------|------|-------------|--------|------|
+| UUID Generator | uuid-generator | Generate UUIDs v1, v4, v7 with bulk generation, formatting options, and validation | Ug | fingerprint |
+| Hash Generator | hash-generator | Generate MD5, SHA-1, SHA-256, SHA-384, SHA-512 hashes for text or files | Hg | hash |
+| Base64 Encoder/Decoder | base64-encoder | Encode text to Base64 or decode Base64 back to text with UTF-8 and URL-safe support | B64 | code |
+| JSON Formatter | json-formatter | Format, validate, minify, and query JSON with syntax highlighting and tree view | Jf | braces |
+| Color Picker & Converter | color-picker | Pick colors and convert between HEX, RGB, HSL, HSV, CMYK, LAB with palette generation | Cp | eye-dropper |
+| QR Code Generator | qr-generator | Generate QR codes for URLs, text, WiFi, vCard, email, SMS with customization | Qg | qr-code |
+| Text Diff | text-diff | Compare two texts at character, word, or line level with unified and split views | Td | git-compare |
+| Regex Tester | regex-tester | Test regular expressions with live highlighting, capture groups, and replacement | Rx | code |
+| CRON Expression Parser | cron-parser | Parse, validate, and explain CRON expressions with next run times and timezone support | Cp | clock |
+| Unit Converter | unit-converter | Convert between length, weight, temperature, volume, area, speed, time, data, pressure, energy | Uc | ruler |

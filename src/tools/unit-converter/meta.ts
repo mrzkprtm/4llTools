@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Unit Converter',
-  description: 'Convert length, weight, temperature, data size and more.',
-  category: 'Convert',
-  keywords: ['konversi', 'satuan', 'meter', 'kg', 'celsius', 'mb', 'length', 'area', 'volume', 'mass', 'temperature', 'time', 'speed', 'energy', 'power', 'pressure', 'data', 'bandwidth', 'angle', 'fuel', 'metric', 'imperial', 'scientific', 'precision', 'real-time'],
-  symbol: 'Un',
-  icon: 'ruler-2',
+  description: 'Convert between length, weight, temperature, volume, area, speed, time, data, pressure, and energy units.',
+  category: 'Utility',
+  keywords: ['unit', 'converter', 'conversion', 'length', 'weight', 'temperature', 'volume', 'area', 'speed', 'time', 'data', 'pressure', 'energy', 'satuan', 'konverter', 'konversi', 'panjang', 'berat', 'suhu', 'volume', 'luas', 'kecepatan', 'waktu', 'data', 'tekanan', 'energi'],
+  symbol: 'Uc',
+  icon: 'ruler',
 }
