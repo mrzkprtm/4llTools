@@ -11,7 +11,7 @@ const dur = (m: number) => `${Math.floor(m / 60)}h ${String(Math.round(m % 60)).
 const uid = () => Math.random().toString(36).slice(2, 9)
 
 type Plans = Record<string, Block[]>
-type Drag = { mode: 'create' | 'move' | 'resize'; id: string; pointerId: number; anchor: number; orig: Block; moved: boolean }
+type Drag = { mode: 'create' | 'move' | 'resize'; id: string; pointerId: number; anchor: number; orig: Block; moved: boolean; created: boolean }
 
 function dayKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -96,10 +96,14 @@ export default function DayPlanner() {
       if (mode === 'create') {
         const span = spanFromDrag(anchor, anchor)
         orig = { id: uid(), ...span, title: 'New block', color: COLORS[blocks.length % COLORS.length] }
-        setBlocks((bs) => [...bs, orig!])
-        setSel(orig.id)
       }
-      drag.current = { mode, id: orig!.id, pointerId: e.pointerId, anchor, orig: orig!, moved: mode === 'create' }
+      // A touch long-press creates the block at once; a mouse waits until the drag moves.
+      const now = mode === 'create' && e.pointerType === 'touch'
+      if (now) {
+        setBlocks((bs) => [...bs, orig!])
+        setSel(orig!.id)
+      }
+      drag.current = { mode, id: orig!.id, pointerId: e.pointerId, anchor, orig: orig!, moved: now, created: mode !== 'create' || now }
       try {
         grid.current?.setPointerCapture(e.pointerId)
       } catch {
@@ -120,6 +124,13 @@ export default function DayPlanner() {
     const m = minAt(e.clientY)
     if (Math.abs(m - d.anchor) * PX > 4) d.moved = true
     const next = d.mode === 'move' ? moveBlock(d.orig, m - d.anchor) : d.mode === 'resize' ? resizeBlock(d.orig, m) : { ...d.orig, ...spanFromDrag(d.anchor, m) }
+    if (!d.created) {
+      if (!d.moved) return
+      d.created = true
+      setBlocks((bs) => [...bs, next])
+      setSel(d.id)
+      return
+    }
     setBlocks((bs) => bs.map((x) => (x.id === d.id ? next : x)))
   }
 
@@ -127,7 +138,7 @@ export default function DayPlanner() {
     clearTimeout(press.current.timer)
     const d = drag.current
     drag.current = null
-    if (d && !d.moved) setSel(d.id)
+    if (d && !d.moved) setSel(d.created ? d.id : null)
   }
 
   const ov = overlapping(blocks)
