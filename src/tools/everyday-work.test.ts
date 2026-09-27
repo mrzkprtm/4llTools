@@ -7,6 +7,7 @@ import { boundsAll, hitTest, pick, smoothStroke, type El, type Pt } from './whit
 import { freshShuffle, planTurns, shuffle, turnAt } from './standup-timer/logic'
 import { overtimeBasis, overtimePay, weekPay, weightedHours } from './overtime-pay/logic'
 import { freelanceRate } from './freelance-rate/logic'
+import { brokenRules, optimize, type Guest, type Rule, type Table as SeatTable } from './seating-planner/logic'
 
 describe('speaker-timer', () => {
   const cfg = { total: 600, yellow: 300, red: 60 }
@@ -186,5 +187,25 @@ describe('freelance-rate', () => {
   it('flags impossible inputs', () => {
     expect(freelanceRate({ ...base, taxPct: 60, savingsPct: 40 }).ok).toBe(false)
     expect(freelanceRate({ ...base, billablePct: 0 }).ok).toBe(false)
+  })
+})
+
+describe('seating-planner', () => {
+  const guests: Guest[] = Array.from({ length: 12 }, (_, i) => ({ id: i + 1, name: `G${i + 1}`, group: i < 6 ? 'A' : 'B' }))
+  const tables: SeatTable[] = [1, 2, 3].map((id) => ({ id, name: `T${id}`, shape: 'round', seats: 4, x: 0, y: 0 }))
+  const rules: Rule[] = [
+    { a: 1, b: 12, kind: 'together' },
+    { a: 2, b: 3, kind: 'apart' },
+    { a: 7, b: 8, kind: 'together' },
+    { a: 4, b: 5, kind: 'apart' },
+  ]
+  it('scores broken rules on a seating', () => {
+    expect(brokenRules({ '1:0': 1, '1:1': 12, '2:0': 2, '2:1': 3 }, rules)).toEqual([1, 2])
+  })
+  it('auto-arranges everyone without breaking satisfiable rules', () => {
+    const s = optimize(guests, tables, rules, 3)
+    expect(Object.keys(s)).toHaveLength(12)
+    expect(new Set(Object.values(s)).size).toBe(12)
+    expect(brokenRules(s, rules)).toEqual([])
   })
 })

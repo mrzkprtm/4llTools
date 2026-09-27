@@ -1,0 +1,27 @@
+.cb { display: grid; gap: 14px; }
+.cb-note { margin: 0; padding: 10px 12px; border-left: 3px solid var(--accent); background: var(--sunken); border-radius: 8px; font-size: 0.9rem; }
+.cb-intro, .cb-test { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.cb-intro p { margin: 0; max-width: 46ch; }
+.cb-go { min-height: 46px; }
+.cb-plate { width: min(100%, 360px); aspect-ratio: 1; display: block; border-radius: 50%; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15); }
+.cb-plate-wrap { width: min(100%, 360px); animation: cb-in 0.4s var(--spring-soft) both; }
+@keyframes cb-in { from { opacity: 0; transform: translateX(30px) rotate(4deg); } }
+.cb-progress { width: 100%; max-width: 360px; height: 6px; border-radius: 99px; background: var(--sunken); overflow: hidden; }
+.cb-progress i { display: block; height: 100%; background: var(--accent); transition: width 0.4s var(--spring-soft); }
+.cb-test p { margin: 0; }
+.cb-keys { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; width: min(100%, 360px); }
+.cb-keys .btn { min-height: 46px; font-size: 1.1rem; font-family: var(--mono); padding: 0; }
+.cb-none { grid-column: span 1; font-family: inherit !important; font-size: 0.82rem !important; }
+.cb-result { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.cb-result h3, .cb-result p { margin: 0; }
+.cb-bars { display: grid; gap: 8px; }
+.cb-bar-row { display: grid; grid-template-columns: minmax(0, 11rem) 1fr auto; gap: 10px; align-items: center; font-size: 0.88rem; }
+.cb-bar { height: 10px; border-radius: 99px; background: var(--sunken); overflow: hidden; }
+.cb-bar i { display: block; height: 100%; background: var(--danger); border-radius: inherit; transform-origin: left; animation: cb-grow 0.7s var(--spring-soft) both; }
+@keyframes cb-grow { from { transform: scaleX(0); } }
+.cb-review { margin: 0; padding-left: 1.4rem; font-size: 0.85rem; columns: 2 200px; }
+.cb-review li.ok { color: var(--ok); }
+.cb-review li.bad { color: var(--danger); }
+.cb-review span { color: var(--muted); }
+@media (max-width: 420px) { .cb-bar-row { grid-template-columns: 1fr auto; } .cb-bar-row .cb-bar { grid-column: 1 / -1; grid-row: 2; } }
+@media (prefers-reduced-motion: reduce) { .cb-plate-wrap, .cb-bar i { animation: none; } }

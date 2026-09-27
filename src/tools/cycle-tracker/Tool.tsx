@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 
 export default function CycleTracker() {
   const [lastPeriod, setLastPeriod] = useState(() => {

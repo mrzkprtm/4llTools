@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 const PATTERNS = [
@@ -13,59 +13,55 @@ type Phase = 'inhale' | 'hold' | 'exhale' | 'hold2' | 'idle'
 
 export default function BreathingExercise() {
   const [patternIdx, setPatternIdx] = useState(0)
-  const [phase, setPhase] = useState<Phase>('idle')
-  const [phaseTime, setPhaseTime] = useState(0)
-  const [sessionTime, setSessionTime] = useState(0)
+  const [elapsed, setElapsed] = useState(0)
   const [running, setRunning] = useState(false)
   const [customPattern, setCustomPattern] = useState({ inhale: 4, hold: 4, exhale: 4, hold2: 4 })
   const circleRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<AudioContext | null>(null)
 
-  const pattern = PATTERNS[patternIdx]
-  const isCustom = pattern.name === 'Custom'
+  const preset = PATTERNS[patternIdx]
+  const isCustom = preset.name === 'Custom'
+  const pattern = isCustom ? { ...preset, ...customPattern } : preset
 
   useEffect(() => {
     if (!running) return
-    const interval = setInterval(() => {
-      setPhaseTime(t => t + 1)
-      setSessionTime(t => t + 1)
-    }, 1000)
+    const interval = setInterval(() => setElapsed(t => t + 0.25), 250)
     return () => clearInterval(interval)
   }, [running])
 
+  useEffect(() => () => { audioRef.current?.close().catch(() => {}) }, [])
+
+  const totalCycle = pattern.inhale + pattern.hold + pattern.exhale + pattern.hold2
+  const cycleTime = totalCycle > 0 ? elapsed % totalCycle : 0
+  const sessionTime = Math.floor(elapsed)
+
+  // Work out the current phase and how far into it we are (0..1)
+  let phase: Phase = 'idle'
+  let phaseProgress = 0
+  if (running || elapsed > 0) {
+    const steps: [Phase, number][] = [['inhale', pattern.inhale], ['hold', pattern.hold], ['exhale', pattern.exhale], ['hold2', pattern.hold2]]
+    let t = cycleTime
+    for (const [p, d] of steps) {
+      if (d <= 0) continue
+      if (t < d) { phase = p; phaseProgress = t / d; break }
+      t -= d
+    }
+  }
+  // Circle size: grows on inhale, stays full on hold, shrinks on exhale, stays small on the second hold
+  const size = phase === 'inhale' ? phaseProgress : phase === 'hold' ? 1 : phase === 'exhale' ? 1 - phaseProgress : 0
+
+  const lastPhase = useRef<Phase>('idle')
   useEffect(() => {
-    if (!running) return
-    const phases: Phase[] = ['inhale', 'hold', 'exhale', 'hold2']
-    let currentPhaseIdx = 0
-    let phaseStart = 0
-
-    const getPhaseDuration = (p: Phase) => {
-      if (p === 'inhale') return pattern.inhale
-      if (p === 'hold') return pattern.hold
-      if (p === 'exhale') return pattern.exhale
-      return pattern.hold2
-    }
-
-    const checkPhase = () => {
-      const duration = getPhaseDuration(phases[currentPhaseIdx])
-      if (phaseTime - phaseStart >= duration) {
-        currentPhaseIdx = (currentPhaseIdx + 1) % phases.length
-        phaseStart = phaseTime
-        setPhase(phases[currentPhaseIdx])
-        if (phases[currentPhaseIdx] === 'inhale') playSound(440)
-        else if (phases[currentPhaseIdx] === 'exhale') playSound(220)
-      }
-    }
-
-    checkPhase()
-    const interval = setInterval(checkPhase, 1000)
-    return () => clearInterval(interval)
-  }, [running, phaseTime, pattern])
+    if (!running || phase === lastPhase.current) return
+    lastPhase.current = phase
+    if (phase === 'inhale') playSound(440)
+    else if (phase === 'exhale') playSound(220)
+  }, [phase, running])
 
   const playSound = (freq: number) => {
     try {
       if (!audioRef.current) audioRef.current = new AudioContext()
-      const ctx = audioRef.current!
+      const ctx = audioRef.current
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
       osc.frequency.value = freq
@@ -81,15 +77,13 @@ export default function BreathingExercise() {
     if (running) {
       setRunning(false)
     } else {
-      setPhase('inhale')
-      setPhaseTime(0)
-      setSessionTime(0)
+      lastPhase.current = 'idle'
+      setElapsed(0)
       setRunning(true)
     }
   }
 
-  const totalCycle = pattern.inhale + pattern.hold + pattern.exhale + pattern.hold2
-  const progress = totalCycle > 0 ? (phaseTime % totalCycle) / totalCycle : 0
+  const progress = size
 
   return (
     <div>
@@ -131,7 +125,7 @@ export default function BreathingExercise() {
         >
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
             <div style={{ fontFamily: 'var(--mono)', fontSize: '3rem', fontWeight: 700, color: pattern.color }}><Roll>{sessionTime}s</Roll></div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text)', textTransform: 'capitalize' }}>{phase}</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text)', textTransform: 'capitalize' }}>{phase === 'hold2' ? 'hold' : phase}</div>
             <div style={{ fontSize: '1rem', color: 'var(--muted)' }}>{pattern.name}</div>
           </div>
           {!reducedMotion() && running && (
@@ -151,7 +145,7 @@ export default function BreathingExercise() {
         <button className="btn primary" onClick={toggle} style={{ minWidth: 140 }}>
           {running ? 'Pause' : 'Start'}
         </button>
-        <button className="btn" onClick={() => { setRunning(false); setPhase('idle'); setPhaseTime(0); setSessionTime(0) }}>Reset</button>
+        <button className="btn" onClick={() => { setRunning(false); setElapsed(0); lastPhase.current = 'idle' }}>Reset</button>
       </div>
 
       <div style={{ textAlign: 'center', color: 'var(--muted)', fontSize: '0.9rem' }}>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 
 export default function MacroCalculator() {
   const [weight, setWeight] = useState(70)
@@ -44,14 +44,14 @@ export default function MacroCalculator() {
         </div>
         <div style={{ flex: 1, minWidth: 150 }}>
           <label>Gender</label>
-          <select value={gender} onChange={e => setGender(e.target.value as any)}>
+          <select value={gender} onChange={e => setGender(e.target.value as typeof gender)}>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
         </div>
         <div style={{ flex: 1, minWidth: 150 }}>
           <label>Activity</label>
-          <select value={activity} onChange={e => setActivity(e.target.value as any)}>
+          <select value={activity} onChange={e => setActivity(e.target.value as typeof activity)}>
             <option value="sedentary">Sedentary</option>
             <option value="light">Light</option>
             <option value="moderate">Moderate</option>
@@ -61,7 +61,7 @@ export default function MacroCalculator() {
         </div>
         <div style={{ flex: 1, minWidth: 150 }}>
           <label>Goal</label>
-          <select value={goal} onChange={e => setGoal(e.target.value as any)}>
+          <select value={goal} onChange={e => setGoal(e.target.value as typeof goal)}>
             <option value="cut">Cut (Lose Fat)</option>
             <option value="maintain">Maintain</option>
             <option value="bulk">Bulk (Gain Muscle)</option>

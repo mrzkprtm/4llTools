@@ -8,6 +8,8 @@ import { position, scaleColor, STOPS } from './periodic-table/logic'
 import { GLYPHS, SETS } from './handwriting-tracing/glyphs'
 import { pathLength, samplePath, traceScore } from './handwriting-tracing/logic'
 import { additionSteps, beadsToValue, valueToBeads } from './abacus/logic'
+import { COUNTRIES } from './flag-quiz/countries'
+import { flagEmoji, makeQuestion } from './flag-quiz/logic'
 
 /** Deterministic generator in [0, 1) for tests. */
 const seeded = (seed = 7) => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32)
@@ -198,5 +200,30 @@ describe('abacus', () => {
     const long = additionSteps(26, 38)
     expect(long.map((x) => [x.place, x.digit, x.rule])).toEqual([[1, 3, 'five'], [0, 8, 'ten']])
     expect(long[1].after).toBe(64)
+  })
+})
+
+describe('flag quiz', () => {
+  it('builds emoji flags from ISO codes', () => {
+    expect(flagEmoji('ID')).toBe('🇮🇩')
+    expect(flagEmoji('jp')).toBe('🇯🇵')
+    expect(flagEmoji('X1')).toBe('')
+    expect(new Set(COUNTRIES.map((c) => c.code)).size).toBe(COUNTRIES.length)
+    expect(COUNTRIES.length).toBeGreaterThanOrEqual(190)
+  })
+
+  it('picks distractors from the same region', () => {
+    const r = seeded(11)
+    const indo = COUNTRIES.find((c) => c.code === 'ID')!
+    for (let i = 0; i < 20; i++) {
+      const q = makeQuestion(indo, COUNTRIES, 'flag', r)
+      expect(q.options).toHaveLength(4)
+      expect(q.options.filter((c) => c.code === 'ID')).toHaveLength(1)
+      expect(new Set(q.options.map((c) => c.code)).size).toBe(4)
+      expect(q.options.every((c) => c.region === 'Asia')).toBe(true)
+    }
+    const lux = COUNTRIES.find((c) => c.code === 'LU')!
+    const q = makeQuestion(lux, COUNTRIES, 'capital', r)
+    expect(new Set(q.options.map((c) => c.capital)).size).toBe(4)
   })
 })

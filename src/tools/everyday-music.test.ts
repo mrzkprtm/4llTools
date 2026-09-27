@@ -8,6 +8,7 @@ import * as drums from './drum-machine/logic'
 import * as chords from './chord-finder/logic'
 import * as tapper from './bpm-tapper/logic'
 import * as ear from './ear-training/logic'
+import * as cof from './circle-of-fifths/logic'
 
 describe('metronome', () => {
   it('names tempos', () => {
@@ -196,5 +197,24 @@ describe('ear-training', () => {
     expect(c.notes.map((n) => n - c.notes[0])).toEqual([0, 3, 6])
     const st = ear.record(ear.record({}, 'P5', true), 'P5', false)
     expect(ear.accuracy(st)).toBe(0.5)
+  })
+})
+
+describe('circle-of-fifths', () => {
+  it('gives key signatures and spelled scales for any key', () => {
+    expect(cof.keySignature(3)).toEqual({ count: 3, type: 'sharp', letters: ['F', 'C', 'G'] })
+    expect(cof.keySignature(-4).letters).toEqual(['B', 'E', 'A', 'D'])
+    expect(cof.majorTonic(-3)).toBe('E♭')
+    expect(cof.relativeMinor(-3)).toBe('C')
+    expect(cof.diatonic(6).scale).toEqual(['F♯', 'G♯', 'A♯', 'B', 'C♯', 'D♯', 'E♯'])
+    expect(cof.diatonic(-6).scale).toContain('C♭')
+  })
+
+  it('builds diatonic chords and neighbors', () => {
+    expect(cof.diatonic(1).chords.map((c) => c.name)).toEqual(['G', 'Am', 'Bm', 'C', 'D', 'Em', 'F♯°'])
+    expect(cof.diatonic(0, true).chords.map((c) => c.roman)[0]).toBe('i')
+    expect(cof.diatonic(0).chords[4].pcs).toEqual([7, 11, 2])
+    expect(cof.neighbors(-1)).toEqual({ iv: 'B♭', v: 'C' })
+    expect(cof.nearestAngle(350, 0)).toBe(360)
   })
 })
