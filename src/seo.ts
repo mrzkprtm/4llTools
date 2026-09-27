@@ -294,7 +294,7 @@ export function llmsTxt(tools: Tool[]): string {
   const lines = [
     `# ${SITE_NAME}`,
     '',
-    `> ${tools.length} free online tools that run entirely in the browser: QR codes, JSON and code formatters, PDF and image tools, password and security tools, converters, calculators, and interactive physics, math, science and algorithm simulations. No sign-up, and input stays on the user's device unless a tool is marked "network".`,
+    `> ${tools.length} free online tools that run entirely in the browser: QR codes, JSON and code formatters, PDF and image tools, password and security tools, converters, calculators, everyday tools for money, health, home, work, travel, study and music, and interactive physics, math, science and algorithm simulations. No sign-up, and input stays on the user's device unless a tool is marked "network".`,
     '',
     `Every tool lives at ${SITE_URL}/<slug> and works without an account. Tools marked "network" send requests from the user's browser to the address they enter, never through 4llTools.`,
     '',
