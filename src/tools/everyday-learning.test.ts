@@ -7,6 +7,7 @@ import { ELEMENTS } from './periodic-table/elements'
 import { position, scaleColor, STOPS } from './periodic-table/logic'
 import { GLYPHS, SETS } from './handwriting-tracing/glyphs'
 import { pathLength, samplePath, traceScore } from './handwriting-tracing/logic'
+import { additionSteps, beadsToValue, valueToBeads } from './abacus/logic'
 
 /** Deterministic generator in [0, 1) for tests. */
 const seeded = (seed = 7) => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32)
@@ -175,5 +176,27 @@ describe('handwriting tracing', () => {
         expect(y).toBeLessThanOrEqual(100)
       }
     }
+  })
+})
+
+describe('abacus', () => {
+  it('converts values to beads and back', () => {
+    const rods = valueToBeads(2067, 9)
+    expect(rods).toHaveLength(9)
+    expect(rods.slice(-4)).toEqual([{ heaven: false, earth: 2 }, { heaven: false, earth: 0 }, { heaven: true, earth: 1 }, { heaven: true, earth: 2 }])
+    for (const v of [0, 7, 58, 123456789]) expect(beadsToValue(valueToBeads(v, 9))).toBe(v)
+    expect(beadsToValue(valueToBeads(1e12, 9))).toBe(999999999)
+  })
+
+  it('uses complements in addition steps', () => {
+    const s = additionSteps(3, 4)
+    expect(s).toHaveLength(1)
+    expect(s[0].rule).toBe('five')
+    expect(s[0].after).toBe(7)
+    expect(additionSteps(2, 2)[0].rule).toBe('direct')
+    expect(additionSteps(7, 5)[0].rule).toBe('ten')
+    const long = additionSteps(26, 38)
+    expect(long.map((x) => [x.place, x.digit, x.rule])).toEqual([[1, 3, 'five'], [0, 8, 'ten']])
+    expect(long[1].after).toBe(64)
   })
 })

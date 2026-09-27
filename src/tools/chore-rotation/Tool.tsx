@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import Icon from '../../components/Icon'
 import { reducedMotion } from '../../motion/springs'
 import { Hint, Slider } from '../../sim/controls'
@@ -93,7 +93,7 @@ export default function ChoreRotation() {
         <div className="cr-wheel-wrap">
           <Wheel people={s.people} chores={s.chores} rotation={rotation} spinning={spinning} />
           <div className="row cr-spin">
-            <button type="button" className="btn dm-x" aria-label="Previous week" disabled={spinning || !P} onClick={() => rotate(-1)}><Icon name="chevron-left" /></button>
+            <button type="button" className="btn cr-prev" aria-label="Previous week" disabled={spinning || !P} onClick={() => rotate(-1)}><Icon name="chevron-left" /></button>
             <button type="button" className="btn primary btn-icon cr-go" disabled={spinning || !P} onClick={() => rotate(1)}>
               <Icon name="reload-circle" size={20} /> {spinning ? 'Spinning…' : 'Rotate to next week'}
             </button>
@@ -106,7 +106,7 @@ export default function ChoreRotation() {
           ) : (
             <ul key={s.turn} className="cr-assign">
               {s.people.map((p, i) => (
-                <li key={p + i} style={{ '--pc': PALETTE[i % PALETTE.length], animationDelay: `${i * 70}ms` } as React.CSSProperties}>
+                <li key={p + i} style={{ '--pc': PALETTE[i % PALETTE.length], animationDelay: `${i * 70}ms` } as CSSProperties}>
                   <b>{p}</b>
                   <span>{s.chores.filter((_, c) => thisWeek[c] === i).join(', ') || 'Free week 🎉'}</span>
                 </li>
@@ -122,7 +122,7 @@ export default function ChoreRotation() {
           <h3>People</h3>
           <div className="cr-chips">
             {s.people.map((p, i) => (
-              <span key={p + i} className="chip cr-chip" style={{ '--pc': PALETTE[i % PALETTE.length] } as React.CSSProperties}>
+              <span key={p + i} className="chip cr-chip" style={{ '--pc': PALETTE[i % PALETTE.length] } as CSSProperties}>
                 {p}
                 <button type="button" aria-label={`Remove ${p}`} onClick={() => patch({ people: s.people.filter((_, j) => j !== i) })}><Icon name="close" size={14} /></button>
               </span>
@@ -161,7 +161,7 @@ export default function ChoreRotation() {
               {plan.map((week, k) => (
                 <tr key={s.turn + k} className={k === 0 ? 'now' : ''}>
                   <td>{fmt(k)}</td>
-                  {week.map((p, c) => <td key={c}><span className="cr-tag" style={{ '--pc': PALETTE[p % PALETTE.length] } as React.CSSProperties}>{s.people[p] ?? '—'}</span></td>)}
+                  {week.map((p, c) => <td key={c}><span className="cr-tag" style={{ '--pc': PALETTE[p % PALETTE.length] } as CSSProperties}>{s.people[p] ?? '—'}</span></td>)}
                 </tr>
               ))}
             </tbody>
