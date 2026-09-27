@@ -58,8 +58,6 @@ export default function VocalRangeTest() {
     // Piano-roll background: black-key rows shaded, C rows labeled.
     for (let m = LO; m <= HI; m++) {
       const y = yOf(m)
-      const h = (H - 28) / (HI - LO)
-      if ([1, 3, 6, 8, 10].includes(m % 12)) c.fillRect.call(c, GUTTER, y - h / 2, W - GUTTER, h)
       if (m % 12 === 0) {
         line(c, GUTTER, y, W, y, alpha(theme.text, 0.18), 1)
         text(c, noteName(m), 8, y + 4, { color: theme.muted, size: 12 })

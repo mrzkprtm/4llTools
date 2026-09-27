@@ -9,6 +9,7 @@ import * as chords from './chord-finder/logic'
 import * as tapper from './bpm-tapper/logic'
 import * as ear from './ear-training/logic'
 import * as cof from './circle-of-fifths/logic'
+import * as vocal from './vocal-range-test/logic'
 
 describe('metronome', () => {
   it('names tempos', () => {
@@ -216,5 +217,24 @@ describe('circle-of-fifths', () => {
     expect(cof.diatonic(0).chords[4].pcs).toEqual([7, 11, 2])
     expect(cof.neighbors(-1)).toEqual({ iv: 'B♭', v: 'C' })
     expect(cof.nearestAngle(350, 0)).toBe(360)
+  })
+})
+
+describe('vocal-range-test', () => {
+  it('classifies voice types from a range', () => {
+    expect(vocal.classifyVoice(40, 62)[0].type.id).toBe('bass')
+    expect(vocal.classifyVoice(48, 67)[0].type.id).toBe('tenor')
+    expect(vocal.classifyVoice(60, 81)[0].type.id).toBe('soprano')
+    expect(vocal.describeRange(45, 69)).toEqual({ semitones: 24, octaves: '2 octaves' })
+    expect(vocal.describeRange(48, 67).octaves).toBe('1 octave + 7 semitones')
+  })
+
+  it('only counts notes held for 300 ms', () => {
+    const track: { t: number; midi: number | null }[] = []
+    // A quick slide through 50–60 (40 ms per note), then a held 62.2 for 400 ms, then silence and a 45 blip.
+    for (let i = 0; i <= 10; i++) track.push({ t: i * 40, midi: 50 + i })
+    for (let t = 440; t <= 840; t += 40) track.push({ t, midi: 62.2 + Math.sin(t) * 0.2 })
+    track.push({ t: 880, midi: null }, { t: 920, midi: 45 }, { t: 960, midi: 45 })
+    expect(vocal.stableNotes(track)).toEqual([62])
   })
 })

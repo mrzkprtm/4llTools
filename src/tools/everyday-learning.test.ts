@@ -10,6 +10,7 @@ import { pathLength, samplePath, traceScore } from './handwriting-tracing/logic'
 import { additionSteps, beadsToValue, valueToBeads } from './abacus/logic'
 import { COUNTRIES } from './flag-quiz/countries'
 import { flagEmoji, makeQuestion } from './flag-quiz/logic'
+import { makeQuestion as mathQuestion, points, summarize } from './mental-math/logic'
 
 /** Deterministic generator in [0, 1) for tests. */
 const seeded = (seed = 7) => () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32)
@@ -225,5 +226,33 @@ describe('flag quiz', () => {
     const lux = COUNTRIES.find((c) => c.code === 'LU')!
     const q = makeQuestion(lux, COUNTRIES, 'capital', r)
     expect(new Set(q.options.map((c) => c.capital)).size).toBe(4)
+  })
+})
+
+describe('mental math', () => {
+  it('only makes whole-number division and non-negative subtraction', () => {
+    const r = seeded(5)
+    for (const level of [1, 2, 3] as const) {
+      for (let i = 0; i < 200; i++) {
+        const d = mathQuestion('÷', level, r)
+        expect(Number.isInteger(d.answer)).toBe(true)
+        expect(d.a).toBe(d.answer * d.b)
+        const s = mathQuestion('-', level, r)
+        expect(s.answer).toBeGreaterThanOrEqual(0)
+        const p = mathQuestion('+', level, r)
+        expect(String(p.a)).toHaveLength(level)
+      }
+    }
+  })
+
+  it('scores level, speed and streak', () => {
+    expect(points(false, 1000, 2, 5)).toBe(0)
+    expect(points(true, 0, 1, 0)).toBe(20)
+    expect(points(true, 10_000, 2, 3)).toBe(23)
+    const q = { a: 2, b: 3, op: '+' as const, answer: 5 }
+    const s = summarize([{ q, given: 5, correct: true, ms: 5000 }, { q, given: 5, correct: true, ms: 5000 }, { q, given: 4, correct: false, ms: 2000 }], 1)
+    expect(s.score).toBe(21)
+    expect(s.bestStreak).toBe(2)
+    expect(s.accuracy).toBeCloseTo(2 / 3)
   })
 })

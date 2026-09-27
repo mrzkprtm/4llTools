@@ -45,6 +45,14 @@ export function layout(people: readonly Person[], collapsed: ReadonlySet<number>
     maxDepth = Math.max(maxDepth, depth)
     const all = (kids.get(p.id) ?? []).filter((c) => !seen.has(c.id))
     const shown = collapsed.has(p.id) ? [] : all
+    if (collapsed.has(p.id)) {
+      // Hidden reports are skipped, not promoted to the top level.
+      const hide = (q: Person) => {
+        seen.add(q.id)
+        for (const c of kids.get(q.id) ?? []) if (!seen.has(c.id)) hide(c)
+      }
+      all.forEach(hide)
+    }
     let x: number
     if (!shown.length) x = next++
     else {
