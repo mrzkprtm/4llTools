@@ -1,189 +1,236 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import Stage from '../../sim/Stage'
+import { Choice, Hint, PlayBar, Toggle, useRunning } from '../../sim/controls'
+import { circle, rrect, text } from '../../sim/draw'
+import { alpha, useTheme } from '../../sim/theme'
+import Roll from '../../motion/Roll'
+import { FUEL_PRESETS, rupiah, tripCost, type ConsumptionUnit } from './logic'
+import './tool.css'
 
-interface Vehicle {
-  id: number
-  name: string
-  efficiency: number
-  fuelType: 'gasoline' | 'diesel' | 'electric'
-  tankCapacity: number
+const W = 640
+const H = 280
+const DRIVE_S = 4.5
+
+const ROUTES = [
+  { name: 'Jakarta → Bandung', from: 'Jakarta', to: 'Bandung', km: 150 },
+  { name: 'Jakarta → Yogyakarta', from: 'Jakarta', to: 'Yogyakarta', km: 560 },
+  { name: 'Jakarta → Surabaya', from: 'Jakarta', to: 'Surabaya', km: 780 },
+  { name: 'Surabaya → Malang', from: 'Surabaya', to: 'Malang', km: 95 },
+  { name: 'Medan → Danau Toba', from: 'Medan', to: 'Parapat', km: 175 },
+]
+
+/** A winding road sampled into points with cumulative lengths. */
+const PATH = (() => {
+  const pts: [number, number][] = []
+  for (let i = 0; i <= 200; i++) {
+    const t = i / 200
+    pts.push([40 + t * 420, 170 + Math.sin(t * Math.PI * 3.2) * 55 * (1 - 0.3 * t) - t * 30])
+  }
+  const len = [0]
+  for (let i = 1; i < pts.length; i++) len.push(len[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]))
+  return { pts, len, total: len[len.length - 1] }
+})()
+
+function at(u: number): [number, number, number] {
+  const d = Math.min(1, Math.max(0, u)) * PATH.total
+  let i = 1
+  while (i < PATH.len.length - 1 && PATH.len[i] < d) i++
+  const [x0, y0] = PATH.pts[i - 1]
+  const [x1, y1] = PATH.pts[i]
+  const f = (d - PATH.len[i - 1]) / (PATH.len[i] - PATH.len[i - 1] || 1)
+  return [x0 + (x1 - x0) * f, y0 + (y1 - y0) * f, Math.atan2(y1 - y0, x1 - x0)]
 }
 
-const FUEL_PRICES = {
-  gasoline: 12000,
-  diesel: 9500,
-  electric: 2500,
-}
+const num = (s: string) => (s.trim() === '' ? NaN : Number(s))
 
 export default function FuelCost() {
-  const [distance, setDistance] = useState(100)
-  const [vehicles, setVehicles] = useState<Vehicle[]>(() => {
-    const saved = localStorage.getItem('fuel-cost')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, name: 'Car A (Sedan)', efficiency: 12, fuelType: 'gasoline', tankCapacity: 45 },
-      { id: 2, name: 'Car B (SUV)', efficiency: 8, fuelType: 'diesel', tankCapacity: 65 },
-      { id: 3, name: 'Motorcycle', efficiency: 35, fuelType: 'gasoline', tankCapacity: 8 },
-    ]
-  })
-  const [customPrice, setCustomPrice] = useState(false)
-  const [prices, setPrices] = useState(FUEL_PRICES)
-  const [returnTrip, setReturnTrip] = useState(false)
+  const [route, setRoute] = useState(1)
+  const [distance, setDistance] = useState('560')
+  const [unit, setUnit] = useState<ConsumptionUnit>('kmpl')
+  const [consumption, setConsumption] = useState('13')
+  const [fuel, setFuel] = useState('pertalite')
+  const [price, setPrice] = useState('10000')
+  const [roundTrip, setRoundTrip] = useState(true)
+  const [passengers, setPassengers] = useState(4)
+  const [extras, setExtras] = useState('750000')
+  const [tank, setTank] = useState('40')
+  const [running, setRunning] = useRunning()
+  const theme = useTheme()
+  const prog = useRef(running ? 0 : 1)
+  const [shown, setShown] = useState(running ? 0 : 1)
+  const lastPush = useRef(0)
 
-  useEffect(() => { try { localStorage.setItem('fuel-cost', JSON.stringify(vehicles)) } catch {} }, [vehicles])
+  const r = useMemo(
+    () => tripCost({ distanceKm: num(distance) || 0, consumption: num(consumption), unit, price: num(price) || 0, roundTrip, passengers, extras: num(extras) || 0, tank: num(tank) || 0 }),
+    [distance, consumption, unit, price, roundTrip, passengers, extras, tank],
+  )
+  const badConsumption = !(num(consumption) > 0)
+  const place = ROUTES[route]
 
-  const addVehicle = () => {
-    setVehicles([...vehicles, { id: Date.now(), name: `Vehicle ${vehicles.length + 1}`, efficiency: 10, fuelType: 'gasoline', tankCapacity: 50 }])
+  // Replay the drive whenever the trip changes.
+  useEffect(() => {
+    prog.current = running ? 0 : 1
+    setShown(prog.current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [r.total, r.liters, roundTrip])
+
+  function pickFuel(id: string) {
+    setFuel(id)
+    const p = FUEL_PRESETS.find((f) => f.id === id)
+    if (p) setPrice(String(p.price))
   }
 
-  const removeVehicle = (id: number) => {
-    if (vehicles.length <= 1) return
-    setVehicles(vehicles.filter(v => v.id !== id))
+  function pickRoute(i: number) {
+    setRoute(i)
+    if (i >= 0) setDistance(String(ROUTES[i].km))
   }
 
-  const updateVehicle = (id: number, field: string, value: string | number) => {
-    setVehicles(vehicles.map(v => v.id === id ? { ...v, [field]: value } : v))
+  function onFrame(ctx: CanvasRenderingContext2D, f: { dt: number; t: number }) {
+    if (f.dt > 0 && prog.current < 1) prog.current = Math.min(1, prog.current + f.dt / DRIVE_S)
+    const p = prog.current
+    const now = performance.now()
+    if (now - lastPush.current > 90 || (p === 1 && shown !== 1)) {
+      lastPush.current = now
+      if (Math.abs(p - shown) > 0.001) setShown(p)
+    }
+    ctx.clearRect(0, 0, W, H)
+    // Road.
+    ctx.lineCap = 'round'
+    ctx.lineJoin = 'round'
+    ctx.beginPath()
+    PATH.pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)))
+    ctx.strokeStyle = alpha(theme.text, 0.18)
+    ctx.lineWidth = 16
+    ctx.stroke()
+    ctx.setLineDash([8, 10])
+    ctx.strokeStyle = alpha(theme.surface, 0.9)
+    ctx.lineWidth = 2
+    ctx.stroke()
+    ctx.setLineDash([])
+    // Driven part.
+    const u = roundTrip ? (p < 0.5 ? p * 2 : 2 - p * 2) : p
+    ctx.beginPath()
+    const upto = roundTrip && p >= 0.5 ? 1 : u
+    for (let i = 0; i <= 80; i++) {
+      const [x, y] = at((i / 80) * upto)
+      if (i) ctx.lineTo(x, y)
+      else ctx.moveTo(x, y)
+    }
+    ctx.strokeStyle = alpha(theme.accent, 0.55)
+    ctx.lineWidth = 5
+    ctx.stroke()
+    // Towns.
+    const [ax, ay] = at(0)
+    const [bx, by] = at(1)
+    circle(ctx, ax, ay, 9, theme.surface, theme.text, 2)
+    circle(ctx, bx, by, 9, theme.surface, theme.accent, 3)
+    text(ctx, route >= 0 ? place.from : 'Start', ax, ay + 30, { color: theme.text, size: 12, align: 'center', mono: false, weight: 600 })
+    text(ctx, route >= 0 ? place.to : 'Destination', bx, by - 18, { color: theme.text, size: 12, align: 'center', mono: false, weight: 600 })
+    // Car.
+    const [cx, cy, ang] = at(u)
+    ctx.save()
+    ctx.translate(cx, cy)
+    ctx.rotate(ang + (roundTrip && p >= 0.5 ? Math.PI : 0))
+    const bob = f.dt > 0 && p < 1 ? Math.sin(f.t * 30) * 0.6 : 0
+    rrect(ctx, -15, -9 + bob, 30, 18, 5, theme.accent)
+    rrect(ctx, -5, -7 + bob, 11, 14, 3, alpha(theme.surface, 0.8))
+    for (const [wx, wy] of [[-9, -10], [9, -10], [-9, 10], [9, 10]]) rrect(ctx, wx - 4, wy - 2, 8, 4, 2, theme.text)
+    ctx.restore()
+    // Fuel gauge: drops with liters burned, refills when the tank runs dry.
+    const tankL = num(tank) || 0
+    const burned = r.liters * p
+    const level = tankL > 0 ? 1 - (burned % tankL) / tankL : 1 - p
+    const refilled = tankL > 0 ? Math.floor(burned / tankL) : 0
+    const gx = 555
+    const gy = 120
+    const R = 58
+    ctx.beginPath()
+    ctx.arc(gx, gy, R, Math.PI, 0)
+    ctx.strokeStyle = alpha(theme.text, 0.15)
+    ctx.lineWidth = 10
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.arc(gx, gy, R, Math.PI, Math.PI + Math.PI * level)
+    ctx.strokeStyle = level < 0.2 ? theme.danger : theme.ok
+    ctx.stroke()
+    const na = Math.PI + Math.PI * level
+    ctx.beginPath()
+    ctx.moveTo(gx, gy)
+    ctx.lineTo(gx + Math.cos(na) * (R - 10), gy + Math.sin(na) * (R - 10))
+    ctx.strokeStyle = theme.text
+    ctx.lineWidth = 3
+    ctx.stroke()
+    circle(ctx, gx, gy, 5, theme.text)
+    text(ctx, 'E', gx - R, gy + 18, { color: theme.muted, size: 12, align: 'center' })
+    text(ctx, 'F', gx + R, gy + 18, { color: theme.muted, size: 12, align: 'center' })
+    text(ctx, `${(r.liters * p).toFixed(1)} L`, gx, gy + 34, { color: theme.text, size: 16, align: 'center', weight: 700 })
+    text(ctx, refilled > 0 ? `refueled ${refilled}×` : 'fuel used', gx, gy + 52, { color: theme.muted, size: 11, align: 'center' })
+    text(ctx, `${Math.round(r.km * p)} km`, gx, 40, { color: theme.text, size: 20, align: 'center', weight: 700 })
+    text(ctx, roundTrip ? (p < 0.5 ? 'heading out' : p < 1 ? 'heading home' : 'back home') : p < 1 ? 'on the road' : 'arrived', gx, 58, { color: theme.muted, size: 11, align: 'center' })
   }
-
-  const totalDistance = returnTrip ? distance * 2 : distance
-
-  const results = useMemo(() => {
-    return vehicles.map(v => {
-      const price = prices[v.fuelType]
-      let fuelNeeded: number
-      let cost: number
-      if (v.fuelType === 'electric') {
-        fuelNeeded = totalDistance / v.efficiency
-        cost = fuelNeeded * price
-      } else {
-        fuelNeeded = totalDistance / v.efficiency
-        cost = fuelNeeded * price
-      }
-      const stops = Math.ceil(fuelNeeded / v.tankCapacity) - 1
-      return { vehicle: v, fuelNeeded, cost, stops: Math.max(0, stops) }
-    })
-  }, [vehicles, totalDistance, prices])
-
-  const fmt = (n: number) => 'Rp' + Math.round(n).toLocaleString()
-  const fmtVol = (n: number) => n.toFixed(1) + (vehicles[0]?.fuelType === 'electric' ? ' kWh' : ' L')
 
   return (
     <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0 }}>Fuel Cost Calculator</h3>
-        <button className="btn" onClick={addVehicle}>+ Add Vehicle</button>
+      <div className="row" style={{ marginTop: 0 }}>
+        <select aria-label="Route" value={route} onChange={(e) => pickRoute(Number(e.target.value))} style={{ maxWidth: '100%' }}>
+          {ROUTES.map((x, i) => <option key={x.name} value={i}>{x.name} (~{x.km} km)</option>)}
+          <option value={-1}>Custom distance</option>
+        </select>
+      </div>
+      <Stage world={[W, H]} running={running} onFrame={onFrame} label={`A car drives ${Math.round(r.km)} km using ${r.liters.toFixed(1)} liters of fuel, costing ${rupiah(r.total)} in total.`} className="sim-flat" />
+      <PlayBar running={running} setRunning={setRunning} onReset={() => { prog.current = 0; setShown(0); setRunning(true) }} resetLabel="Drive again" />
+
+      <div className="stats fc-stats">
+        <div className="stat fc-big"><b><Roll>{rupiah(r.total * shown)}</Roll></b>Total trip cost</div>
+        <div className="stat"><b><Roll>{rupiah(r.perPerson * shown)}</Roll></b>Per person ({passengers})</div>
+        <div className="stat"><b>{r.liters.toFixed(1)} L</b>Fuel for {Math.round(r.km)} km</div>
+        <div className="stat"><b>{rupiah(r.perKm)}</b>Cost per km</div>
       </div>
 
-      <div className="row" style={{ gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-          <span>Distance (one way, km)</span>
-          <input type="number" min={1} max={10000} value={distance} onChange={e => setDistance(Number(e.target.value))} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 100 }}>
-          <span>&nbsp;</span>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-            <input type="checkbox" checked={returnTrip} onChange={e => setReturnTrip(e.target.checked)} />
-            <span>Return trip</span>
-          </label>
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 100 }}>
-          <span>&nbsp;</span>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-            <input type="checkbox" checked={customPrice} onChange={e => setCustomPrice(e.target.checked)} />
-            <span>Custom prices</span>
-          </label>
-        </label>
-      </div>
-
-      {customPrice && (
-        <div className="row" style={{ gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-            <span>Gasoline (Rp/L)</span>
-            <input type="number" min={0} step={100} value={prices.gasoline} onChange={e => setPrices({ ...prices, gasoline: Number(e.target.value) })} />
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-            <span>Diesel (Rp/L)</span>
-            <input type="number" min={0} step={100} value={prices.diesel} onChange={e => setPrices({ ...prices, diesel: Number(e.target.value) })} />
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-            <span>Electric (Rp/kWh)</span>
-            <input type="number" min={0} step={100} value={prices.electric} onChange={e => setPrices({ ...prices, electric: Number(e.target.value) })} />
-          </label>
+      <div className="fc-grid">
+        <div>
+          <label htmlFor="fc-d">Distance one way (km)</label>
+          <input id="fc-d" type="number" inputMode="decimal" min={0} value={distance} onChange={(e) => { setDistance(e.target.value); setRoute(-1) }} />
         </div>
-      )}
-
-      <div style={{ display: 'grid', gap: 16, marginBottom: 16 }}>
-        {vehicles.map((vehicle, i) => {
-          const result = results.find(r => r.vehicle.id === vehicle.id)!
-          return (
-            <div key={vehicle.id} className="pop-row" style={{
-              display: 'grid', gap: 12, padding: 16,
-              background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-              gridTemplateColumns: '1fr auto',
-              animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-              animationDelay: `${i * 60}ms`,
-            }}>
-              <div>
-                <div className="row" style={{ gap: 12, alignItems: 'center', flexWrap: 'wrap', marginBottom: 8 }}>
-                  <input type="text" value={vehicle.name} onChange={e => updateVehicle(vehicle.id, 'name', e.target.value)} style={{ background: 'transparent', border: 'none', color: 'var(--text)', fontWeight: 600, fontSize: '1.1rem', minWidth: 150 }} />
-                  <select value={vehicle.fuelType} onChange={e => updateVehicle(vehicle.id, 'fuelType', e.target.value as any)} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)', padding: '6px 12px' }}>
-                    <option value="gasoline">Gasoline</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="electric">Electric</option>
-                  </select>
-                  <input type="number" min={1} max={100} step={0.1} value={vehicle.efficiency} onChange={e => updateVehicle(vehicle.id, 'efficiency', Number(e.target.value))} style={{ width: 80 }} />
-                  <span className="muted">{vehicle.fuelType === 'electric' ? 'km/kWh' : 'km/L'}</span>
-                  <input type="number" min={1} max={200} value={vehicle.tankCapacity} onChange={e => updateVehicle(vehicle.id, 'tankCapacity', Number(e.target.value))} style={{ width: 80 }} />
-                  <span className="muted">{vehicle.fuelType === 'electric' ? 'kWh' : 'L'}</span>
-                  <button className="btn" onClick={() => removeVehicle(vehicle.id)} disabled={vehicles.length <= 1} style={{ color: 'var(--danger)' }}>Remove</button>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-                  <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}>
-                    <div className="muted" style={{ fontSize: '0.8rem' }}>Fuel Needed</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)' }}>
-                      <Roll value={fmtVol(result.fuelNeeded)} />
-                    </div>
-                  </div>
-                  <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}>
-                    <div className="muted" style={{ fontSize: '0.8rem' }}>Est. Cost</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--ok)' }}>
-                      <Roll value={fmt(result.cost)} />
-                    </div>
-                  </div>
-                  <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}>
-                    <div className="muted" style={{ fontSize: '0.8rem' }}>Refuel Stops</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: result.stops > 0 ? 'var(--danger)' : 'var(--ok)' }}>
-                      <Roll value={result.stops} />
-                    </div>
-                  </div>
-                  <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 'var(--radius-sm)', textAlign: 'center' }}>
-                    <div className="muted" style={{ fontSize: '0.8rem' }}>Cost/km</div>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--text)' }}>
-                      <Roll value={fmt(result.cost / totalDistance)} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <button className="btn" onClick={addVehicle} style={{ marginBottom: 16 }}>+ Add Another Vehicle</button>
-
-      <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both' }}>
-        <h4 style={{ margin: '0 0 12px' }}>Trip Summary</h4>
-        <div className="row" style={{ gap: 24, flexWrap: 'wrap' }}>
-          <div className="stat"><b>Total Distance:</b> <Roll value={totalDistance} /> km</div>
-          <div className="stat"><b>Cheapest Option:</b> <span style={{ color: 'var(--ok)' }}>{results.reduce((min, r) => r.cost < min.cost ? r : min).vehicle.name}</span></div>
-          <div className="stat"><b>Most Efficient:</b> <span style={{ color: 'var(--accent)' }}>{results.reduce((max, r) => r.fuelNeeded < max.fuelNeeded ? r : max).vehicle.name}</span></div>
+        <div>
+          <label htmlFor="fc-c">Fuel economy</label>
+          <div className="fc-inline">
+            <input id="fc-c" type="number" inputMode="decimal" min={0} step={0.1} value={consumption} onChange={(e) => setConsumption(e.target.value)} />
+            <Choice value={unit} options={[['kmpl', 'km/L'], ['l100', 'L/100 km']]} onChange={(u) => { setUnit(u); const v = num(consumption); if (v > 0) setConsumption(String(Math.round((100 / v) * 10) / 10)) }} />
+          </div>
+          {badConsumption && <p className="error">Enter a fuel economy above 0.</p>}
+        </div>
+        <div>
+          <label htmlFor="fc-fuel">Fuel</label>
+          <select id="fc-fuel" value={fuel} onChange={(e) => pickFuel(e.target.value)}>
+            {FUEL_PRESETS.map((f) => <option key={f.id} value={f.id}>{f.name} (~{rupiah(f.price)}/L)</option>)}
+            <option value="custom">Other</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="fc-p">Price per liter (Rp)</label>
+          <input id="fc-p" type="number" inputMode="decimal" min={0} step={100} value={price} onChange={(e) => { setPrice(e.target.value); setFuel('custom') }} />
+        </div>
+        <div>
+          <label htmlFor="fc-x">Tolls, parking, extras (Rp, whole trip)</label>
+          <input id="fc-x" type="number" inputMode="decimal" min={0} step={1000} value={extras} onChange={(e) => setExtras(e.target.value)} />
+        </div>
+        <div>
+          <label htmlFor="fc-t">Tank size (L)</label>
+          <input id="fc-t" type="number" inputMode="decimal" min={0} value={tank} onChange={(e) => setTank(e.target.value)} />
         </div>
       </div>
-
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        Enter distance and vehicle specs. Electric vehicles use kWh/100km efficiency. Prices are Indonesian averages - use custom prices for accuracy.
-      </p>
+      <div className="row">
+        <Toggle label="Round trip (there and back)" checked={roundTrip} onChange={setRoundTrip} />
+        <span className="fc-pax">
+          Passengers
+          <button type="button" className="btn" aria-label="Fewer passengers" onClick={() => setPassengers(Math.max(1, passengers - 1))}>−</button>
+          <b>{passengers}</b>
+          <button type="button" className="btn" aria-label="More passengers" onClick={() => setPassengers(Math.min(20, passengers + 1))}>+</button>
+        </span>
+      </div>
+      {r.refuels > 0 && <p className="chip">Plan about {r.refuels} refuel stop{r.refuels > 1 ? 's' : ''} starting from a full {tank} L tank.</p>}
+      <Hint>Pick a route or type a distance, set your car&apos;s fuel economy and the pump price, and watch the drive add up. Fuel prices are approximate and change often, so edit the price to match today&apos;s pump.</Hint>
     </div>
   )
 }

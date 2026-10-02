@@ -21,14 +21,18 @@ const DEFAULT_ITEMS: Item[] = [
 
 export default function SpacedRepetition() {
   const [items, setItems] = useState<Item[]>(() => {
-    const saved = localStorage.getItem('spaced-repetition')
-    return saved ? JSON.parse(saved) : DEFAULT_ITEMS
+    try {
+      const saved = localStorage.getItem('4lltools:spaced-repetition')
+      return saved ? JSON.parse(saved) : DEFAULT_ITEMS
+    } catch {
+      return DEFAULT_ITEMS
+    }
   })
   const [newItem, setNewItem] = useState('')
   const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
-    try { localStorage.setItem('spaced-repetition', JSON.stringify(items)) } catch {}
+    try { localStorage.setItem('4lltools:spaced-repetition', JSON.stringify(items)) } catch {}
   }, [items])
 
   const now = useMemo(() => Date.now(), [])

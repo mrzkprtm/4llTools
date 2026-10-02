@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Kanban Board',
-  description: 'A drag-and-drop task board with columns, WIP limits, and local persistence. Add, move, and delete cards.',
+  description: 'Drag cards between columns with springy motion, labels and WIP limits, saved in your browser.',
   category: 'Productivity',
-  keywords: ['kanban', 'board', 'task', 'drag', 'drop', 'wip', 'papan', 'tugas'],
+  keywords: ['kanban', 'trello', 'task board', 'todo', 'papan tugas', 'daftar tugas'],
   symbol: 'Kb',
-  icon: 'kanban',
+  icon: 'view-columns',
 }

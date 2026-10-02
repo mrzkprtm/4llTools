@@ -12,7 +12,6 @@ interface Pet {
   color: string
   microchip: string
   vet: string
-  photo: string
 }
 
 interface Feeding {
@@ -59,24 +58,19 @@ const COLORS = ['#e11d48', '#2563eb', '#16a34a', '#ca8a04', '#9333ea', '#0891b2'
 
 export default function PetCare() {
   const [pets, setPets] = useState<Pet[]>(() => {
-    const saved = localStorage.getItem('pet-care')
-    return saved ? JSON.parse(saved) : []
+    try { const saved = localStorage.getItem('4lltools:pet-care'); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
   const [feedings, setFeedings] = useState<Feeding[]>(() => {
-    const saved = localStorage.getItem('pet-care-feedings')
-    return saved ? JSON.parse(saved) : []
+    try { const saved = localStorage.getItem('4lltools:pet-care-feedings'); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
   const [medications, setMedications] = useState<Medication[]>(() => {
-    const saved = localStorage.getItem('pet-care-medications')
-    return saved ? JSON.parse(saved) : []
+    try { const saved = localStorage.getItem('4lltools:pet-care-medications'); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
   const [vetVisits, setVetVisits] = useState<VetVisit[]>(() => {
-    const saved = localStorage.getItem('pet-care-vet')
-    return saved ? JSON.parse(saved) : []
+    try { const saved = localStorage.getItem('4lltools:pet-care-vet'); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
   const [weightLogs, setWeightLogs] = useState<WeightLog[]>(() => {
-    const saved = localStorage.getItem('pet-care-weight')
-    return saved ? JSON.parse(saved) : []
+    try { const saved = localStorage.getItem('4lltools:pet-care-weight'); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
   const [activePetId, setActivePetId] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<'list' | 'pet' | 'feeding' | 'medication' | 'vet' | 'weight'>('list')
@@ -86,11 +80,11 @@ export default function PetCare() {
   const [newVetVisit, setNewVetVisit] = useState({ petId: 0, date: new Date().toISOString().split('T')[0], reason: '', vet: '', notes: '', cost: 0, nextVisit: '' })
   const [newWeight, setNewWeight] = useState({ petId: 0, date: new Date().toISOString().split('T')[0], weight: 0, notes: '' })
 
-  useEffect(() => { try { localStorage.setItem('pet-care', JSON.stringify(pets)) } catch {} }, [pets])
-  useEffect(() => { try { localStorage.setItem('pet-care-feedings', JSON.stringify(feedings)) } catch {} }, [feedings])
-  useEffect(() => { try { localStorage.setItem('pet-care-medications', JSON.stringify(medications)) } catch {} }, [medications])
-  useEffect(() => { try { localStorage.setItem('pet-care-vet', JSON.stringify(vetVisits)) } catch {} }, [vetVisits])
-  useEffect(() => { try { localStorage.setItem('pet-care-weight', JSON.stringify(weightLogs)) } catch {} }, [weightLogs])
+  useEffect(() => { try { localStorage.setItem('4lltools:pet-care', JSON.stringify(pets)) } catch {} }, [pets])
+  useEffect(() => { try { localStorage.setItem('4lltools:pet-care-feedings', JSON.stringify(feedings)) } catch {} }, [feedings])
+  useEffect(() => { try { localStorage.setItem('4lltools:pet-care-medications', JSON.stringify(medications)) } catch {} }, [medications])
+  useEffect(() => { try { localStorage.setItem('4lltools:pet-care-vet', JSON.stringify(vetVisits)) } catch {} }, [vetVisits])
+  useEffect(() => { try { localStorage.setItem('4lltools:pet-care-weight', JSON.stringify(weightLogs)) } catch {} }, [weightLogs])
 
   const activePet = pets.find(p => p.id === activePetId)
 

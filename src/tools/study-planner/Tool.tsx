@@ -24,16 +24,22 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 export default function StudyPlanner() {
   const [subjects, setSubjects] = useState<Subject[]>(() => {
-    const saved = localStorage.getItem('study-planner')
-    return saved ? JSON.parse(saved).subjects : [
+    try {
+      const saved = localStorage.getItem('4lltools:study-planner')
+      if (saved) return (JSON.parse(saved) as { subjects: Subject[] }).subjects
+    } catch {}
+    return [
       { id: 1, name: 'Math', color: COLORS[0], goalHours: 5 },
       { id: 2, name: 'Physics', color: COLORS[1], goalHours: 4 },
       { id: 3, name: 'Chemistry', color: COLORS[2], goalHours: 3 },
     ]
   })
   const [sessions, setSessions] = useState<Session[]>(() => {
-    const saved = localStorage.getItem('study-planner')
-    return saved ? JSON.parse(saved).sessions : []
+    try {
+      const saved = localStorage.getItem('4lltools:study-planner')
+      if (saved) return (JSON.parse(saved) as { sessions: Session[] }).sessions
+    } catch {}
+    return []
   })
   const [weekStart, setWeekStart] = useState(() => {
     const d = new Date()
@@ -44,7 +50,7 @@ export default function StudyPlanner() {
   const [newSession, setNewSession] = useState({ subjectId: 0, date: '', startTime: '09:00', endTime: '11:00', topic: '' })
 
   useEffect(() => {
-    try { localStorage.setItem('study-planner', JSON.stringify({ subjects, sessions })) } catch {}
+    try { localStorage.setItem('4lltools:study-planner', JSON.stringify({ subjects, sessions })) } catch {}
   }, [subjects, sessions])
 
   const addSubject = () => {
@@ -147,7 +153,11 @@ export default function StudyPlanner() {
           <div style={{ marginBottom: 16 }}>
             <h4 style={{ marginBottom: 8 }}>Subjects</h4>
             <div style={{ display: 'grid', gap: 8 }}>
-              {subjects.map((subj, i) => (
+              {subjects.map((subj, i) => {
+                const stats = subjectStats.find(st => st.id === subj.id)
+                const progress = stats?.progress ?? 0
+                const completedHours = stats?.completedHours ?? 0
+                return (
                 <div key={subj.id} className="pop-row" style={{
                   padding: 12, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
                   borderLeft: `4px solid ${subj.color}`,
@@ -168,16 +178,17 @@ export default function StudyPlanner() {
                     </label>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <div style={{ height: 6, background: 'var(--bg)', borderRadius: 3, flex: 1, overflow: 'hidden' }}>
-                        <div style={{ width: `${Math.min(100, subj.progress)}%`, height: '100%', background: subj.color, borderRadius: 3 }} />
+                        <div style={{ width: `${Math.min(100, progress)}%`, height: '100%', background: subj.color, borderRadius: 3 }} />
                       </div>
-                      <span className="muted" style={{ fontSize: '0.7rem', minWidth: 40, textAlign: 'right' }}>{Math.round(subj.progress)}%</span>
+                      <span className="muted" style={{ fontSize: '0.7rem', minWidth: 40, textAlign: 'right' }}>{Math.round(progress)}%</span>
                     </div>
                   </div>
                   <div className="muted" style={{ fontSize: '0.8rem', marginTop: 4 }}>
-                    {subj.completedHours.toFixed(1)} / {subj.goalHours}h completed
+                    {completedHours.toFixed(1)} / {subj.goalHours}h completed
                   </div>
                 </div>
-              ))}
+                )
+              })}
               <button className="btn" onClick={addSubject} style={{ marginTop: 8 }}>+ Add Subject</button>
             </div>
           </div>

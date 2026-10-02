@@ -1,232 +1,192 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useEffect, useRef, useState } from 'react'
+import Roll from '../../motion/Roll'
+import { Choice, Hint, Slider } from '../../sim/controls'
+import { freelanceRate, niceRound } from './logic'
+import './tool.css'
 
-interface Expense {
+const KEY = '4lltools:freelance-rate'
+
+interface Cost {
   id: number
-  category: string
   name: string
-  monthly: number
-  annual: number
+  amount: number
+  per: 'month' | 'year'
 }
 
-const EXPENSE_CATEGORIES = [
-  'Housing', 'Utilities', 'Food', 'Transportation', 'Insurance',
-  'Healthcare', 'Software/Tools', 'Marketing', 'Education', 'Taxes',
-  'Retirement', 'Emergency Fund', 'Other'
-]
+interface State {
+  currency: 'IDR' | 'USD'
+  goal: number
+  goalPer: 'month' | 'year'
+  costs: Cost[]
+  taxPct: number
+  savingsPct: number
+  vacationWeeks: number
+  holidays: number
+  sickDays: number
+  daysPerWeek: number
+  hoursPerDay: number
+  billablePct: number
+  market: number
+  projectHours: number
+}
 
-const DEFAULT_EXPENSES: Expense[] = [
-  { id: 1, category: 'Housing', name: 'Rent/Mortgage', monthly: 1500, annual: 18000 },
-  { id: 2, category: 'Utilities', name: 'Internet/Phone/Electric', monthly: 300, annual: 3600 },
-  { id: 3, category: 'Food', name: 'Groceries/Dining', monthly: 600, annual: 7200 },
-  { id: 4, category: 'Transportation', name: 'Car/Transit', monthly: 400, annual: 4800 },
-  { id: 5, category: 'Insurance', name: 'Health/Life/Business', monthly: 400, annual: 4800 },
-  { id: 5, category: 'Software/Tools', name: 'Subscriptions/Licenses', monthly: 200, annual: 2400 },
-  { id: 6, category: 'Marketing', name: 'Ads/Portfolio/Networking', monthly: 300, annual: 3600 },
-  { id: 7, category: 'Taxes', name: 'Estimated Quarterly', monthly: 800, annual: 9600 },
-  { id: 8, category: 'Retirement', name: 'IRA/401k/Investments', monthly: 500, annual: 6000 },
-  { id: 9, category: 'Emergency Fund', name: 'Savings Buffer', monthly: 300, annual: 3600 },
-]
+const DEFAULT: State = {
+  currency: 'IDR',
+  goal: 15_000_000,
+  goalPer: 'month',
+  costs: [
+    { id: 1, name: 'Software and subscriptions', amount: 600_000, per: 'month' },
+    { id: 2, name: 'Laptop and equipment', amount: 9_000_000, per: 'year' },
+    { id: 3, name: 'Internet and phone', amount: 450_000, per: 'month' },
+    { id: 4, name: 'Coworking space', amount: 1_200_000, per: 'month' },
+  ],
+  taxPct: 10,
+  savingsPct: 15,
+  vacationWeeks: 3,
+  holidays: 17,
+  sickDays: 6,
+  daysPerWeek: 5,
+  hoursPerDay: 8,
+  billablePct: 65,
+  market: 250_000,
+  projectHours: 40,
+}
+
+function money(v: number, cur: State['currency']) {
+  if (!Number.isFinite(v)) return '—'
+  if (cur === 'IDR') return 'Rp ' + Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return '$' + Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+const PARTS = [
+  ['takeHome', 'Take-home', '#2f9e44'],
+  ['tax', 'Tax', '#e03131'],
+  ['savings', 'Savings & insurance', '#1c7ed6'],
+  ['costs', 'Business costs', '#f08c00'],
+] as const
 
 export default function FreelanceRate() {
-  const [expenses, setExpenses] = useState<Expense[]>(() => {
-    const saved = localStorage.getItem('freelance-rate')
-    return saved ? JSON.parse(saved) : DEFAULT_EXPENSES
-  })
-  const [billableHoursPerWeek, setBillableHoursPerWeek] = useState(25)
-  const [weeksPerYear, setWeeksPerYear] = useState(46)
-  const [utilizationRate, setUtilizationRate] = useState(70)
-  const [profitMargin, setProfitMargin] = useState(20)
-  const [currency, setCurrency] = useState('USD')
-  const [showBreakdown, setShowBreakdown] = useState(true)
-
+  const [s, setS] = useState<State>(DEFAULT)
+  const ready = useRef(false)
   useEffect(() => {
-    try { localStorage.setItem('freelance-rate', JSON.stringify(expenses)) } catch {}
-  }, [expenses])
+    try {
+      const raw = localStorage.getItem(KEY)
+      if (raw) setS({ ...DEFAULT, ...(JSON.parse(raw) as Partial<State>) })
+    } catch {
+      // Defaults.
+    }
+    ready.current = true
+  }, [])
+  useEffect(() => {
+    if (!ready.current) return
+    try {
+      localStorage.setItem(KEY, JSON.stringify(s))
+    } catch {
+      // Storage is optional.
+    }
+  }, [s])
 
-  const addExpense = (category: string) => {
-    setExpenses([...expenses, { id: Date.now(), category, name: 'New Expense', monthly: 0, annual: 0 }])
-  }
+  const set = <K extends keyof State>(k: K) => (v: State[K]) => setS((p) => ({ ...p, [k]: v }))
+  const costsYear = s.costs.reduce((t, c) => t + (c.per === 'month' ? c.amount * 12 : c.amount), 0)
+  const r = freelanceRate({ ...s, takeHome: s.goalPer === 'month' ? s.goal * 12 : s.goal, costs: costsYear })
+  const step = s.currency === 'IDR' ? 1000 : 1
+  const hourly = niceRound(r.hourly, step)
+  const m = (v: number) => money(v, s.currency)
+  const setCost = (id: number, p: Partial<Cost>) => setS((x) => ({ ...x, costs: x.costs.map((c) => (c.id === id ? { ...c, ...p } : c)) }))
 
-  const removeExpense = (id: number) => {
-    setExpenses(expenses.filter(e => e.id !== id))
-  }
-
-  const updateExpense = (id: number, field: string, value: string | number) => {
-    setExpenses(expenses.map(e => e.id === id ? { ...e, [field]: value } : e))
-  }
-
-  const totalMonthly = expenses.reduce((sum, e) => sum + e.monthly, 0)
-  const totalAnnual = expenses.reduce((sum, e) => sum + e.annual, 0)
-
-  const billableHoursPerYear = billableHoursPerWeek * weeksPerYear
-  const effectiveBillableHours = billableHoursPerYear * (utilizationRate / 100)
-
-  const baseHourlyRate = totalAnnual / effectiveBillableHours
-  const withProfitRate = baseHourlyRate * (1 + profitMargin / 100)
-  const dailyRate = withProfitRate * 8
-  const weeklyRate = withProfitRate * billableHoursPerWeek
-  const monthlyRate = withProfitRate * billableHoursPerWeek * (weeksPerYear / 12)
-
-  const fmt = (n: number) => '$' + Math.round(n).toLocaleString('en-US')
-
-  const marketRates = {
-    'Junior Developer': 50,
-    'Mid Developer': 90,
-    'Senior Developer': 150,
-    'Designer': 75,
-    'Project Manager': 100,
-    'Consultant': 200,
-  }
+  // Waterfall: each part starts where the previous ended.
+  let acc = 0
+  const top = Math.max(r.hourly, s.market) || 1
+  const steps = PARTS.map(([k, name, color]) => {
+    const v = r.perHour[k]
+    const from = acc
+    acc += v
+    return { k, name, color, v, from }
+  })
+  const diff = s.market > 0 && r.ok ? (s.market / r.hourly - 1) * 100 : NaN
 
   return (
     <div>
-      <h3 style={{ marginBottom: 16 }}>Freelance Rate Calculator</h3>
-
-      <div className="row" style={{ gap: 16, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 180 }}>
-          <span>Billable Hours/Week</span>
-          <input type="number" min={1} max={60} value={billableHoursPerWeek} onChange={e => setBillableHoursPerWeek(Number(e.target.value))} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-          <span>Weeks Worked/Year</span>
-          <input type="number" min={1} max={52} value={weeksPerYear} onChange={e => setWeeksPerYear(Number(e.target.value))} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-          <span>Utilization Rate %</span>
-          <input type="number" min={10} max={100} value={utilizationRate} onChange={e => setUtilizationRate(Number(e.target.value))} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-          <span>Desired Profit Margin %</span>
-          <input type="number" min={0} max={100} value={profitMargin} onChange={e => setProfitMargin(Number(e.target.value))} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 120 }}>
-          <span>Currency</span>
-          <select value={currency} onChange={e => setCurrency(e.target.value)}>
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
-            <option value="GBP">GBP (£)</option>
-            <option value="IDR">IDR (Rp)</option>
-            <option value="SGD">SGD (S$)</option>
-          </select>
-        </label>
-      </div>
-
-      <div className="stats" style={{ marginBottom: 16 }}>
-        <div className="stat"><b style={{ color: 'var(--ok)', fontSize: '1.5rem' }}>$<Roll value={Math.round(withProfitRate)} /></b><span className="muted">/hour</span></div>
-        <div className="stat"><b style={{ color: 'var(--accent)' }}>$<Roll value={Math.round(dailyRate)} /></b><span className="muted">/day (8h)</span></div>
-        <div className="stat"><b style={{ color: 'var(--accent)' }}>$<Roll value={Math.round(weeklyRate)} /></b><span className="muted">/week</span></div>
-        <div className="stat"><b style={{ color: 'var(--accent)' }}>$<Roll value={Math.round(monthlyRate)} /></b><span className="muted">/month</span></div>
-        <div className="stat"><b>$<Roll value={Math.round(withProfitRate * effectiveBillableHours)} /></b><span className="muted">Annual Target</span></div>
-      </div>
-
-      <div style={{ display: 'grid', gap: 16 }}>
-        <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-          <h4 style={{ margin: '0 0 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            Expenses (Monthly / Annual)
-            <span className="muted">Total: $<Roll value={Math.round(totalMonthly)} /> / $<Roll value={Math.round(totalAnnual)} /></span>
-          </h4>
-          <div style={{ display: 'grid', gap: 8 }}>
-            {EXPENSE_CATEGORIES.map(cat => {
-              const catExpenses = expenses.filter(e => e.category === cat)
-              if (catExpenses.length === 0) return null
-              return (
-                <details key={cat} defaultOpen style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', padding: 8 }}>
-                  <summary style={{ cursor: 'pointer', fontWeight: 600 }}>
-                    {cat} (${catExpenses.reduce((s, e) => s + e.monthly, 0)}/mo)
-                  </summary>
-                  <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
-                    {catExpenses.map((expense, i) => (
-                      <div key={expense.id} className="pop-row" style={{
-                        display: 'grid', gridTemplateColumns: '1fr 100px 100px 50px', gap: 8, padding: 8,
-                        background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',
-                        animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-                        animationDelay: `${i * 30}ms`,
-                      }}>
-                        <input type="text" value={expense.name} onChange={e => updateExpense(expense.id, 'name', e.target.value)} placeholder="Name" style={{ background: 'transparent', border: 'none', color: 'var(--text)' }} />
-                        <input type="number" min={0} step={10} value={expense.monthly} onChange={e => updateExpense(expense.id, 'monthly', Number(e.target.value))} placeholder="Monthly" style={{ textAlign: 'right' }} />
-                        <input type="number" min={0} step={100} value={expense.annual} onChange={e => updateExpense(expense.id, 'annual', Number(e.target.value))} placeholder="Annual" style={{ textAlign: 'right' }} />
-                        <button className="btn" onClick={() => removeExpense(expense.id)} style={{ color: 'var(--danger)', justifySelf: 'end', padding: '2px 8px', fontSize: '0.7rem' }}>×</button>
-                      </div>
-                    ))}
-                    <button className="btn" onClick={() => addExpense(cat)} style={{ justifySelf: 'start', padding: '4px 12px', fontSize: '0.8rem' }}>+ Add</button>
-                  </div>
-                </details>
-              )
-            })}
+      <div className="fr-cols">
+        <div>
+          <div className="row fr-top">
+            <Choice value={s.currency} options={[['IDR', 'Rupiah'], ['USD', 'Dollar']] as const} onChange={set('currency')} />
+          </div>
+          <label className="fr-l">Take-home you want
+            <span className="fr-inline">
+              <input type="number" min={0} step={s.currency === 'IDR' ? 500000 : 100} value={s.goal} onChange={(e) => set('goal')(Math.max(0, Number(e.target.value)))} />
+              <select aria-label="Per" value={s.goalPer} onChange={(e) => set('goalPer')(e.target.value as State['goalPer'])}>
+                <option value="month">per month</option>
+                <option value="year">per year</option>
+              </select>
+            </span>
+          </label>
+          <h3 className="fr-h">Business costs <span className="muted">{m(costsYear)}/year</span></h3>
+          {s.costs.map((c) => (
+            <div key={c.id} className="fr-cost">
+              <input type="text" aria-label="Cost name" value={c.name} onChange={(e) => setCost(c.id, { name: e.target.value })} />
+              <input type="number" aria-label="Amount" min={0} value={c.amount} onChange={(e) => setCost(c.id, { amount: Math.max(0, Number(e.target.value)) })} />
+              <select aria-label="Per" value={c.per} onChange={(e) => setCost(c.id, { per: e.target.value as Cost['per'] })}>
+                <option value="month">/mo</option>
+                <option value="year">/yr</option>
+              </select>
+              <button type="button" className="fr-x" aria-label={`Remove ${c.name}`} onClick={() => setS((x) => ({ ...x, costs: x.costs.filter((y) => y.id !== c.id) }))}>×</button>
+            </div>
+          ))}
+          <button type="button" className="btn fr-add" onClick={() => setS((x) => ({ ...x, costs: [...x.costs, { id: Date.now(), name: 'Other', amount: 0, per: 'month' }] }))}>+ Add cost</button>
+          <div className="fr-sliders">
+            <Slider label="Income tax" value={s.taxPct} min={0} max={40} step={0.5} unit="%" onChange={set('taxPct')} />
+            <Slider label="Savings, pension, insurance" value={s.savingsPct} min={0} max={40} unit="%" onChange={set('savingsPct')} />
+            <Slider label="Vacation" value={s.vacationWeeks} min={0} max={10} unit=" wk" onChange={set('vacationWeeks')} />
+            <Slider label="Public holidays" value={s.holidays} min={0} max={30} unit=" days" onChange={set('holidays')} />
+            <Slider label="Sick days" value={s.sickDays} min={0} max={30} unit=" days" onChange={set('sickDays')} />
+            <Slider label="Work days per week" value={s.daysPerWeek} min={1} max={7} onChange={set('daysPerWeek')} />
+            <Slider label="Hours per day" value={s.hoursPerDay} min={1} max={12} step={0.5} unit=" h" onChange={set('hoursPerDay')} />
+            <Slider label="Billable share of your time" value={s.billablePct} min={10} max={100} unit="%" onChange={set('billablePct')} />
           </div>
         </div>
 
-        <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-          <h4 style={{ margin: '0 0 12px' }}>Rate Breakdown</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
-            <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 4 }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Annual Expenses</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--danger)' }}>$<Roll value={Math.round(totalAnnual)} /></div>
-            </div>
-            <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 4 }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Billable Hours/Year</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)' }}><Roll value={effectiveBillableHours} />h</div>
-            </div>
-            <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 4 }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Base Hourly (Cost Recovery)</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)' }}>$<Roll value={Math.round(baseHourlyRate)} /></div>
-            </div>
-            <div style={{ padding: 12, background: 'var(--bg)', borderRadius: 4 }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Profit Margin (+{profitMargin}%)</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--ok)' }}>$<Roll value={Math.round(withProfitRate - baseHourlyRate)} /></div>
-            </div>
-            <div style={{ padding: 12, background: 'var(--ok)20', border: '1px solid var(--ok)40', borderRadius: 4 }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Recommended Rate</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--ok)' }}>$<Roll value={Math.round(withProfitRate)} />/hr</div>
-            </div>
+        <div className="fr-out">
+          <div className="fr-big">
+            <small>Your minimum hourly rate</small>
+            <b><Roll>{r.ok ? m(hourly) : '—'}</Roll></b>
           </div>
-        </div>
+          <div className="stats fr-stats">
+            <div className="stat"><b><Roll>{r.ok ? m(niceRound(r.daily, step * 10)) : '—'}</Roll></b>day rate ({s.hoursPerDay} h)</div>
+            <div className="stat"><b><Roll>{r.ok ? m(niceRound(hourly * s.projectHours, step * 10)) : '—'}</Roll></b>
+              project of <input className="fr-ph" type="number" min={1} aria-label="Project hours" value={s.projectHours} onChange={(e) => set('projectHours')(Math.max(1, Number(e.target.value)))} /> h
+            </div>
+            <div className="stat"><b><Roll>{String(Math.round(r.billableHours))}</Roll></b>billable hours / year</div>
+            <div className="stat"><b><Roll>{m(r.revenue / 12)}</Roll></b>revenue needed / month</div>
+          </div>
+          {!r.ok && <p className="error">Tax plus savings must be under 100%, and you need some billable hours.</p>}
 
-        <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-          <h4 style={{ margin: '0 0 12px' }}>Market Rate Comparison</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-            {Object.entries(marketRates).map(([role, rate]) => (
-              <div key={role} style={{ padding: 12, background: 'var(--bg)', borderRadius: 4, textAlign: 'center' }}>
-                <div className="muted" style={{ fontSize: '0.8rem' }}>{role}</div>
-                <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: withProfitRate > rate ? 'var(--ok)' : withProfitRate < rate * 0.8 ? 'var(--danger)' : 'var(--accent)' }}>
-                  ${rate}/hr
-                </div>
-                <div className="muted" style={{ fontSize: '0.75rem' }}>
-                  {withProfitRate > rate ? 'Above market' : withProfitRate < rate * 0.8 ? 'Below market' : 'Competitive'}
-                </div>
+          <h3 className="fr-h">How one hour is built</h3>
+          <div className="fr-fall" role="img" aria-label={steps.map((x) => `${x.name} ${m(x.v)}`).join(', ')}>
+            {steps.map((x, i) => (
+              <div key={x.k} className="fr-col">
+                <div className="fr-bar" style={{ bottom: `${(x.from / top) * 100}%`, height: `${(Math.max(0, x.v) / top) * 100}%`, background: x.color, transitionDelay: `${i * 60}ms` }} />
+                <span className="fr-cap">{x.name}<br /><b>{m(x.v)}</b></span>
               </div>
             ))}
+            <div className="fr-col">
+              <div className="fr-bar total" style={{ bottom: 0, height: `${(r.ok ? r.hourly / top : 0) * 100}%` }} />
+              <span className="fr-cap">Rate<br /><b>{m(r.hourly)}</b></span>
+            </div>
+            {s.market > 0 && <div className="fr-plot"><div className="fr-market" style={{ bottom: `${(s.market / top) * 100}%` }}><span>market {m(s.market)}</span></div></div>}
           </div>
-        </div>
 
-        <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-          <h4 style={{ margin: '0 0 12px' }}>What to Charge</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12 }}>
-            <div style={{ padding: 16, background: 'var(--bg)', borderRadius: 4, textAlign: 'center' }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Hourly</div>
-              <div style={{ fontSize: '2rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--ok)' }}>$<Roll value={Math.round(withProfitRate)} /></div>
-            </div>
-            <div style={{ padding: 16, background: 'var(--bg)', borderRadius: 4, textAlign: 'center' }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Daily (8h)</div>
-              <div style={{ fontSize: '2rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)' }}>$<Roll value={Math.round(dailyRate)} /></div>
-            </div>
-            <div style={{ padding: 16, background: 'var(--bg)', borderRadius: 4, textAlign: 'center' }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Weekly</div>
-              <div style={{ fontSize: '2rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)' }}>$<Roll value={Math.round(weeklyRate)} /></div>
-            </div>
-            <div style={{ padding: 16, background: 'var(--ok)20', border: '1px solid var(--ok)40', borderRadius: 4, textAlign: 'center' }}>
-              <div className="muted" style={{ fontSize: '0.8rem' }}>Monthly Retainer</div>
-              <div style={{ fontSize: '2rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--ok)' }}>$<Roll value={Math.round(monthlyRate)} /></div>
-            </div>
-          </div>
+          <label className="fr-l">Market rate for your work (per hour)
+            <input type="number" min={0} step={s.currency === 'IDR' ? 10000 : 5} value={s.market} onChange={(e) => set('market')(Math.max(0, Number(e.target.value)))} />
+          </label>
+          {Number.isFinite(diff) && (
+            <p className={`fr-verdict ${diff >= 0 ? 'ok' : 'error'}`} key={Math.sign(diff)}>
+              {diff >= 0 ? `The market pays ${Math.round(diff)}% more than you need. You have room to charge more.` : `The market pays ${Math.round(-diff)}% less than you need. Cut costs, bill more hours, or find better-paying clients.`}
+            </p>
+          )}
         </div>
-
-        <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-          Enter your monthly/annual expenses. Tool calculates minimum rate to cover costs + profit. Adjust utilization for non-billable time. Compare against market rates.
-        </p>
       </div>
+      <Hint>Set what you want to take home and what your business costs; the rate updates as you type. The waterfall shows what each billed hour pays for.</Hint>
     </div>
   )
 }

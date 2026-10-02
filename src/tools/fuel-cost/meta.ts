@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'Fuel Cost Calculator',
-  description: 'Calculate fuel cost for road trips based on distance, fuel efficiency, and local fuel prices. Supports multiple vehicles.',
+  name: 'Trip Fuel Cost Calculator',
+  description: 'Work out the fuel cost of a road trip and split it between passengers as a car drives the route.',
   category: 'Travel',
-  keywords: ['fuel', 'cost', 'calculator', 'road', 'trip', 'bensin', 'biaya', 'perjalanan', 'jarak', 'kendaraan'],
+  keywords: ['gas cost', 'petrol', 'bensin', 'biaya perjalanan', 'BBM', 'mudik'],
   symbol: 'Fc',
-  icon: 'fuel',
+  icon: 'car',
 }

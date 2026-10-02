@@ -1,0 +1,31 @@
+.po-stage { display: grid; justify-items: center; gap: 6px; margin: 8px 0 4px; }
+.po-ring { width: min(260px, 72vw); height: auto; display: block; }
+.po-track { fill: none; stroke: var(--sunken); stroke-width: 12; }
+.po-prog { fill: none; stroke: var(--accent); stroke-width: 12; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 130px 130px; transition: stroke-dashoffset 0.35s linear, stroke 0.4s; }
+.po-stage.short .po-prog { stroke: #10b981; }
+.po-stage.long .po-prog { stroke: #6366f1; }
+.po-stage.running .po-ring { animation: po-breathe 4s ease-in-out infinite; }
+.po-time { font-family: var(--mono); font-size: 50px; font-weight: 650; letter-spacing: -2px; fill: var(--text); }
+.po-phase { font-size: 13px; fill: var(--muted); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.po-dots { display: flex; gap: 6px; justify-content: center; }
+.po-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--sunken); border: 1px solid var(--border); transition: background-color 0.3s, transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.po-dots i.on { background: var(--accent); border-color: var(--accent); transform: scale(1.15); }
+.po-controls { justify-content: center; }
+.po-controls .btn.primary { min-width: 120px; }
+.po-kbd { font-family: var(--mono); font-size: 0.72rem; padding: 1px 5px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--sunken); }
+.po-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 18px; margin-top: 10px; }
+.po-tasks { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 6px; }
+.po-task { display: flex; align-items: center; gap: 8px; padding: 7px 8px 7px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); transition: border-color 0.2s, box-shadow 0.2s, opacity 0.2s; }
+.po-task.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.po-task.done .po-name { text-decoration: line-through; color: var(--muted); }
+.po-name { flex: 1; min-width: 0; overflow-wrap: anywhere; font-size: 0.92rem; background: none; border: 0; padding: 0; text-align: left; color: var(--text); font: inherit; cursor: pointer; }
+.po-count { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+.po-count b { color: var(--text); display: inline-block; }
+.po-x { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 4px 6px; border-radius: 6px; }
+.po-x:hover { color: var(--danger); background: var(--surface); }
+.po-add { display: flex; gap: 8px; }
+.po-add input { flex: 1; min-width: 0; }
+.po-settings { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0 10px; }
+.po-flash { animation: po-flash 0.9s var(--ease-out); }
+@keyframes po-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.012); } }
+@keyframes po-flash { 0% { box-shadow: 0 0 0 0 var(--accent-soft); } 40% { box-shadow: 0 0 0 16px var(--accent-soft); } 100% { box-shadow: 0 0 0 28px transparent; } }

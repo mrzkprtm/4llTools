@@ -1,0 +1,34 @@
+.ip-drop {
+  border: 2px dashed var(--border); background: var(--sunken); border-radius: var(--radius-sm); padding: 20px 16px; text-align: center; position: relative;
+  transition: border-color 0.15s, background-color 0.15s, transform var(--spring-snap-ms) var(--spring-snap);
+}
+.ip-drop.is-over { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.015); animation: breathe 1.2s ease-in-out infinite; }
+.ip-drop p { margin: 0 0 10px; }
+.ip-hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+
+.ip-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 4px 16px; }
+.ip-controls label { font-weight: 500; }
+
+.ip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 14px; }
+.ip-card {
+  display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);
+  cursor: grab; transition: border-color 0.15s, box-shadow 0.15s, opacity 0.15s; min-width: 0;
+}
+.ip-card.is-dragging { opacity: 0.4; }
+.ip-card.is-target { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.ip-pagebox { width: 110px; height: 120px; display: grid; place-items: center; }
+.ip-page {
+  position: relative; background: #fff; border: 1px solid #cbd5e1; border-radius: 2px; box-shadow: 0 3px 10px rgba(15, 23, 42, 0.16); overflow: hidden;
+  transition: width var(--spring-snap-ms) var(--spring-snap), height var(--spring-snap-ms) var(--spring-snap);
+}
+.ip-page img {
+  position: absolute; object-fit: fill; display: block; pointer-events: none; -webkit-user-drag: none;
+  transition: left var(--spring-snap-ms) var(--spring-snap), top var(--spring-snap-ms) var(--spring-snap), width var(--spring-snap-ms) var(--spring-snap), height var(--spring-snap-ms) var(--spring-snap);
+}
+.ip-page .ip-clip { position: absolute; overflow: hidden; transition: inherit; }
+.ip-num { position: absolute; left: 4px; top: 4px; z-index: 1; font-family: var(--mono); font-size: 0.68rem; background: rgba(15, 23, 42, 0.75); color: #fff; border-radius: 4px; padding: 0 5px; }
+.ip-name { font-size: 0.78rem; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ip-sub { font-size: 0.72rem; color: var(--muted); }
+.ip-ctrl { display: flex; gap: 4px; }
+.ip-ctrl .btn { padding: 4px 8px; font-size: 0.85rem; }
+.ip-result { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); margin-top: 12px; animation: rise 0.35s var(--ease-out) both; }

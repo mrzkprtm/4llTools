@@ -1,0 +1,32 @@
+.ab-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.ab-value { font-family: var(--mono); font-size: clamp(1.8rem, 7vw, 2.6rem); font-weight: 750; letter-spacing: -0.02em; }
+.ab-wrap { overflow-x: auto; margin: 10px 0; }
+.ab-svg { display: block; width: 100%; min-width: 340px; max-width: 680px; height: auto; margin: 0 auto; touch-action: none; user-select: none; -webkit-user-select: none; }
+.ab-frame { fill: #6b3f1d; }
+.ab-inner { fill: color-mix(in srgb, #f3e3c3 70%, var(--surface)); }
+.ab-rod { stroke: #8a6a44; stroke-width: 3; }
+.ab-beam { fill: #6b3f1d; }
+.ab-dot { fill: #f3e3c3; }
+.ab-bead { cursor: pointer; transition: transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.ab-bead path { fill: #b9a386; stroke: #6f5b43; stroke-width: 1.2; transition: fill 0.2s; }
+.ab-bead.on path { fill: #d9480f; stroke: #8f2d07; }
+.ab-bead:hover path { filter: brightness(1.08); }
+.ab-bead:focus-visible { outline: none; }
+.ab-bead:focus-visible path { stroke: var(--text); stroke-width: 2.5; }
+.ab-bead.hl path { stroke: #1c7ed6; stroke-width: 3; animation: ab-glow 1s ease-in-out infinite; }
+.ab-digit { font-family: var(--mono); font-size: 16px; font-weight: 700; text-anchor: middle; fill: var(--muted); }
+.ab-digit.unit { fill: var(--accent); }
+.ab-controls { display: grid; grid-template-columns: 1fr minmax(160px, 240px); gap: 14px; align-items: end; }
+.ab-controls .row { margin: 0; }
+.ab-input { width: 11em; font-family: var(--mono); font-size: 1.1rem; min-height: 44px; }
+.ab-input.sm { width: 6em; }
+.ab-presets .btn { font-family: var(--mono); min-height: 42px; }
+.ab-card { padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--sunken); animation: rise 0.3s var(--ease-out) both; }
+.ab-card p { margin: 8px 0; }
+.ab-card > b { font-family: var(--mono); font-size: 1.5rem; }
+.ab-card.ok-card { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, var(--sunken)); }
+.ab-card-top { display: flex; justify-content: space-between; align-items: center; font-weight: 650; font-size: 0.9rem; }
+.ab-rule-five { color: #1c7ed6; }
+.ab-rule-ten { color: #ae3ec9; }
+@keyframes ab-glow { 50% { stroke-width: 5; stroke: #74c0fc; } }
+@media (max-width: 600px) { .ab-controls { grid-template-columns: 1fr; } }

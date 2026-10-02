@@ -1,0 +1,21 @@
+.js-editors { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0 16px; }
+.js-h { color: #be123c; }
+.js-p { color: #7c3aed; }
+.js-bad { border-color: var(--danger) !important; animation: shake 0.35s ease-in-out; }
+.js-light { font-weight: 400; font-size: 0.85rem; }
+.js-claims { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
+.js-chip { font-family: var(--mono); font-size: 0.78rem; padding: 4px 9px; transition: transform var(--spring-snap-ms) var(--spring-snap), border-color 0.2s; }
+.js-chip:hover { transform: translateY(-1px); border-color: var(--accent); }
+.js-chip:active { transform: scale(0.94); }
+.js-times { font-size: 0.85rem; margin: 4px 0 0; }
+.js-row { display: flex; gap: 8px; }
+.js-row input { flex: 1; min-width: 0; font-family: var(--mono); }
+.js-token { word-break: break-all; line-height: 1.7; }
+.js-part { padding: 1px 2px; border-radius: 3px; display: inline; animation: js-in 0.4s var(--spring-snap) backwards; }
+@keyframes js-in { from { opacity: 0; filter: blur(2px); } }
+.js-dot { font-weight: 700; color: var(--muted); }
+.js-legend { font-size: 0.8rem; font-family: var(--mono); }
+.js-legend .jwt-part { animation: none; padding: 1px 6px; }
+.js-pem { flex: 1; min-width: 0; margin: 0; font-size: 0.76rem; white-space: pre-wrap; max-height: 260px; overflow: auto; }
+.js-verdict { font-size: 1rem; }
+@media (prefers-color-scheme: dark) { .js-h { color: #fb7185; } .js-p { color: #a78bfa; } }

@@ -32,17 +32,13 @@ export default function WaterIntakeTracker() {
   const addWater = (ml: number) => {
     const newAmount = Math.min(goal, amount + ml)
     setAmount(newAmount)
-    const today = new Date().toISOString().split('T')[0]
-    setHistory(prev => {
-      const existing = prev.find(h => h.date === today)
-      if (existing) return prev.map(h => h.date === today ? { ...h, amount: newAmount } : h)
-      return [...prev, { date: today, amount: newAmount }]
-    })
+    if (newAmount === goal) {
+      // Celebrate!
+    }
   }
 
   const today = new Date().toISOString().split('T')[0]
   const todayHistory = history.find(h => h.date === today)
-  void todayHistory
 
   return (
     <div>

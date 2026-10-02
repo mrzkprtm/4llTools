@@ -16,8 +16,9 @@ interface Plant {
   lastRepotted: string
   acquiredDate: string
   notes: string
-  photo: string
 }
+
+type PlantForm = Omit<Plant, 'id' | 'lastWatered' | 'lastFertilized' | 'lastRepotted'>
 
 const SUNLIGHT_OPTIONS = [
   { value: 'full', label: 'Full Sun (6+ hrs)', icon: '☀️' },
@@ -29,15 +30,14 @@ const LOCATIONS = ['Living Room', 'Bedroom', 'Kitchen', 'Bathroom', 'Balcony', '
 
 export default function PlantCare() {
   const [plants, setPlants] = useState<Plant[]>(() => {
-    const saved = localStorage.getItem('plant-care')
-    return saved ? JSON.parse(saved) : []
+    try { const saved = localStorage.getItem('4lltools:plant-care'); return saved ? JSON.parse(saved) : [] } catch { return [] }
   })
-  const [newPlant, setNewPlant] = useState({ name: '', species: '', location: 'Living Room', wateringInterval: 7, fertilizingInterval: 30, repottingInterval: 365, sunlight: 'partial' as const, acquiredDate: new Date().toISOString().split('T')[0], notes: '' })
+  const [newPlant, setNewPlant] = useState<PlantForm>({ name: '', species: '', location: 'Living Room', wateringInterval: 7, fertilizingInterval: 30, repottingInterval: 365, sunlight: 'partial', acquiredDate: new Date().toISOString().split('T')[0], notes: '' })
   const [editingId, setEditingId] = useState<number | null>(null)
-  const [editForm, setEditForm] = useState({ name: '', species: '', location: 'Living Room', wateringInterval: 7, fertilizingInterval: 30, repottingInterval: 365, sunlight: 'partial' as const, acquiredDate: new Date().toISOString().split('T')[0], notes: '' })
+  const [editForm, setEditForm] = useState<PlantForm>({ name: '', species: '', location: 'Living Room', wateringInterval: 7, fertilizingInterval: 30, repottingInterval: 365, sunlight: 'partial', acquiredDate: new Date().toISOString().split('T')[0], notes: '' })
 
   useEffect(() => {
-    try { localStorage.setItem('plant-care', JSON.stringify(plants)) } catch {}
+    try { localStorage.setItem('4lltools:plant-care', JSON.stringify(plants)) } catch {}
   }, [plants])
 
   const today = new Date().toISOString().split('T')[0]

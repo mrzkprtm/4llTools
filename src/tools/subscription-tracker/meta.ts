@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'Ring calendar of renewal dates with yearly total odometer; toggle off to animate savings.',
   category: 'Money',
   keywords: ['subscription', 'tracker', 'renewal', 'langganan', 'bulanan', 'tahunan'],
-  symbol: 'Sb',
+  symbol: 'Sbs',
   icon: 'clock',
 }

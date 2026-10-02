@@ -1,0 +1,5 @@
+.xm-caret { margin: 6px 0 0; overflow-x: auto; white-space: pre; word-break: normal; font-size: 0.82rem; }
+.xm-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 14px; align-items: end; margin: 12px 0; }
+.xm-opts label { font-weight: 400; margin: 0; }
+.xm-opts input[type='text'] { font-family: var(--mono); }
+.xm-sizes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }

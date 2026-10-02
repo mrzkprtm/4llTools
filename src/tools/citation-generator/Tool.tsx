@@ -31,8 +31,12 @@ interface Source {
 
 export default function CitationGenerator() {
   const [sources, setSources] = useState<Source[]>(() => {
-    const saved = localStorage.getItem('citation-generator')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:citation-generator')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
   const [style, setStyle] = useState('apa')
   const [sourceType, setSourceType] = useState<SourceType>('book')
@@ -40,7 +44,7 @@ export default function CitationGenerator() {
   const [editingId, setEditingId] = useState<number | null>(null)
 
   useEffect(() => {
-    try { localStorage.setItem('citation-generator', JSON.stringify(sources)) } catch {}
+    try { localStorage.setItem('4lltools:citation-generator', JSON.stringify(sources)) } catch {}
   }, [sources])
 
   const currentFields = SOURCE_TYPES.find(t => t.value === sourceType)?.fields || []

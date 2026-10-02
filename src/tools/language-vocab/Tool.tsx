@@ -33,8 +33,12 @@ const LANGUAGES = [
 
 export default function LanguageVocab() {
   const [words, setWords] = useState<Word[]>(() => {
-    const saved = localStorage.getItem('language-vocab')
-    return saved ? JSON.parse(saved) : SAMPLE_WORDS
+    try {
+      const saved = localStorage.getItem('4lltools:language-vocab')
+      return saved ? JSON.parse(saved) : SAMPLE_WORDS
+    } catch {
+      return SAMPLE_WORDS
+    }
   })
   const [language, setLanguage] = useState('id-en')
   const [filterTag, setFilterTag] = useState('')
@@ -45,7 +49,7 @@ export default function LanguageVocab() {
   const [editForm, setEditForm] = useState({ term: '', translation: '', example: '', pronunciation: '', tags: '' })
 
   useEffect(() => {
-    try { localStorage.setItem('language-vocab', JSON.stringify(words)) } catch {}
+    try { localStorage.setItem('4lltools:language-vocab', JSON.stringify(words)) } catch {}
   }, [words])
 
   const allTags = useMemo(() => {

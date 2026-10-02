@@ -91,12 +91,16 @@ export default function FormulaSheet() {
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('All')
   const [favorites, setFavorites] = useState<number[]>(() => {
-    const saved = localStorage.getItem('formula-sheet-favs')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:formula-sheet-favs')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
 
   useEffect(() => {
-    try { localStorage.setItem('formula-sheet-favs', JSON.stringify(favorites)) } catch {}
+    try { localStorage.setItem('4lltools:formula-sheet-favs', JSON.stringify(favorites)) } catch {}
   }, [favorites])
 
   const filtered = useMemo(() => {

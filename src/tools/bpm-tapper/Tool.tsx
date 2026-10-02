@@ -1,180 +1,102 @@
-import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import { useEffect, useRef, useState } from 'react'
+import { Hint } from '../../sim/controls'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
+import { tempoName } from '../metronome/logic'
+import { addTap, estimateBpm, intervals, RESET_GAP, steadiness } from './logic'
+import './tool.css'
 
-export default function BPMTapper() {
-  const [taps, setTaps] = useState<number[]>(() => {
-    const saved = localStorage.getItem('bpm-tapper')
-    return saved ? JSON.parse(saved) : []
-  })
-  const [bpm, setBpm] = useState(0)
-  const [avgBpm, setAvgBpm] = useState(0)
-  const [beatPhase, setBeatPhase] = useState(0)
-  const [running, setRunning] = useState(false)
-  const lastTapRef = useRef<number>(0)
-  const animationRef = useRef<number>(undefined)
+export default function BpmTapper() {
+  const [taps, setTaps] = useState<number[]>([])
+  const [mult, setMult] = useState(1)
+  const [hit, setHit] = useState(0)
+  const [idle, setIdle] = useState(true)
+  const still = useRef(reducedMotion())
+  const tapRef = useRef<() => void>(() => {})
 
-  useEffect(() => {
-    try { localStorage.setItem('bpm-tapper', JSON.stringify(taps)) } catch {}
-  }, [taps])
-
-  useEffect(() => {
-    if (taps.length >= 2) {
-      const intervals = []
-      for (let i = 1; i < taps.length; i++) {
-        intervals.push(taps[i] - taps[i - 1])
-      }
-      const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length
-      const calculatedBpm = 60000 / avgInterval
-      setBpm(Math.round(calculatedBpm * 10) / 10)
-      setAvgBpm(Math.round((intervals.reduce((a, b) => a + b, 0) / intervals.length / 60000 * 60000) * 10) / 10)
-    } else {
-      setBpm(0)
-      setAvgBpm(0)
-    }
-  }, [taps])
-
-  const handleTap = () => {
-    const now = Date.now()
-    if (lastTapRef.current > 0) {
-      const interval = now - lastTapRef.current
-      if (interval > 200 && interval < 3000) {
-        setTaps(prev => [...prev.slice(-15), now])
-      }
-    }
-    lastTapRef.current = now
-    setBeatPhase(1)
-    setTimeout(() => setBeatPhase(0), 100)
+  function tap() {
+    const now = performance.now()
+    const next = addTap(taps, now)
+    if (next.length === 1) setMult(1)
+    setTaps(next)
+    setHit((h) => h + 1)
+    setIdle(false)
   }
+  tapRef.current = tap
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Space' || e.code === 'Enter') {
+  // Space or Enter taps too (unless typing).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Enter')) return
+      const el = e.target as HTMLElement
+      if (el.closest('input, textarea, select, button, a')) return
       e.preventDefault()
-      handleTap()
+      tapRef.current()
     }
-    if (e.code === 'KeyC') clearTaps()
-    if (e.code === 'KeyR') resetBeat()
-  }
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const clearTaps = () => {
-    setTaps([])
-    setBpm(0)
-    setAvgBpm(0)
-    lastTapRef.current = 0
-  }
+  // After a 2 s pause the next tap starts over; show that we are waiting.
+  useEffect(() => {
+    if (!taps.length) return
+    const id = setTimeout(() => setIdle(true), RESET_GAP)
+    return () => clearTimeout(id)
+  }, [taps])
 
-  const resetBeat = () => {
-    setBeatPhase(0)
-  }
-
-  const commonTempos = [60, 70, 80, 90, 100, 110, 120, 128, 130, 140, 150, 160, 170, 180]
+  const est = estimateBpm(taps)
+  const bpm = est ? est.bpm * mult : 0
+  const period = bpm ? 60 / bpm : 1
+  const ivs = intervals(taps).slice(-16)
+  const maxIv = Math.max(1, ...ivs)
+  const shown = bpm ? bpm.toFixed(1) : '0.0'
+  const [whole, frac] = shown.split('.')
 
   return (
-    <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0 }}>BPM Tapper</h3>
-        <div className="row" style={{ gap: 8 }}>
-          <button className="btn" onClick={clearTaps} disabled={taps.length === 0}>Clear</button>
-        </div>
-      </div>
-
-      <div className="row" style={{ justifyContent: 'center', gap: 24, marginBottom: 16, flexWrap: 'wrap' }}>
-        <div className="pop-row" style={{
-          padding: 24, textAlign: 'center', minWidth: 200,
-          background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-          animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-        }}>
-          <div className="muted" style={{ fontSize: '0.9rem', marginBottom: 8 }}>Current BPM</div>
-          <div style={{ fontSize: '4rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)' }}>
-            <Roll value={bpm || '—'} />
-          </div>
-          <div className="muted" style={{ fontSize: '0.8rem' }}>{taps.length} taps</div>
-        </div>
-
-        <div className="pop-row" style={{
-          padding: 24, textAlign: 'center', minWidth: 200,
-          background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-          animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-          animationDelay: '100ms',
-        }}>
-          <div className="muted" style={{ fontSize: '0.9rem', marginBottom: 8 }}>Average BPM</div>
-          <div style={{ fontSize: '4rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--ok)' }}>
-            <Roll value={avgBpm || '—'} />
-          </div>
-          <div className="muted" style={{ fontSize: '0.8rem' }}>Stable tempo</div>
-        </div>
-      </div>
-
-      <div className="pop-row" style={{
-        padding: 32, textAlign: 'center', background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-        marginBottom: 16, animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-      }}>
-        <div style={{
-          width: 120, height: 120, borderRadius: '50%', margin: '0 auto 16px',
-          background: `radial-gradient(circle, ${beatPhase ? 'var(--accent)' : 'var(--border)'} 0%, var(--sunken) 70%)`,
-          border: '4px solid var(--border)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          transition: 'background 0.1s',
-          boxShadow: beatPhase ? '0 0 30px var(--accent)' : 'none',
-        }}>
-          <span style={{ fontSize: '2rem', fontWeight: 700, color: beatPhase ? 'white' : 'var(--muted)' }}>TAP</span>
-        </div>
+    <div className="bt">
+      <div className="bt-stage">
         <button
-          onClick={handleTap}
-          onMouseDown={e => { e.preventDefault(); handleTap() }}
-          style={{
-            width: 120, height: 120, borderRadius: '50%', border: 'none',
-            background: 'transparent', cursor: 'pointer', position: 'relative', marginTop: -120,
-          }}
-        />
-        <p className="muted" style={{ marginTop: 8 }}>Click, press Space/Enter, or tap on mobile</p>
+          type="button"
+          className="bt-pad"
+          onPointerDown={(e) => { e.preventDefault(); tap() }}
+          onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (!e.repeat) tap() } }}
+          aria-label="Tap along with the beat"
+        >
+          {bpm > 0 && !still.current && <span key={`r${hit}`} className="bt-ring" style={{ animationDuration: `${period}s` }} />}
+          {hit > 0 && <span key={`f${hit}`} className="bt-flash" />}
+          <span className="bt-readout" aria-live="polite">
+            <b><Roll>{whole}</Roll><small>.{frac}</small></b>
+            <span>BPM</span>
+          </span>
+          <span className="bt-sub">{taps.length < 2 ? (taps.length ? 'Keep tapping…' : 'Tap here') : `${tempoName(bpm)} · ${taps.length} taps`}</span>
+        </button>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <h4 style={{ marginBottom: 12 }}>Quick Tempo Reference</h4>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))', gap: 8 }}>
-          {commonTempos.map(tempo => (
-            <button key={tempo} className="btn" style={{
-              padding: '12px 8px', fontSize: '0.85rem',
-              background: bpm && Math.abs(bpm - tempo) <= 2 ? 'var(--accent)' : 'var(--bg)',
-              color: bpm && Math.abs(bpm - tempo) <= 2 ? 'white' : 'var(--text)',
-              border: bpm && Math.abs(bpm - tempo) <= 2 ? '2px solid var(--accent)' : '1px solid var(--border)',
-            }}>
-              {tempo} BPM
-            </button>
-          ))}
+      <div className="row bt-actions">
+        <button type="button" className="btn" disabled={!bpm} onClick={() => setMult((m) => m / 2)}>½ Half</button>
+        <button type="button" className="btn" disabled={!bpm} onClick={() => setMult((m) => m * 2)}>2× Double</button>
+        <button type="button" className="btn" disabled={!taps.length} onClick={() => { setTaps([]); setMult(1); setIdle(true) }}>Reset</button>
+        {taps.length > 0 && idle && <span className="chip settle-in">Paused. Next tap starts fresh</span>}
+      </div>
+
+      <div className="two-col">
+        <div className="bt-card">
+          <div className="sim-label"><span>Stability</span><span className="sim-val">{est && ivs.length > 2 ? `±${est.sd.toFixed(0)} ms` : '–'}</span></div>
+          <div className="bar bt-meter"><i style={{ transform: `scaleX(${est && ivs.length > 2 ? est.stability : 0})`, background: est && est.stability > 0.65 ? 'var(--ok)' : 'var(--accent)' }} /></div>
+          <p className="muted bt-note">{est && ivs.length > 2 ? steadiness(est.stability) : 'Tap at least four times to judge steadiness.'}</p>
+        </div>
+        <div className="bt-card">
+          <div className="sim-label"><span>Tap intervals</span><span className="sim-val">{est ? `${(60000 / est.bpm).toFixed(0)} ms avg` : ''}</span></div>
+          <svg viewBox="0 0 160 60" className="bt-spark" role="img" aria-label="Recent tap intervals">
+            {ivs.map((d, i) => {
+              const h = (d / maxIv) * 54
+              const bad = est?.rejected.includes(i)
+              return <rect key={taps.length - ivs.length + i} x={i * 10 + 1} y={58 - h} width={8} height={h} rx={2} className={bad ? 'bad' : ''} />
+            })}
+          </svg>
         </div>
       </div>
-
-      <div className="pop-row" style={{ padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-        <h4 style={{ margin: '0 0 12px' }}>Tap History (last 16)</h4>
-        {taps.length === 0 ? (
-          <p className="muted" style={{ textAlign: 'center', padding: 16 }}>No taps yet. Start tapping!</p>
-        ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8 }}>
-            {taps.slice(-16).map((tap, i) => {
-              if (i === 0) return <div key={i} className="muted" style={{ padding: 8 }}>First tap</div>
-              const interval = taps[taps.length - 16 + i] - taps[taps.length - 16 + i - 1]
-              const instBpm = 60000 / interval
-              return (
-                <div key={i} style={{ padding: 8, background: 'var(--bg)', borderRadius: 4, textAlign: 'center' }}>
-                  <div style={{ fontWeight: 600, fontFamily: 'var(--mono)' }}>{Math.round(instBpm * 10) / 10}</div>
-                  <div className="muted" style={{ fontSize: '0.7rem' }}>{interval}ms</div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </div>
-
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        Tap Space/Enter or click the circle in time with the beat. BPM calculated from intervals between taps. Press C to clear, R to reset visual.
-      </p>
+      <Hint>Tap the pad (or press Space) along with the beat of a song. Stray taps are ignored, and after a two-second pause the next tap starts a new count. Use Half or Double if the number feels twice too fast or slow.</Hint>
     </div>
   )
 }

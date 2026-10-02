@@ -27,15 +27,19 @@ export default function EventRSVP() {
     maxGuests: 100,
   })
   const [guests, setGuests] = useState<Guest[]>(() => {
-    const saved = localStorage.getItem('event-rsvp')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:event-rsvp')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
   const [filterRSVP, setFilterRSVP] = useState<'all' | 'pending' | 'yes' | 'no' | 'maybe'>('all')
   const [newGuest, setNewGuest] = useState({ name: '', email: '', phone: '', partySize: 1, dietary: 'None', plusOne: false, plusOneName: '', notes: '' })
   const [importText, setImportText] = useState('')
 
   useEffect(() => {
-    try { localStorage.setItem('event-rsvp', JSON.stringify({ event, guests })) } catch {}
+    try { localStorage.setItem('4lltools:event-rsvp', JSON.stringify({ event, guests })) } catch {}
   }, [event, guests])
 
   const addGuest = () => {

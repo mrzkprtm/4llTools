@@ -1,0 +1,39 @@
+.tz-top { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 14px; align-items: end; }
+.tz-live { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.82rem; color: var(--muted); }
+.tz-live i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); animation: tz-pulse 1.6s ease-in-out infinite; }
+.tz-live.off i { background: var(--muted); animation: none; }
+.tz-cards { list-style: none; margin: 14px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 10px; }
+.tz-card { position: relative; padding: 12px 12px 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); transition: border-color 0.2s, box-shadow 0.2s; min-width: 0; }
+.tz-card.ref { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.tz-card h3 { margin: 0; font-size: 0.95rem; font-weight: 650; padding-right: 60px; overflow-wrap: anywhere; }
+.tz-card .tz-id { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); overflow-wrap: anywhere; }
+.tz-time { font-family: var(--mono); font-size: 1.9rem; font-weight: 650; letter-spacing: -0.03em; line-height: 1.2; margin-top: 4px; }
+.tz-meta { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; font-size: 0.8rem; color: var(--muted); }
+.tz-acts { position: absolute; top: 6px; right: 6px; display: flex; gap: 2px; }
+.tz-acts button { border: 0; background: transparent; color: var(--muted); cursor: pointer; font: inherit; font-size: 0.95rem; line-height: 1; padding: 5px 6px; border-radius: 6px; transition: color 0.15s, background-color 0.15s, transform 0.12s; }
+.tz-acts button:hover { color: var(--text); background: var(--surface); }
+.tz-acts button:active { transform: scale(0.9); }
+.tz-acts button[aria-pressed='true'] { color: var(--accent); }
+.tz-day { padding: 0 6px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; background: var(--accent-soft); color: var(--text); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.tz-planner { overflow-x: auto; margin-top: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); }
+.tz-grid { display: grid; grid-template-columns: 118px repeat(24, minmax(24px, 1fr)); min-width: 700px; font-size: 0.72rem; font-variant-numeric: tabular-nums; }
+.tz-grid > .tz-name { position: sticky; left: 0; z-index: 1; background: var(--sunken); padding: 6px 8px; font-weight: 600; font-size: 0.78rem; border-right: 1px solid var(--border); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; flex-direction: column; justify-content: center; line-height: 1.2; }
+.tz-grid > .tz-name small { font-weight: 400; color: var(--muted); font-family: var(--mono); font-size: 0.66rem; }
+.tz-cell { border: 0; margin: 2px 1px; padding: 6px 0; border-radius: 4px; font: inherit; font-family: var(--mono); cursor: pointer; color: var(--text); transition: transform 0.15s var(--ease-out), box-shadow 0.2s, outline-color 0.2s; animation: tz-in 0.3s var(--ease-out) backwards; }
+.tz-cell:hover { transform: translateY(-1px); }
+.tz-cell:active { transform: scale(0.94); }
+.tz-cell.work { background: color-mix(in srgb, var(--ok) 32%, var(--surface)); }
+.tz-cell.edge { background: color-mix(in srgb, #f59e0b 26%, var(--surface)); }
+.tz-cell.night { background: color-mix(in srgb, var(--text) 9%, var(--surface)); color: var(--muted); }
+.tz-cell.sel { box-shadow: 0 0 0 2px var(--accent); position: relative; z-index: 1; }
+.tz-ov { height: 6px; margin: 4px 1px 0; border-radius: 3px; }
+.tz-ov.on { background: var(--ok); animation: tz-grow var(--spring-snap-ms) var(--spring-snap) backwards; transform-origin: bottom; }
+.tz-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: 0.8rem; color: var(--muted); }
+.tz-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.tz-add { display: flex; gap: 8px; flex-wrap: wrap; }
+.tz-add input { flex: 1 1 200px; min-width: 0; }
+.tz-hours { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 0.88rem; }
+.tz-hours input { width: 72px; }
+@keyframes tz-pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 50%, transparent); } 50% { opacity: 0.6; box-shadow: 0 0 0 5px transparent; } }
+@keyframes tz-in { from { opacity: 0; transform: scaleY(0.4); } }
+@keyframes tz-grow { from { transform: scaleY(0); } }

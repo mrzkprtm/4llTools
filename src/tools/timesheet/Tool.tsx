@@ -27,12 +27,18 @@ const COLORS = ['#e11d48', '#2563eb', '#16a34a', '#ca8a04', '#9333ea', '#0891b2'
 
 export default function Timesheet() {
   const [entries, setEntries] = useState<Entry[]>(() => {
-    const saved = localStorage.getItem('timesheet')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:timesheet')
+      if (saved) return JSON.parse(saved) as Entry[]
+    } catch {}
+    return []
   })
   const [projects, setProjects] = useState<Project[]>(() => {
-    const saved = localStorage.getItem('timesheet-projects')
-    return saved ? JSON.parse(saved) : [
+    try {
+      const saved = localStorage.getItem('4lltools:timesheet-projects')
+      if (saved) return JSON.parse(saved) as Project[]
+    } catch {}
+    return [
       { id: 1, name: 'Website Redesign', client: 'Acme Corp', rate: 100, color: COLORS[0] },
       { id: 2, name: 'Mobile App', client: 'StartupXYZ', rate: 120, color: COLORS[1] },
       { id: 3, name: 'API Integration', client: 'Enterprise Inc', rate: 110, color: COLORS[2] },
@@ -48,10 +54,10 @@ export default function Timesheet() {
   const [newProject, setNewProject] = useState({ name: '', client: '', rate: 100, color: COLORS[0] })
 
   useEffect(() => {
-    try { localStorage.setItem('timesheet', JSON.stringify(entries)) } catch {}
+    try { localStorage.setItem('4lltools:timesheet', JSON.stringify(entries)) } catch {}
   }, [entries])
   useEffect(() => {
-    try { localStorage.setItem('timesheet-projects', JSON.stringify(projects)) } catch {}
+    try { localStorage.setItem('4lltools:timesheet-projects', JSON.stringify(projects)) } catch {}
   }, [projects])
 
   const weekStart = useMemo(() => {
@@ -81,7 +87,18 @@ export default function Timesheet() {
     const end = new Date(`2000-01-01T${newEntry.endTime}`)
     const hours = (end.getTime() - start.getTime()) / 3600000
 
-    setEntries([...entries, { ...newEntry, id: Date.now(), hours }])
+    setEntries([...entries, {
+      id: Date.now(),
+      date: newEntry.date,
+      project: project.name,
+      client: project.client,
+      task: newEntry.task,
+      startTime: newEntry.startTime,
+      endTime: newEntry.endTime,
+      hours,
+      billable: newEntry.billable,
+      description: newEntry.description,
+    }])
     setNewEntry({ projectId: 0, date: '', task: '', startTime: '09:00', endTime: '17:00', billable: true, description: '' })
   }
 
@@ -110,7 +127,7 @@ export default function Timesheet() {
       totals[d] = dayEntries.reduce((sum, e) => ({
         hours: sum.hours + e.hours,
         billable: sum.billable + (e.billable ? e.hours : 0),
-        earnings: sum.earnings + (e.billable ? e.hours * projects.find(p => p.name === e.project)?.rate || 0 : 0)
+        earnings: sum.earnings + (e.billable ? e.hours * (projects.find(p => p.name === e.project)?.rate ?? 0) : 0)
       }), { hours: 0, billable: 0, earnings: 0 })
     })
     return totals

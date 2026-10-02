@@ -1,0 +1,18 @@
+.ua-samples-label { margin: 4px 0 6px; font-size: 0.85rem; }
+.ua-samples { display: flex; flex-wrap: wrap; gap: 6px; }
+.ua-sample { font-size: 0.82rem; padding: 5px 10px; transition: transform var(--spring-snap-ms) var(--spring-snap), background-color 0.2s, border-color 0.2s; }
+.ua-sample:hover { transform: translateY(-1px); }
+.ua-sample:active { transform: scale(0.95); }
+.ua-sample.is-on { border-color: var(--accent); background: var(--accent-soft); }
+.ua-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 18px 0 10px; }
+.ua-desc { font-weight: 600; }
+.ua-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; }
+.ua-card { display: flex; flex-direction: column; gap: 3px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); animation: ua-rise 0.4s var(--spring-snap) both; min-width: 0; }
+.ua-card-t { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.ua-card-v { font-size: 1.05rem; overflow-wrap: anywhere; animation: ua-rise 0.3s var(--ease-out) both; }
+.ua-card-s { font-size: 0.82rem; color: var(--muted); overflow-wrap: anywhere; }
+@keyframes ua-rise { from { opacity: 0; transform: translateY(6px) scale(0.98); } }
+.ua-note { font-size: 0.88rem; }
+.ua-h { margin: 22px 0 6px; font-size: 1rem; }
+.ua-table-wrap { overflow-x: auto; }
+.ua-hint { font-family: var(--mono); font-size: 0.82rem; word-break: break-word; }

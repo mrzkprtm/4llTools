@@ -1,0 +1,22 @@
+.cc-sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px 18px; }
+.cc-modes { gap: 6px; }
+.cc-modes .btn { min-height: 40px; padding: 7px 11px; font-size: 0.86rem; opacity: 0.55; }
+.cc-modes .btn.on { opacity: 1; border-color: var(--accent); background: var(--accent-soft); }
+.cc-metric { margin: 10px 0 6px; }
+.cc-metric .sim-choice .btn { min-height: 40px; }
+.cc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.cc-list li { display: flex; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.cc-list li.best { border-color: var(--ok); box-shadow: 0 0 0 2px color-mix(in srgb, var(--ok) 18%, transparent); }
+.cc-list li.best .bar > i { background: var(--ok); }
+.cc-icon { font-size: 1.5rem; width: 34px; text-align: center; flex: none; }
+.cc-body { flex: 1; min-width: 0; display: grid; gap: 4px; }
+.cc-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 0.92rem; }
+.cc-val { font-family: var(--mono); font-weight: 700; display: inline-flex; gap: 6px; align-items: center; }
+.cc-val .chip { font-size: 0.7rem; }
+.cc-sub { font-size: 0.78rem; }
+.cc-edit { margin-top: 16px; }
+.cc-edit summary { cursor: pointer; font-weight: 600; min-height: 40px; display: flex; align-items: center; }
+.cc-table { overflow-x: auto; }
+.cc-table td { white-space: nowrap; padding: 4px; }
+.cc-table input { width: 84px; padding: 6px 8px; }
+.cc-note { font-size: 0.82rem; }

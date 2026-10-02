@@ -86,9 +86,9 @@ export default function SalaryCalculator() {
 
   const periodsPerYear = payFrequency === 'monthly' ? 12 : payFrequency === 'biweekly' ? 26 : 52
   const grossPerPeriod = grossAnnual / periodsPerYear
-  const netPerPeriod = netAnnual / periodsPerPeriod
-  const taxPerPeriod = incomeTax / periodsPerPeriod
-  const ssPerPeriod = ssContributions.employee / periodsPerPeriod
+  const netPerPeriod = netAnnual / periodsPerYear
+  const taxPerPeriod = incomeTax / periodsPerYear
+  const ssPerPeriod = ssContributions.employee / periodsPerYear
 
   const fmt = (n: number) => currency.symbol + ' ' + Math.round(n).toLocaleString(currency.locale)
 

@@ -1,0 +1,21 @@
+.wb-toolbar { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); width: fit-content; max-width: 100%; }
+.wb-tool { width: 42px; height: 42px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: var(--text); cursor: pointer; transition: background-color 0.15s, color 0.15s, transform var(--spring-snap-ms) var(--spring-snap); }
+.wb-tool:hover { background: var(--sunken); }
+.wb-tool.on { background: var(--accent); color: var(--accent-text); --icon-1: var(--accent-text); --icon-2: color-mix(in srgb, var(--accent-text) 30%, transparent); transform: translateY(-1px); }
+.wb-tool:active { transform: scale(0.92); }
+.wb-options { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0; min-height: 42px; }
+.wb-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer; transition: transform var(--spring-bouncy-ms) var(--spring-bouncy), box-shadow 0.15s; animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.wb-swatch.on { transform: scale(1.15); box-shadow: 0 0 0 2px var(--accent); }
+.wb-width { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); cursor: pointer; }
+.wb-width i { display: block; border-radius: 50%; background: var(--text); }
+.wb-width.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.wb-small { padding: 7px 10px; font-size: 0.84rem; min-height: 40px; }
+.wb-pct { font-family: var(--mono); min-width: 58px; }
+.wb-spacer { flex: 1; }
+.wb-board { position: relative; height: min(72vh, 600px); min-height: 360px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; animation: rise 0.4s var(--ease-out) both; }
+.wb-canvas { display: block; width: 100%; height: 100%; touch-action: none; user-select: none; -webkit-user-select: none; }
+.wb-edit { position: absolute; margin: 0; border: 2px dashed #1c7ed6; border-radius: 6px; resize: none; overflow: hidden; line-height: 1.25; font-family: ui-sans-serif, system-ui, sans-serif; min-height: 0; background: rgba(255, 255, 255, 0.85); outline: none; box-shadow: none; }
+.wb-edit.text { font-weight: 600; padding: 0; }
+.wb-edit.note { color: #1b1a17; line-height: 1.25; box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.wb-edit:focus { border-color: #1c7ed6; box-shadow: none; }
+@media (prefers-reduced-motion: reduce) { .wb-swatch, .wb-edit.note { animation: none; } }

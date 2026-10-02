@@ -3,7 +3,9 @@ import { StaticRouter } from 'react-router-dom'
 import App from './App'
 
 export { tools } from './tools/registry'
+export { categoryKey, groupByCategory } from './tools/grouping'
 export * from './seo'
+export { infoPages } from './legal/LegalPages'
 
 /** Renders a route to HTML at build time, so crawlers see real content before JavaScript runs. */
 export function render(url: string): string {

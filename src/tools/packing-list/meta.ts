@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Packing List Generator',
-  description: 'Generate a customized packing list based on trip type, duration, weather, and activities. Check off items as you pack.',
+  description: 'Build a packing checklist from trip type, weather and days, with items popping into a suitcase.',
   category: 'Travel',
-  keywords: ['packing', 'list', 'checklist', 'travel', 'kemas', 'daftar', 'perjalanan'],
-  symbol: 'Pl',
+  keywords: ['travel checklist', 'what to pack', 'daftar bawaan', 'koper', 'liburan'],
+  symbol: 'Pk',
   icon: 'suitcase',
 }

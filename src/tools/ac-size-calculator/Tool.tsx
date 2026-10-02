@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 
 const ORIENTATION_FACTORS = { north: 1.1, south: 0.9, east: 1.15, west: 1.15 }
 const INSULATION_FACTORS = { poor: 1.2, average: 1.0, good: 0.8 }
@@ -17,7 +17,6 @@ export default function AcSizeCalculator() {
   const [sunExposure, setSunExposure] = useState<'full' | 'partial' | 'shaded'>('partial')
 
   const area = length * width
-  const volume = area * height
   const baseBtu = area * 600 // Basic rule: 600 BTU per m²
 
   const orientationFactor = ORIENTATION_FACTORS[orientation]
@@ -29,7 +28,6 @@ export default function AcSizeCalculator() {
 
   const totalBtu = Math.round(baseBtu * orientationFactor * insulationFactor * ceilingFactor * sunFactor + peopleBtu + applianceBtu)
   const pk = Math.round(totalBtu / 9000 * 2) / 2 // PK in 0.5 increments
-  const btuPerPk = 9000
 
   return (
     <div>
@@ -48,7 +46,7 @@ export default function AcSizeCalculator() {
         </label>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
           <span>Window Orientation</span>
-          <select value={orientation} onChange={e => setOrientation(e.target.value as any)}>
+          <select value={orientation} onChange={e => setOrientation(e.target.value as typeof orientation)}>
             <option value="north">North</option>
             <option value="south">South</option>
             <option value="east">East</option>
@@ -60,7 +58,7 @@ export default function AcSizeCalculator() {
       <div className="row" style={{ gap: 16, flexWrap: 'wrap', marginBottom: 16 }}>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 120 }}>
           <span>Insulation</span>
-          <select value={insulation} onChange={e => setInsulation(e.target.value as any)}>
+          <select value={insulation} onChange={e => setInsulation(e.target.value as typeof insulation)}>
             <option value="poor">Poor</option>
             <option value="average">Average</option>
             <option value="good">Good</option>
@@ -68,7 +66,7 @@ export default function AcSizeCalculator() {
         </label>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 120 }}>
           <span>Ceiling Height</span>
-          <select value={ceiling} onChange={e => setCeiling(e.target.value as any)}>
+          <select value={ceiling} onChange={e => setCeiling(e.target.value as typeof ceiling)}>
             <option value="low">Low (less than 2.5m)</option>
             <option value="standard">Standard (2.5-3m)</option>
             <option value="high">High (over 3m)</option>
@@ -84,7 +82,7 @@ export default function AcSizeCalculator() {
         </label>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 120 }}>
           <span>Sun Exposure</span>
-          <select value={sunExposure} onChange={e => setSunExposure(e.target.value as any)}>
+          <select value={sunExposure} onChange={e => setSunExposure(e.target.value as typeof sunExposure)}>
             <option value="full">Full Sun</option>
             <option value="partial">Partial</option>
             <option value="shaded">Shaded</option>

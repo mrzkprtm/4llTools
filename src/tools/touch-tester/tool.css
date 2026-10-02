@@ -1,0 +1,9 @@
+.tt { display: grid; gap: 12px; }
+.tt-top { gap: 8px; align-items: center; }
+.tt-top .btn { min-height: 40px; }
+.tt-wrap { position: relative; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--sunken); }
+.tt-wrap.full { border-radius: 0; border: 0; background: var(--bg); }
+.tt-canvas { display: block; width: 100%; height: min(65vh, 560px); min-height: 320px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.tt-wrap.full .tt-canvas { height: 100vh; }
+.tt-badge { position: absolute; left: 10px; top: 10px; padding: 4px 10px; border-radius: 99px; background: color-mix(in srgb, var(--surface) 85%, transparent); border: 1px solid var(--border); font-size: 0.82rem; font-family: var(--mono); pointer-events: none; }
+.tt-exit { position: absolute; right: 10px; top: 10px; }

@@ -1,130 +1,181 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import Icon from '../../components/Icon'
+import Check from '../../motion/Check'
+import Roll from '../../motion/Roll'
+import { useFlip } from '../../motion/useFlip'
+import { Hint } from '../../sim/controls'
+import { addDays, bestStreak, completionRate, currentStreak, flameScale, heatmapWeeks, iso } from './logic'
+import './tool.css'
 
-const DAYS = 49
+interface Habit {
+  id: string
+  emoji: string
+  name: string
+  color: string
+  done: string[]
+}
+
+const KEY = '4lltools:habit-tracker'
+const COLORS = ['#2f9e44', '#1c7ed6', '#e8590c', '#ae3ec9', '#0ca678', '#f59f00']
+const WEEKS = 20
+
+function load(): Habit[] | null {
+  try {
+    const raw = localStorage.getItem(KEY)
+    return raw ? (JSON.parse(raw) as Habit[]) : null
+  } catch {
+    return null
+  }
+}
+
+function save(h: Habit[]) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(h))
+  } catch {
+    // Storage is optional.
+  }
+}
+
+/** Believable example history so the page looks alive on first visit. */
+function demo(today: string): Habit[] {
+  let seed = 11
+  const r = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+  const make = (emoji: string, name: string, color: string, p: number, skipToday: boolean): Habit => {
+    const done: string[] = []
+    for (let i = WEEKS * 7; i >= 0; i--) {
+      if (i === 0 && skipToday) continue
+      // Recent days are denser so the current streak looks healthy.
+      if (r() < (i < 9 ? 0.97 : p)) done.push(addDays(today, -i))
+    }
+    return { id: name, emoji, name, color, done }
+  }
+  return [make('💧', 'Drink 8 glasses of water', COLORS[1], 0.8, true), make('📖', 'Read 20 pages', COLORS[0], 0.6, false), make('🏃', 'Morning walk', COLORS[2], 0.45, true)]
+}
 
 export default function HabitTracker() {
-  const [habits, setHabits] = useState(() => {
-    const saved = localStorage.getItem('habit-tracker')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, name: 'Exercise', color: '#e11d48' },
-      { id: 2, name: 'Read 20 min', color: '#2563eb' },
-      { id: 3, name: 'Meditate', color: '#16a34a' },
-    ]
-  })
+  const [habits, setHabits] = useState<Habit[]>([])
+  const [today, setToday] = useState('')
+  const [emoji, setEmoji] = useState('🧘')
+  const [name, setName] = useState('')
+  const [burst, setBurst] = useState('')
+  const ready = useRef(false)
+  const list = useRef<HTMLDivElement>(null)
+  useFlip(list)
 
   useEffect(() => {
-    try { localStorage.setItem('habit-tracker', JSON.stringify(habits)) } catch {}
-  }, [habits])
-
-  const today = new Date()
-  today.setHours(0,0,0,0)
-
-  const addHabit = () => {
-    const colors = ['#e11d48','#2563eb','#16a34a','#ca8a04','#9333ea','#0891b2','#db2777']
-    setHabits([...habits, { id: Date.now(), name: `Habit ${habits.length + 1}`, color: colors[habits.length % colors.length] }])
-  }
-
-  const toggleDay = (habitId: number, dayOffset: number) => {
-    setHabits(habits.map(h => {
-      if (h.id !== habitId) return h
-      const key = `d${dayOffset}`
-      const newCompleted = { ...h.completed, [key]: !h.completed?.[key] }
-      return { ...h, completed: newCompleted }
-    }))
-  }
-
-  const getStreak = (completed: Record<string, boolean>) => {
-    let streak = 0
-    for (let i = 0; i < DAYS; i++) {
-      if (completed[`d${i}`]) streak++
-      else break
-    }
-    return streak
-  }
-
-  const getLongestStreak = (completed: Record<string, boolean>) => {
-    let max = 0, current = 0
-    for (let i = 0; i < DAYS; i++) {
-      if (completed[`d${i}`]) { current++; max = Math.max(max, current) }
-      else current = 0
-    }
-    return max
-  }
-
-  const days = useMemo(() => {
-    const arr = []
-    for (let i = 0; i < DAYS; i++) {
-      const d = new Date(today)
-      d.setDate(d.getDate() - i)
-      arr.push({ offset: i, date: d, label: d.getDate(), isToday: i === 0, isWeekend: d.getDay() === 0 || d.getDay() === 6 })
-    }
-    return arr
+    const t = iso(new Date())
+    setToday(t)
+    setHabits(load() ?? demo(t))
+    ready.current = true
+    // Roll over to the next day if the page stays open past midnight.
+    const id = setInterval(() => setToday(iso(new Date())), 60_000)
+    return () => clearInterval(id)
   }, [])
 
+  useEffect(() => {
+    if (ready.current) save(habits)
+  }, [habits])
+
+  function toggle(id: string, day: string) {
+    setHabits((hs) => hs.map((h) => (h.id !== id ? h : { ...h, done: h.done.includes(day) ? h.done.filter((d) => d !== day) : [...h.done, day] })))
+    const h = habits.find((x) => x.id === id)
+    if (h && !h.done.includes(day) && day === today) setBurst(id + Date.now())
+  }
+
+  function add() {
+    const n = name.trim()
+    if (!n) return
+    setHabits((hs) => [...hs, { id: `${Date.now()}`, emoji: emoji.trim() || '✅', name: n, color: COLORS[hs.length % COLORS.length], done: [] }])
+    setName('')
+  }
+
+  const weeks = useMemo(() => (today ? heatmapWeeks(today, WEEKS) : []), [today])
+  const doneToday = habits.filter((h) => h.done.includes(today)).length
+
   return (
-    <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16 }}>
-        <h3 style={{ margin: 0 }}>Habit Tracker</h3>
-        <button className="btn" onClick={addHabit}>+ Add Habit</button>
+    <div className="ht">
+      <div className="ht-summary">
+        <div className="ht-ring" style={{ '--p': habits.length ? doneToday / habits.length : 0 } as CSSProperties}>
+          <b>
+            <Roll>{`${doneToday}/${habits.length}`}</Roll>
+          </b>
+          <span>today</span>
+        </div>
+        <p className="muted">{habits.length && doneToday === habits.length ? 'Everything done today. Nice work!' : 'Tap a big circle to check off today.'}</p>
       </div>
 
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-          <thead>
-            <tr>
-              <th style={{ width: 160, textAlign: 'left', padding: '8px 12px' }}>Habit</th>
-              {days.map(d => (
-                <th key={d.offset} style={{ width: 36, textAlign: 'center', padding: '4px', fontSize: '0.7rem', color: d.isWeekend ? 'var(--danger)' : 'var(--muted)' }}>
-                  {d.label}
-                </th>
-              ))}
-              <th style={{ width: 80, textAlign: 'center', padding: '8px 12px', fontSize: '0.8rem' }}>Streak</th>
-              <th style={{ width: 100, textAlign: 'center', padding: '8px 12px', fontSize: '0.8rem' }}>Best</th>
-            </tr>
-          </thead>
-          <tbody>
-            {habits.map((habit, hi) => (
-              <tr key={habit.id} style={{ animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both', animationDelay: `${hi * 60}ms` }}>
-                <td style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <div style={{ width: 12, height: 12, borderRadius: '50%', background: habit.color }} />
-                  <input type="text" value={habit.name} onChange={e => setHabits(habits.map(h => h.id === habit.id ? { ...h, name: e.target.value } : h))} style={{ background: 'transparent', border: 'none', color: 'var(--text)', fontWeight: 500, width: 120 }} />
-                  <button className="btn" onClick={() => setHabits(habits.filter(h => h.id !== habit.id))} style={{ padding: '2px 8px', fontSize: '0.75rem', color: 'var(--danger)' }}>Delete</button>
-                </td>
-                {days.map(d => (
-                  <td key={d.offset} style={{ textAlign: 'center', padding: 4 }}>
-                    <button
-                      onClick={() => toggleDay(habit.id, d.offset)}
-                      style={{
-                        width: 28, height: 28, borderRadius: '6px', border: 'none', cursor: 'pointer',
-                        background: habit.completed?.[`d${d.offset}`] ? habit.color : (d.isWeekend ? 'rgba(239,68,68,0.1)' : 'var(--sunken)'),
-                        boxShadow: habit.completed?.[`d${d.offset}`] ? `0 0 0 2px ${habit.color}40` : 'none',
-                        transition: 'transform 0.15s, background 0.15s',
-                      }}
-                      onMouseDown={e => { e.currentTarget.style.transform = 'scale(0.9)' }}
-                      onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
-                      onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)' }}
-                    >
-                      {habit.completed?.[`d${d.offset}`] && <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 700 }}>✓</span>}
-                    </button>
-                  </td>
+      <div ref={list} className="ht-list">
+        {habits.map((h) => {
+          const set = new Set(h.done)
+          const cur = currentStreak(h.done, today)
+          const best = bestStreak(h.done)
+          const rate = completionRate(h.done, today, 30)
+          const on = set.has(today)
+          return (
+            <section key={h.id} data-flip={h.id} className="ht-card" style={{ '--hc': h.color } as CSSProperties}>
+              <div className="ht-head">
+                <button type="button" className={`ht-today ${on ? 'on' : ''}`} aria-pressed={on} aria-label={`${h.name}: ${on ? 'done' : 'not done'} today`} onClick={() => toggle(h.id, today)}>
+                  <span key={on ? 'y' : 'n'} className="ht-today-in">{on ? <Check size={26} /> : h.emoji}</span>
+                  {burst.startsWith(h.id) && on && (
+                    <span key={burst} className="ht-burst" aria-hidden="true">
+                      {Array.from({ length: 8 }, (_, i) => <i key={i} style={{ '--a': `${i * 45}deg` } as CSSProperties} />)}
+                    </span>
+                  )}
+                </button>
+                <div className="ht-title">
+                  <b>
+                    {h.emoji} {h.name}
+                  </b>
+                  <span className="muted">
+                    Best {best} d · {Math.round(rate * 100)}% last 30 days
+                  </span>
+                </div>
+                <div className={`ht-flame ${cur ? 'lit' : ''}`} title={`Current streak: ${cur} days`}>
+                  <svg viewBox="0 0 24 32" style={{ transform: `scale(${cur ? flameScale(cur) : 0.5})` }} aria-hidden="true">
+                    <path d="M12 1c1 5 7 8 7 16a7 7 0 0 1-14 0c0-4 2-6 3-8 0 3 1 5 3 5-1-5 0-9 1-13z" fill="var(--ht-fl1)" />
+                    <path d="M12 14c1 3 4 5 4 9a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3-.5-3 0-5 0-8z" fill="var(--ht-fl2)" />
+                  </svg>
+                  <b>
+                    <Roll>{String(cur)}</Roll>
+                  </b>
+                </div>
+                <button type="button" className="btn ht-del" aria-label={`Delete ${h.name}`} onClick={() => confirm(`Delete "${h.name}" and its history?`) && setHabits((hs) => hs.filter((x) => x.id !== h.id))}>
+                  <Icon name="close" size={16} />
+                </button>
+              </div>
+              <div className="ht-grid" role="grid" aria-label={`${h.name} history, last ${WEEKS} weeks`}>
+                {weeks.map((col, w) => (
+                  <div key={w} className="ht-col" role="row">
+                    {col.map((d, r) =>
+                      d ? (
+                        <button key={r} type="button" role="gridcell" className={`ht-cell ${set.has(d) ? 'on' : ''} ${d === today ? 'now' : ''}`} title={d} aria-label={`${d} ${set.has(d) ? 'done' : 'not done'}`} onClick={() => toggle(h.id, d)} />
+                      ) : (
+                        <span key={r} className="ht-cell empty" />
+                      ),
+                    )}
+                  </div>
                 ))}
-                <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--accent)' }}>
-                  <Roll value={getStreak(habit.completed || {})} />
-                </td>
-                <td style={{ textAlign: 'center', fontWeight: 600, color: 'var(--muted)' }}>
-                  <Roll value={getLongestStreak(habit.completed || {})} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              </div>
+            </section>
+          )
+        })}
       </div>
 
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        Click a day to toggle. Streak counts consecutive days from today backwards. Data saved locally.
-      </p>
+      <form
+        className="row ht-add"
+        onSubmit={(e) => {
+          e.preventDefault()
+          add()
+        }}
+      >
+        <input type="text" aria-label="Emoji" value={emoji} maxLength={4} onChange={(e) => setEmoji(e.target.value)} className="ht-emoji" />
+        <input type="text" aria-label="Habit name" placeholder="New habit, e.g. Stretch 5 minutes" value={name} onChange={(e) => setName(e.target.value)} />
+        <button type="submit" className="btn primary btn-icon" disabled={!name.trim()}>
+          <Icon name="plus" size={18} />
+          Add habit
+        </button>
+      </form>
+      <Hint>Tap the big circle to mark today done; tap any heatmap square to fix past days. The flame grows with your streak, and everything stays in this browser.</Hint>
     </div>
   )
 }

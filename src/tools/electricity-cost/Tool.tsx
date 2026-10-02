@@ -1,5 +1,14 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
+import { reducedMotion } from '../../motion/springs'
+
+interface Appliance {
+  id: number
+  name: string
+  watts: number
+  hours: number
+  enabled: boolean
+}
 
 const APPLIANCES = [
   { name: 'Air Conditioner (1 PK)', watts: 800, hours: 8 },
@@ -25,9 +34,12 @@ const PLN_TARIFFS = [
 ]
 
 export default function ElectricityCost() {
-  const [appliances, setAppliances] = useState(() => {
-    const saved = localStorage.getItem('electricity-cost')
-    return saved ? JSON.parse(saved) : APPLIANCES.map((a, i) => ({ ...a, id: i, enabled: true }))
+  const [appliances, setAppliances] = useState<Appliance[]>(() => {
+    try {
+      const saved = localStorage.getItem('electricity-cost')
+      if (saved) return JSON.parse(saved) as Appliance[]
+    } catch {}
+    return APPLIANCES.map((a, i) => ({ ...a, id: i, enabled: true }))
   })
   const [tariffIdx, setTariffIdx] = useState(1)
 
@@ -48,7 +60,7 @@ export default function ElectricityCost() {
     setAppliances(appliances.filter(a => a.id !== id))
   }
 
-  const updateAppliance = (id: number, field: string, value: string | number | boolean) => {
+  const updateAppliance = (id: number, field: 'name' | 'watts' | 'hours' | 'enabled', value: string | number | boolean) => {
     setAppliances(appliances.map(a => a.id === id ? { ...a, [field]: value } : a))
   }
 
@@ -65,7 +77,7 @@ export default function ElectricityCost() {
       </div>
 
       <div style={{ display: 'grid', gap: 8, marginBottom: 16 }}>
-        {appliances.map((app, i) => (
+        {appliances.map(app => (
           <div key={app.id} className="pop-row" style={{
             display: 'flex', alignItems: 'center', gap: 12, padding: 10,
             background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',
@@ -75,11 +87,12 @@ export default function ElectricityCost() {
               <input type="checkbox" checked={app.enabled} onChange={e => updateAppliance(app.id, 'enabled', e.target.checked)} />
               <span style={{ flex: 1, fontWeight: 500 }}>{app.name}</span>
             </label>
-            <span className="muted" style={{ minWidth: 60 }}><Roll>{app.watts}</Roll>W</span>
+            <input type="number" min={1} step={5} value={app.watts} onChange={e => updateAppliance(app.id, 'watts', Number(e.target.value))} style={{ width: 80 }} aria-label="Watts" />
+            <span className="muted">W</span>
             <input type="number" min={0.1} max={24} step={0.5} value={app.hours} onChange={e => updateAppliance(app.id, 'hours', Number(e.target.value))} style={{ width: 70 }} />
             <span className="muted" style={{ minWidth: 30 }}>h</span>
             <span style={{ fontFamily: 'var(--mono)', minWidth: 100, textAlign: 'right' }}><Roll>{(app.watts * app.hours / 1000).toFixed(2)}</Roll> kWh/day</span>
-            <span style={{ fontFamily: 'var(--mono)', minWidth: 100, textAlign: 'right', color: 'var(--accent)' }}><Roll>{(app.watts * app.hours / 1000 * 30 * tariff.rate).toLocaleString()}</Roll>/mo</span>
+            <span style={{ fontFamily: 'var(--mono)', minWidth: 100, textAlign: 'right', color: 'var(--accent)' }}><Roll>{(app.watts * app.hours / 1000 * 30 * tariff.rate).toLocaleString('en-US', { maximumFractionDigits: 0 })}</Roll>/mo</span>
             <button className="btn" style={{ padding: '4px 8px', color: 'var(--danger)' }} onClick={() => removeAppliance(app.id)}>✕</button>
           </div>
         ))}
@@ -90,7 +103,7 @@ export default function ElectricityCost() {
       <div className="stats" style={{ marginTop: 16 }}>
         <div className="stat"><b><Roll>{dailyKwh.toFixed(2)}</Roll></b><span className="muted">kWh/day</span></div>
         <div className="stat"><b><Roll>{monthlyKwh.toFixed(1)}</Roll></b><span className="muted">kWh/month</span></div>
-        <div className="stat"><b style={{ color: 'var(--accent)' }}><Roll>Rp{monthlyCost.toLocaleString()}</Roll></b><span className="muted">Est. Monthly Cost</span></div>
+        <div className="stat"><b style={{ color: 'var(--accent)' }}><Roll>Rp{monthlyCost.toLocaleString('en-US', { maximumFractionDigits: 0 })}</Roll></b><span className="muted">Est. Monthly Cost</span></div>
       </div>
 
       <div style={{ marginTop: 16 }}>
@@ -102,20 +115,20 @@ export default function ElectricityCost() {
               <div key={app.id} className="pop-row" style={{
                 display: 'flex', justifyContent: 'space-between', padding: '8px 12px',
                 background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',
-                animation: 'pop 0.3s var(--spring-bouncy) both',
+                animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
                 animationDelay: `${i * 60}ms`
               }}>
                 <span style={{ fontWeight: 500 }}>{app.name}</span>
                 <div className="row" style={{ gap: 16 }}>
                   <span><b><Roll>{(app.watts * app.hours / 1000).toFixed(2)}</Roll></b> kWh/day</span>
-                  <span style={{ color: 'var(--accent)' }}><b><Roll>{(app.watts * app.hours / 1000 * 30 * tariff.rate).toLocaleString()}</Roll></b>/mo</span>
+                  <span style={{ color: 'var(--accent)' }}><b><Roll>{(app.watts * app.hours / 1000 * 30 * tariff.rate).toLocaleString('en-US', { maximumFractionDigits: 0 })}</Roll></b>/mo</span>
                 </div>
               </div>
             ))}
         </div>
       </div>
 
-      <Hint>Add appliances with watts and hours/day. Spinning meter shows monthly cost with PLN tariff. Top consumers ranked.</Hint>
+      <Hint>Add appliances with watts and hours/day. Shows monthly cost with PLN tariff. Top consumers ranked.</Hint>
     </div>
   )
 }

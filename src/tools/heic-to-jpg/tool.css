@@ -1,0 +1,23 @@
+.hc-drop {
+  border: 2px dashed var(--border); background: var(--sunken); border-radius: var(--radius-sm); padding: 28px 16px; text-align: center; position: relative;
+  transition: border-color 0.15s, background-color 0.15s, transform var(--spring-snap-ms) var(--spring-snap);
+}
+.hc-drop.is-over { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.015); animation: breathe 1.2s ease-in-out infinite; }
+.hc-drop p { margin: 0 0 10px; }
+.hc-hidden-input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.hc-phone { display: inline-grid; place-items: center; width: 54px; height: 54px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); margin-bottom: 10px; animation: hc-bob 2.6s ease-in-out infinite; }
+@keyframes hc-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+.hc-list { display: grid; gap: 10px; margin-top: 12px; }
+.hc-item { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; align-items: center; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; background: var(--surface); }
+.hc-thumb { width: 72px; height: 72px; border-radius: 8px; background: var(--sunken); border: 1px solid var(--border); display: grid; place-items: center; overflow: hidden; color: var(--muted); font-family: var(--mono); font-size: 0.72rem; }
+.hc-thumb img { width: 100%; height: 100%; object-fit: cover; animation: hc-develop 0.7s var(--ease-out) both; }
+@keyframes hc-develop { from { filter: blur(8px) grayscale(1); opacity: 0.2; transform: scale(1.08); } }
+.hc-name { font-weight: 600; overflow-wrap: anywhere; }
+.hc-sub { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+.hc-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+.hc-actions .btn { padding: 6px 11px; font-size: 0.86rem; }
+.hc-status-queued { opacity: 0.75; }
+.hc-bar { margin-top: 8px; }
+.hc-bar.indeterminate > i { width: 40%; animation: hc-indet 1.1s ease-in-out infinite; }
+@keyframes hc-indet { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }

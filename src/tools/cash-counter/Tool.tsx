@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Denomination {
@@ -55,16 +55,29 @@ function calculateChange(amount: number, denoms: Denomination[]): { value: numbe
 }
 
 export default function CashCounter() {
-  const [currency, setCurrency] = useState<'IDR' | 'USD'>('IDR')
+  const [currency, setCurrency] = useState<'IDR' | 'USD'>(() => {
+    try { return localStorage.getItem('cash-counter-currency') === 'USD' ? 'USD' : 'IDR' } catch { return 'IDR' }
+  })
   const [denoms, setDenoms] = useState<Denomination[]>(() => {
-    const saved = localStorage.getItem('cash-counter')
-    return saved ? JSON.parse(saved) : IDR_DENOMS
+    try {
+      const saved = localStorage.getItem('cash-counter')
+      if (saved) return JSON.parse(saved) as Denomination[]
+    } catch {}
+    return IDR_DENOMS
   })
   const [targetAmount, setTargetAmount] = useState('')
 
   useEffect(() => {
     try { localStorage.setItem('cash-counter', JSON.stringify(denoms)) } catch {}
   }, [denoms])
+  useEffect(() => {
+    try { localStorage.setItem('cash-counter-currency', currency) } catch {}
+  }, [currency])
+
+  // USD denominations are stored in cents, IDR in whole rupiah
+  const unit = currency === 'USD' ? 100 : 1
+  const denomsToUse = currency === 'IDR' ? IDR_DENOMS : USD_DENOMS
+  const change = targetAmount ? calculateChange(Math.round(Number(targetAmount) * unit), denomsToUse) : []
 
   const total = denoms.reduce((sum, d) => sum + d.value * d.count, 0)
   const totalNotes = denoms.reduce((sum, d) => sum + d.count, 0)
@@ -79,10 +92,10 @@ export default function CashCounter() {
   const handleTargetChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTargetAmount(e.target.value)
     if (e.target.value) {
-      const amount = Number(e.target.value)
-      const change = calculateChange(amount, denoms.filter(d => d.count > 0))
-      setDenoms(denoms.map(d => {
-        const c = change.find(c => c.value === d.value)
+      const amount = Math.round(Number(e.target.value) * unit)
+      const result = calculateChange(amount, denomsToUse)
+      setDenoms(denomsToUse.map(d => {
+        const c = result.find(c => c.value === d.value)
         return c ? { ...d, count: c.count } : { ...d, count: 0 }
       }))
     }
@@ -93,8 +106,6 @@ export default function CashCounter() {
     setTargetAmount('')
   }
 
-  const denomsToUse = currency === 'IDR' ? IDR_DENOMS : USD_DENOMS
-
   return (
     <div>
       <div className="row" style={{ gap: 16, flexWrap: 'wrap', marginBottom: 16, alignItems: 'flex-end' }}>
@@ -102,6 +113,7 @@ export default function CashCounter() {
           <select value={currency} onChange={e => {
             const c = e.target.value as 'IDR' | 'USD'
             setCurrency(c)
+            setTargetAmount('')
             setDenoms(c === 'IDR' ? IDR_DENOMS.map(d => ({ ...d, count: 0 })) : USD_DENOMS.map(d => ({ ...d, count: 0 })))
           }}>
             <option value="IDR">Indonesian Rupiah (IDR)</option>
@@ -116,10 +128,10 @@ export default function CashCounter() {
       </div>
 
       <div className="stats" style={{ marginBottom: 16 }}>
-        <div className="stat"><b><Roll>{formatCurrency(total, currency)}</Roll></b><span className="muted">Total Value</span></div>
+        <div className="stat"><b><Roll>{formatCurrency(total / unit, currency)}</Roll></b><span className="muted">Total Value</span></div>
         <div className="stat"><b><Roll>{totalNotes}</Roll></b><span className="muted">Total Pieces</span></div>
         {targetAmount && (
-          <div className="stat"><b style={{ color: 'var(--ok)' }}><Roll>{calculateChange(Number(targetAmount), denoms.filter(d => d.count > 0)).length}</Roll></b><span className="muted">Denominations Used</span></div>
+          <div className="stat"><b style={{ color: 'var(--ok)' }}><Roll>{change.length}</Roll></b><span className="muted">Denominations Used</span></div>
         )}
       </div>
 
@@ -142,7 +154,7 @@ export default function CashCounter() {
               <button className="btn" style={{ padding: '4px 10px', fontSize: '1rem' }} onClick={() => increment(d.value)}>+</button>
             </div>
             <span style={{ fontFamily: 'var(--mono)', fontSize: '0.85rem', color: 'var(--muted)' }}>
-              {formatCurrency(d.value * (denoms.find(x => x.value === d.value)?.count ?? 0), currency)}
+              {formatCurrency(d.value * (denoms.find(x => x.value === d.value)?.count ?? 0) / unit, currency)}
             </span>
           </div>
         ))}
@@ -152,9 +164,9 @@ export default function CashCounter() {
         <div style={{ marginTop: 16, padding: 12, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
           <div style={{ fontWeight: 600, marginBottom: 8 }}>Change for {formatCurrency(Number(targetAmount), currency)} (fewest pieces):</div>
           <div className="row" style={{ flexWrap: 'wrap', gap: 8 }}>
-            {calculateChange(Number(targetAmount), denoms.filter(d => d.count > 0)).map(c => (
+            {change.map(c => (
               <span key={c.value} className="chip" style={{ background: 'var(--ok)', color: 'var(--ok-text, white)' }}>
-                {c.count} × {formatCurrency(c.value, currency)}
+                {c.count} × {formatCurrency(c.value / unit, currency)}
               </span>
             ))}
           </div>

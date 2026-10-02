@@ -1,0 +1,37 @@
+.su-stage { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 18px; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); animation: rise 0.35s var(--ease-out) both; }
+@media (max-width: 600px) { .su-stage { grid-template-columns: minmax(0, 1fr); justify-items: center; } .su-side { width: 100%; } }
+.su-now { animation: su-in var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.su-ring { width: min(240px, 70vw); height: auto; display: block; }
+.su-track { fill: none; stroke: var(--sunken); stroke-width: 14; }
+.su-prog { fill: none; stroke: var(--ok); stroke-width: 14; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 110px 110px; transition: stroke-dashoffset 0.25s linear, stroke 0.4s; }
+.su-stage.soon .su-prog { stroke: #f08c00; }
+.su-stage.over .su-prog { stroke: var(--danger); }
+.su-stage.over .su-time { fill: var(--danger); animation: su-blink 1s ease-in-out infinite; }
+.su-name { font-size: 20px; font-weight: 700; fill: var(--text); }
+.su-time { font-family: var(--mono); font-size: 44px; font-weight: 700; fill: var(--text); letter-spacing: -1px; }
+.su-next { font-size: 1.05rem; }
+.su-next b { display: inline-block; color: var(--accent); }
+.su-side .btn { min-height: 42px; }
+.su-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 6px; }
+.su-stats .stat b { font-family: var(--mono); font-size: 1.15rem; }
+.su-end { margin-top: 10px; }
+.su-done { display: grid; gap: 6px; justify-items: start; padding: 16px; border: 1px solid var(--ok); border-radius: var(--radius); background: color-mix(in srgb, var(--ok) 8%, transparent); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.su-done b { font-size: 1.2rem; }
+.su-cards { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; }
+.su-card { position: relative; display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); border-left: 5px solid var(--c); transition: opacity 0.3s, box-shadow 0.3s, scale var(--spring-bouncy-ms) var(--spring-bouncy); }
+.su-cards.shuffled .su-card { animation: su-wiggle 0.5s ease-in-out both; }
+.su-card.current { scale: 1.06; box-shadow: 0 0 0 3px var(--c), 0 8px 18px -8px rgba(0, 0, 0, 0.4); z-index: 1; }
+.su-card.done { opacity: 0.45; }
+.su-card.done .su-n { text-decoration: line-through; }
+.su-av { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 0.78rem; font-weight: 700; color: #fff; background: var(--c); }
+.su-n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 0.92rem; }
+.su-x { width: 32px; height: 40px; border: 0; background: transparent; color: var(--muted); font-size: 1.1rem; cursor: pointer; border-radius: 6px; flex: none; }
+.su-x:hover { color: var(--danger); }
+.su-setup { margin-top: 12px; display: grid; gap: 12px; }
+.su-setup .row { margin: 0; }
+.su-add { display: flex; gap: 8px; }
+.su-add input { flex: 1; min-width: 0; }
+@keyframes su-wiggle { 0% { rotate: 0deg; } 30% { rotate: var(--r); } 60% { rotate: calc(var(--r) * -0.6); } 100% { rotate: 0deg; } }
+@keyframes su-in { from { opacity: 0; scale: 0.85; } to { opacity: 1; scale: 1; } }
+@keyframes su-blink { 50% { opacity: 0.45; } }
+@media (prefers-reduced-motion: reduce) { .su-now, .su-cards.shuffled .su-card, .su-stage.over .su-time { animation: none; } .su-prog { transition: none; } }

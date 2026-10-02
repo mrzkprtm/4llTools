@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'Meeting Cost Calculator',
-  description: 'Calculate the real cost of meetings based on attendees, salaries, and duration. See cost ticking live.',
+  name: 'Meeting Cost Ticker',
+  description: 'Watch the cost of a meeting tick up live from the number of people and their salaries.',
   category: 'Productivity',
-  keywords: ['meeting', 'cost', 'calculator', 'salary', 'biaya', 'rapat', 'gaji'],
+  keywords: ['meeting calculator', 'cost of meeting', 'biaya rapat', 'rapat'],
   symbol: 'Mc',
-  icon: 'users',
+  icon: 'money-minus',
 }

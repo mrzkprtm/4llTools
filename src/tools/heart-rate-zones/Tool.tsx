@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 
 export default function HeartRateZones() {
   const [age, setAge] = useState(30)

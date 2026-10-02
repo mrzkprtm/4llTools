@@ -1,0 +1,33 @@
+.ps-field { display: flex; gap: 8px; }
+.ps-input {
+  flex: 1; min-width: 0; font: inherit; font-family: var(--mono); font-size: 1rem; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--sunken); color: var(--text); transition: border-color 0.15s, box-shadow 0.15s;
+}
+.ps-input:hover { border-color: var(--border-strong); }
+.ps-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.ps-eye { flex: none; }
+.ps-meter { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin: 12px 0 4px; }
+.ps-meter i { height: 8px; border-radius: 4px; background: var(--sunken); border: 1px solid var(--border); transform-origin: left; transition: background-color 0.3s, transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.ps-meter i.on { transform: scaleY(1.25); }
+.ps-bad i.on { background: var(--danger); border-color: var(--danger); }
+.ps-mid i.on { background: #e0a100; border-color: #e0a100; }
+.ps-good i.on { background: var(--ok); border-color: var(--ok); }
+.ps-verdict { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 10px 0; }
+.ps-verdict .chip { font-size: 0.95rem; }
+.ps-feedback { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--sunken); animation: ps-in 0.3s var(--ease-out) both; }
+.ps-feedback ul { margin: 4px 0 0; padding-left: 18px; }
+.ps-warning { margin: 0; font-weight: 600; color: var(--danger); }
+@keyframes ps-in { from { opacity: 0; transform: translateY(4px); } }
+.ps-h { margin: 20px 0 6px; font-size: 1rem; }
+.ps-table-wrap { overflow-x: auto; }
+.ps-note { display: block; font-family: inherit; text-transform: none; letter-spacing: 0; font-size: 0.78rem; color: var(--muted); font-weight: 400; }
+.ps-time { font-weight: 650; white-space: nowrap; }
+.ps-fast { color: var(--danger); }
+.ps-slow { color: var(--ok); }
+.ps-seq { display: flex; flex-wrap: wrap; gap: 6px; }
+.ps-chunk { display: inline-flex; flex-direction: column; gap: 2px; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--sunken); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; max-width: 100%; }
+.ps-chunk code { font-family: var(--mono); font-size: 0.9rem; word-break: break-all; }
+.ps-chunk small { font-size: 0.74rem; color: var(--muted); }
+.ps-p-dictionary, .ps-p-spatial, .ps-p-repeat, .ps-p-sequence, .ps-p-date, .ps-p-regex { border-color: color-mix(in srgb, var(--danger) 40%, var(--border)); }
+.ps-p-bruteforce { border-color: color-mix(in srgb, var(--ok) 40%, var(--border)); }
+.ps-more { margin-top: 18px; }

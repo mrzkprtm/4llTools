@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'World Clock Map',
-  description: 'Visual world map with clickable time zones, multiple city clocks, and meeting planner overlay.',
+  name: 'World Clock & Day/Night Map',
+  description: 'See where the sun is up on a live day and night world map with clocks for your cities.',
   category: 'Productivity',
-  keywords: ['world', 'clock', 'map', 'timezone', 'meeting', 'peta', 'jam', 'dunia', 'zona', 'waktu'],
-  symbol: 'Wc',
-  icon: 'globe',
+  keywords: ['world clock', 'day night map', 'jam dunia', 'zona waktu', 'terminator'],
+  symbol: 'Wc2',
+  icon: 'globe-earth',
 }

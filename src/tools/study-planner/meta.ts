@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'Plan study sessions by subject, set goals, track hours, and see progress with weekly calendar view.',
   category: 'Learning',
   keywords: ['study', 'planner', 'schedule', 'calendar', 'goals', 'rencana', 'belajar', 'jadwal', 'kalender', 'target'],
-  symbol: 'Sp',
+  symbol: 'Stu',
   icon: 'calendar',
 }

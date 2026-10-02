@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Working Days Calculator',
-  description: 'Calculate business days between dates, add/subtract work days, with Indonesian holiday support.',
+  description: 'Count business days between dates, skipping weekends and Indonesian holidays and cuti bersama.',
   category: 'Productivity',
-  keywords: ['working', 'days', 'business', 'holiday', 'hari', 'kerja', 'libur', 'indonesia'],
+  keywords: ['business days', 'hari kerja', 'libur nasional', 'cuti bersama', 'workdays'],
   symbol: 'Wd',
-  icon: 'calendar-check',
+  icon: 'calendar',
 }

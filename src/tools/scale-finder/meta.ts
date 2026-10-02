@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Scale Finder',
-  description: 'Visualize any scale on piano keyboard and fretboard. 80+ scales including modes, pentatonics, blues, and exotic scales.',
+  description: 'Show any scale on a piano keyboard and fretboard with 80+ scales',
   category: 'Music',
   keywords: ['scale', 'finder', 'piano', 'fretboard', 'guitar', 'modes', 'pentatonic', 'blues', 'skala', 'nota', 'piano', 'gitar'],
   symbol: 'Sf',
-  icon: 'piano',
+  icon: 'music-note',
 }

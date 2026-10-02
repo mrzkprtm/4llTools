@@ -55,12 +55,20 @@ const SAMPLE_RECIPES: Recipe[] = [
 
 export default function MealPlanner() {
   const [recipes, setRecipes] = useState<Recipe[]>(() => {
-    const saved = localStorage.getItem('meal-planner-recipes')
-    return saved ? JSON.parse(saved) : SAMPLE_RECIPES
+    try {
+      const saved = localStorage.getItem('4lltools:meal-planner-recipes')
+      return saved ? JSON.parse(saved) : SAMPLE_RECIPES
+    } catch {
+      return SAMPLE_RECIPES
+    }
   })
   const [mealPlan, setMealPlan] = useState<MealPlan[]>(() => {
-    const saved = localStorage.getItem('meal-planner-plan')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:meal-planner-plan')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
   const [weekStart, setWeekStart] = useState(() => {
     const d = new Date()
@@ -72,10 +80,10 @@ export default function MealPlanner() {
   const [newMeal, setNewMeal] = useState({ date: '', mealType: 'dinner' as const, recipeId: 0, servings: 1 })
 
   useEffect(() => {
-    try { localStorage.setItem('meal-planner-recipes', JSON.stringify(recipes)) } catch {}
+    try { localStorage.setItem('4lltools:meal-planner-recipes', JSON.stringify(recipes)) } catch {}
   }, [recipes])
   useEffect(() => {
-    try { localStorage.setItem('meal-planner-plan', JSON.stringify(mealPlan)) } catch {}
+    try { localStorage.setItem('4lltools:meal-planner-plan', JSON.stringify(mealPlan)) } catch {}
   }, [mealPlan])
 
   const weekDates = useMemo(() => {

@@ -1,172 +1,106 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useEffect, useRef, useState } from 'react'
+import Icon from '../../components/Icon'
+import { useFlip } from '../../motion/useFlip'
+import { Hint, Slider } from '../../sim/controls'
+import { CITIES, DEFAULT_CITIES, isDaylight, offsetLabel, subsolarPoint, tzOffset, type City } from './logic'
+import WorldMap from './WorldMap'
+import './tool.css'
 
-const TIMEZONES = [
-  { city: 'Jakarta', tz: 'Asia/Jakarta', lat: -6.2, lng: 106.8, country: 'Indonesia' },
-  { city: 'Tokyo', tz: 'Asia/Tokyo', lat: 35.7, lng: 139.7, country: 'Japan' },
-  { city: 'Singapore', tz: 'Asia/Singapore', lat: 1.3, lng: 103.8, country: 'Singapore' },
-  { city: 'Dubai', tz: 'Asia/Dubai', lat: 25.2, lng: 55.3, country: 'UAE' },
-  { city: 'London', tz: 'Europe/London', lat: 51.5, lng: -0.1, country: 'UK' },
-  { city: 'New York', tz: 'America/New_York', lat: 40.7, lng: -74.0, country: 'USA' },
-  { city: 'Los Angeles', tz: 'America/Los_Angeles', lat: 34.1, lng: -118.2, country: 'USA' },
-  { city: 'São Paulo', tz: 'America/Sao_Paulo', lat: -23.5, lng: -46.6, country: 'Brazil' },
-  { city: 'Sydney', tz: 'Australia/Sydney', lat: -33.9, lng: 151.2, country: 'Australia' },
-  { city: 'Hong Kong', tz: 'Asia/Hong_Kong', lat: 22.3, lng: 114.2, country: 'Hong Kong' },
-  { city: 'Seoul', tz: 'Asia/Seoul', lat: 37.6, lng: 127.0, country: 'South Korea' },
-  { city: 'Mumbai', tz: 'Asia/Kolkata', lat: 19.1, lng: 72.9, country: 'India' },
-  { city: 'Berlin', tz: 'Europe/Berlin', lat: 52.5, lng: 13.4, country: 'Germany' },
-  { city: 'Paris', tz: 'Europe/Paris', lat: 48.9, lng: 2.4, country: 'France' },
-  { city: 'Toronto', tz: 'America/Toronto', lat: 43.7, lng: -79.4, country: 'Canada' },
-]
+const KEY = '4lltools:world-clock-map'
 
-const SELECTED_DEFAULT = ['Jakarta', 'Tokyo', 'Singapore', 'London', 'New York', 'Los Angeles']
+const timeIn = (tz: string, d: Date) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(d)
+const dayIn = (tz: string, d: Date) => new Intl.DateTimeFormat('en-CA', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d)
 
 export default function WorldClockMap() {
-  const [selectedCities, setSelectedCities] = useState<string[]>(() => {
-    const saved = localStorage.getItem('world-clock-map')
-    return saved ? JSON.parse(saved) : SELECTED_DEFAULT
-  })
-  const [meetingTime, setMeetingTime] = useState('09:00')
-  const [meetingDate, setMeetingDate] = useState(() => new Date().toISOString().split('T')[0])
-  const [referenceCity, setReferenceCity] = useState('Jakarta')
+  const [names, setNames] = useState<string[]>(DEFAULT_CITIES)
+  const [now, setNow] = useState(0)
+  const [offset, setOffset] = useState(0) // hours
+  const [hi, setHi] = useState<string | null>(null)
+  const [pick, setPick] = useState('')
+  const ready = useRef(false)
+  const list = useRef<HTMLUListElement>(null)
+  useFlip(list)
 
   useEffect(() => {
-    try { localStorage.setItem('world-clock-map', JSON.stringify(selectedCities)) } catch {}
-  }, [selectedCities])
+    try {
+      const raw = localStorage.getItem(KEY)
+      const saved = raw ? (JSON.parse(raw) as string[]) : null
+      if (Array.isArray(saved)) setNames(saved.filter((n) => CITIES.some((c) => c.name === n)))
+    } catch {
+      // Keep the defaults.
+    }
+    ready.current = true
+    setNow(Date.now())
+    const id = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(id)
+  }, [])
 
-  const now = useMemo(() => new Date(), [])
+  useEffect(() => {
+    if (!ready.current) return
+    try {
+      localStorage.setItem(KEY, JSON.stringify(names))
+    } catch {
+      // Storage is optional.
+    }
+  }, [names])
 
-  const getCityTime = (tz: string, refDate?: Date) => {
-    const date = refDate || now
-    return new Date(date.toLocaleString('en-US', { timeZone: tz }))
-  }
+  const time = (now || Date.UTC(2026, 0, 1)) + offset * 3600000
+  const date = new Date(time)
+  const cities = names.map((n) => CITIES.find((c) => c.name === n)!).filter(Boolean)
+  const localTz = now ? Intl.DateTimeFormat().resolvedOptions().timeZone : 'UTC'
+  const localDay = dayIn(localTz, date)
+  const sun = subsolarPoint(date)
+  const others = CITIES.filter((c) => !names.includes(c.name))
 
-  const formatTime = (date: Date) => date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false })
-  const formatDate = (date: Date) => date.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' })
-
-  const selectedZones = TIMEZONES.filter(z => selectedCities.includes(z.city))
-  const availableZones = TIMEZONES.filter(z => !selectedCities.includes(z.city))
-
-  const meetingTimes = useMemo(() => {
-    if (!meetingTime) return []
-    const [h, m] = meetingTime.split(':').map(Number)
-    const refZone = TIMEZONES.find(z => z.city === referenceCity)!
-    const refDate = new Date(meetingDate + 'T00:00:00')
-    refDate.setHours(h, m, 0, 0)
-    const refTimeInUTC = new Date(refDate.toLocaleString('en-US', { timeZone: refZone.tz }))
-    const utcTime = refTimeInUTC.getTime()
-
-    return selectedZones.map(zone => {
-      const localTime = new Date(utcTime)
-      const localStr = localTime.toLocaleString('en-US', { timeZone: zone.tz })
-      const localDate = new Date(localStr)
-      return {
-        city: zone.city,
-        country: zone.country,
-        time: formatTime(localDate),
-        date: formatDate(localDate),
-        isToday: localDate.toDateString() === new Date().toDateString(),
-        isTomorrow: localDate.toDateString() === new Date(Date.now() + 86400000).toDateString(),
-      }
-    })
-  }, [meetingTime, meetingDate, referenceCity, selectedZones])
-
-  const addCity = (city: string) => {
-    if (!selectedCities.includes(city)) setSelectedCities([...selectedCities, city])
-  }
-
-  const removeCity = (city: string) => {
-    setSelectedCities(selectedCities.filter(c => c !== city))
+  const rel = (c: City) => {
+    const d = dayIn(c.tz, date)
+    return d === localDay ? 'Today' : d > localDay ? 'Tomorrow' : 'Yesterday'
   }
 
   return (
-    <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0 }}>World Clock Map</h3>
-        <div className="row" style={{ gap: 8, flexWrap: 'wrap' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span className="muted">Meeting at</span>
-            <input type="time" value={meetingTime} onChange={e => setMeetingTime(e.target.value)} />
-            <input type="date" value={meetingDate} onChange={e => setMeetingDate(e.target.value)} style={{ width: 150 }} />
-            <span className="muted">in</span>
-            <select value={referenceCity} onChange={e => setReferenceCity(e.target.value)} style={{ width: 120 }}>
-              {selectedZones.map(z => <option key={z.city} value={z.city}>{z.city}</option>)}
-            </select>
-          </label>
+    <div className="wc">
+      <WorldMap time={time} cities={cities} highlight={hi} label={(c) => `${c.name} ${timeIn(c.tz, date)}`} onScrub={(dh) => setOffset((o) => Math.max(-24, Math.min(24, o + dh)))} />
+      <div className="wc-bar">
+        <div className="wc-slider">
+          <Slider label="Scrub time" value={Math.round(offset * 4) / 4} min={-24} max={24} step={0.25} onChange={setOffset} format={(v) => (v === 0 ? 'now' : `${v > 0 ? '+' : '−'}${Math.floor(Math.abs(v))}h${Math.abs(v) % 1 ? ` ${Math.round((Math.abs(v) % 1) * 60)}m` : ''}`)} />
         </div>
+        <button type="button" className="btn btn-icon" disabled={offset === 0} onClick={() => setOffset(0)}>
+          <Icon name="reload" size={18} /> Now
+        </button>
       </div>
-
-      <div style={{ display: 'grid', gap: 16 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12 }}>
-          {selectedZones.map((zone, i) => {
-            const localTime = getCityTime(zone.tz)
-            const isDay = localTime.getHours() >= 6 && localTime.getHours() < 18
-            return (
-              <div key={zone.city} className="pop-row" style={{
-                padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-                borderTop: `4px solid ${isDay ? '#f59e0b' : '#3b82f6'}`,
-                animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-                animationDelay: `${i * 40}ms`,
-              }}>
-                <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: '1rem' }}>{zone.city}</div>
-                    <div className="muted" style={{ fontSize: '0.75rem' }}>{zone.country}</div>
-                  </div>
-                  <button className="btn" onClick={() => removeCity(zone.city)} style={{ padding: '2px 8px', fontSize: '0.7rem', color: 'var(--danger)' }}>Remove</button>
-                </div>
-                <div style={{ fontSize: '2rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--text)' }}>
-                  <Roll value={formatTime(localTime)} />
-                </div>
-                <div className="muted" style={{ fontSize: '0.8rem' }}>{formatDate(localTime)}</div>
-                <div style={{ marginTop: 8, fontSize: '0.75rem', color: isDay ? '#f59e0b' : '#3b82f6' }}>
-                  {isDay ? '☀️ Daytime' : '🌙 Nighttime'}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-
-        <details style={{ background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 12 }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 600 }}>Add More Cities</summary>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 8, marginTop: 12 }}>
-            {availableZones.map(zone => (
-              <button key={zone.city} className="btn" onClick={() => addCity(zone.city)} style={{ padding: '8px 12px', justifyContent: 'flex-start' }}>
-                {zone.city} ({zone.country})
-              </button>
-            ))}
-          </div>
-        </details>
-
-        {meetingTimes.length > 0 && (
-          <div>
-            <h4 style={{ marginBottom: 12 }}>Meeting Planner</h4>
-            <div style={{ display: 'grid', gap: 8 }}>
-              {meetingTimes.map((mt, i) => (
-                <div key={mt.city} className="pop-row" style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 12,
-                  background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-                  animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-                  animationDelay: `${i * 40}ms`,
-                }}>
-                  <div>
-                    <div style={{ fontWeight: 600 }}>{mt.city}, {mt.country}</div>
-                    <div className="muted" style={{ fontSize: '0.8rem' }}>{mt.date} {mt.isTomorrow ? '(+1 day)' : ''}</div>
-                  </div>
-                  <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)' }}>
-                    {mt.time}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        Click "Add More Cities" to select time zones. Meeting planner converts a reference time to all selected cities.
+      <p className="muted wc-sun">
+        {now ? `${date.toLocaleString('en-GB', { timeZone: 'UTC', weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })} UTC · ` : ''}Sun overhead at {Math.abs(sun.lat).toFixed(1)}°{sun.lat >= 0 ? 'N' : 'S'}, {Math.abs(sun.lon).toFixed(1)}°{sun.lon >= 0 ? 'E' : 'W'}
       </p>
+
+      <ul ref={list} className="wc-list">
+        {cities.map((c) => {
+          const day = isDaylight(c.lat, c.lon, date)
+          return (
+            <li key={c.name} data-flip={c.name} className={`wc-city ${day ? 'day' : 'night'} ${hi === c.name ? 'hi' : ''}`} onPointerEnter={() => setHi(c.name)} onPointerLeave={() => setHi(null)}>
+              <span className="wc-icon" aria-label={day ? 'Daytime' : 'Night'}>{day ? '☀️' : '🌙'}</span>
+              <span className="wc-name">
+                <b>{c.name}</b>
+                <small>{now ? `${rel(c)} · ${offsetLabel(tzOffset(c.tz, date))}` : ''}</small>
+              </span>
+              <b className="wc-time">{now ? timeIn(c.tz, date) : '--:--'}</b>
+              <button type="button" className="wc-x" aria-label={`Remove ${c.name}`} onClick={() => setNames((n) => n.filter((x) => x !== c.name))}>
+                <Icon name="close" size={16} />
+              </button>
+            </li>
+          )
+        })}
+      </ul>
+      <div className="row">
+        <select aria-label="Add a city" value={pick} onChange={(e) => setPick(e.target.value)} className="wc-pick">
+          <option value="">Add a city…</option>
+          {others.map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
+        </select>
+        <button type="button" className="btn primary btn-icon" disabled={!pick} onClick={() => { setNames((n) => [...n, pick]); setPick('') }}>
+          <Icon name="plus" size={18} /> Add
+        </button>
+        <button type="button" className="btn" onClick={() => setNames(DEFAULT_CITIES)}>Reset list</button>
+      </div>
+      <Hint>The shaded half of the map is night, with twilight fading at its edge; the yellow dot is where the sun is overhead. Drag across the map or use the slider to scrub up to 24 hours either way.</Hint>
     </div>
   )
 }

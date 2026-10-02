@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Roll } from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
@@ -25,16 +25,16 @@ const LOCATIONS = [
   { name: 'Dubai', lat: 25.2048, lng: 55.2708, type: 'city', country: 'UAE' },
   { name: 'New York', lat: 40.7128, lng: -74.0060, type: 'city', country: 'USA' },
   { name: 'Los Angeles', lat: 34.0522, lng: -118.2437, type: 'city', country: 'USA' },
-  { name: 'CGK', name: 'Jakarta (CGK)', lat: -6.1256, lng: 106.6558, type: 'airport', country: 'Indonesia' },
-  { name: 'DPS', name: 'Bali (DPS)', lat: -8.7482, lng: 115.1672, type: 'airport', country: 'Indonesia' },
-  { name: 'SIN', name: 'Singapore (SIN)', lat: 1.3644, lng: 103.9915, type: 'airport', country: 'Singapore' },
-  { name: 'KUL', name: 'Kuala Lumpur (KUL)', lat: 2.7456, lng: 101.7072, type: 'airport', country: 'Malaysia' },
-  { name: 'BKK', name: 'Bangkok (BKK)', lat: 13.6900, lng: 100.7501, type: 'airport', country: 'Thailand' },
-  { name: 'HND', name: 'Tokyo Haneda (HND)', lat: 35.5494, lng: 139.7798, type: 'airport', country: 'Japan' },
-  { name: 'NRT', name: 'Tokyo Narita (NRT)', lat: 35.7720, lng: 140.3929, type: 'airport', country: 'Japan' },
-  { name: 'LHR', name: 'London Heathrow (LHR)', lat: 51.4700, lng: -0.4543, type: 'airport', country: 'UK' },
-  { name: 'JFK', name: 'New York JFK (JFK)', lat: 40.6413, lng: -73.7781, type: 'airport', country: 'USA' },
-  { name: 'LAX', name: 'Los Angeles (LAX)', lat: 33.9416, lng: -118.4085, type: 'airport', country: 'USA' },
+  { name: 'Jakarta (CGK)', lat: -6.1256, lng: 106.6558, type: 'airport', country: 'Indonesia' },
+  { name: 'Bali (DPS)', lat: -8.7482, lng: 115.1672, type: 'airport', country: 'Indonesia' },
+  { name: 'Singapore (SIN)', lat: 1.3644, lng: 103.9915, type: 'airport', country: 'Singapore' },
+  { name: 'Kuala Lumpur (KUL)', lat: 2.7456, lng: 101.7072, type: 'airport', country: 'Malaysia' },
+  { name: 'Bangkok (BKK)', lat: 13.6900, lng: 100.7501, type: 'airport', country: 'Thailand' },
+  { name: 'Tokyo Haneda (HND)', lat: 35.5494, lng: 139.7798, type: 'airport', country: 'Japan' },
+  { name: 'Tokyo Narita (NRT)', lat: 35.7720, lng: 140.3929, type: 'airport', country: 'Japan' },
+  { name: 'London Heathrow (LHR)', lat: 51.4700, lng: -0.4543, type: 'airport', country: 'UK' },
+  { name: 'New York JFK (JFK)', lat: 40.6413, lng: -73.7781, type: 'airport', country: 'USA' },
+  { name: 'Los Angeles (LAX)', lat: 33.9416, lng: -118.4085, type: 'airport', country: 'USA' },
 ]
 
 function haversine(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -68,8 +68,8 @@ function formatTime(hours: number) {
 export default function DistanceCalculator() {
   const [from, setFrom] = useState('Jakarta')
   const [to, setTo] = useState('Bali (Denpasar)')
-  const [customFrom, setCustomFrom] = useState({ name: '', lat: '', lng: '' })
-  const [customTo, setCustomTo] = useState({ name: '', lat: '', lng: '' })
+  const [customFrom, setCustomFrom] = useState({ name: '', lat: '', lng: '', type: 'custom' })
+  const [customTo, setCustomTo] = useState({ name: '', lat: '', lng: '', type: 'custom' })
   const [useCustomFrom, setUseCustomFrom] = useState(false)
   const [useCustomTo, setUseCustomTo] = useState(false)
 
@@ -86,12 +86,6 @@ export default function DistanceCalculator() {
 
   const driveDist = drivingDistance(airDist)
   const flyTime = flightTime(airDist)
-
-  const formatTime = (hours: number) => {
-    const h = Math.floor(hours)
-    const m = Math.round((hours - h) * 60)
-    return `${h}h ${m}m`
-  }
 
   const renderResults = () => {
     if (airDist <= 0) return null

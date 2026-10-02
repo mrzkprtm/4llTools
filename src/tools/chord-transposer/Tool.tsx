@@ -57,11 +57,18 @@ const COMMON_PROGRESSIONS = {
 
 export default function ChordTransposer() {
   const [inputText, setInputText] = useState(() => {
-    const saved = localStorage.getItem('chord-transposer')
-    return saved || `C    Am    F    G
+    try {
+      const saved = localStorage.getItem('4lltools:chord-transposer')
+      return saved || `C    Am    F    G
 C    Am    F    G
 F    G    Em    Am
 F    G    C    C`
+    } catch {
+      return `C    Am    F    G
+C    Am    F    G
+F    G    Em    Am
+F    G    C    C`
+    }
   })
   const [semitones, setSemitones] = useState(0)
   const [fromKey, setFromKey] = useState('C')
@@ -71,7 +78,7 @@ F    G    C    C`
   const [capo, setCapo] = useState(0)
 
   useEffect(() => {
-    try { localStorage.setItem('chord-transposer', inputText) } catch {}
+    try { localStorage.setItem('4lltools:chord-transposer', inputText) } catch {}
   }, [inputText])
 
   const semitonesFromKeys = useMemo(() => {

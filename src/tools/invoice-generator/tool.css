@@ -1,0 +1,50 @@
+.iv-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .iv-layout { grid-template-columns: minmax(0, 1fr); } }
+.iv-form label { margin: 12px 0 0; font-size: 0.86rem; }
+.iv-form label > input, .iv-form label > select, .iv-form label > textarea, .iv-form label > .iv-inline { margin-top: 4px; }
+.iv-form textarea { min-height: 0; font-family: inherit; font-size: 0.9rem; line-height: 1.4; }
+.iv-g2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0 10px; }
+.iv-g3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0 10px; }
+.iv-inline { display: flex; gap: 6px; }
+.iv-inline > :first-child { flex: 1; min-width: 0; }
+.iv-inline > :last-child { width: 88px; flex: none; }
+.iv-h { font-size: 1rem; margin: 18px 0 6px; }
+.iv-items { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; }
+.iv-item { display: grid; grid-template-columns: minmax(0, 1fr) 64px 118px 40px; gap: 6px; align-items: center; animation: iv-slide 0.35s var(--ease-out) both; }
+.iv-item input { padding: 8px 9px; font-size: 0.88rem; }
+@media (max-width: 420px) { .iv-item { grid-template-columns: minmax(0, 1fr) 56px 40px; } .iv-item > :first-child { grid-column: 1 / -1; } }
+.iv-x { width: 40px; height: 40px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font-size: 1.2rem; cursor: pointer; }
+.iv-x:hover { color: var(--danger); background: var(--sunken); }
+.iv-chip { padding: 6px 12px; font-size: 0.84rem; min-height: 40px; }
+.iv-small { font-size: 0.8rem; margin: 4px 0 0; }
+.iv-msg { margin: 0; font-size: 0.86rem; animation: rise 0.3s var(--ease-out) both; }
+.iv-drafts { width: auto; padding: 8px 10px; }
+.iv-previewWrap { position: sticky; top: 72px; }
+.iv-paper {
+  background: #fffefb; color: #1b1a17; border-radius: 4px; padding: clamp(16px, 5%, 40px); aspect-ratio: 1 / 1.414; overflow: auto;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 12px 32px -12px rgba(0, 0, 0, 0.35); font-size: clamp(0.66rem, 1.6vw, 0.8rem); line-height: 1.4;
+  animation: rise 0.4s var(--ease-out) both;
+}
+.iv-paper small { display: block; font-size: 0.72em; letter-spacing: 0.08em; text-transform: uppercase; color: #6b665a; font-weight: 700; }
+.iv-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.iv-title { font-size: 2.1em; font-weight: 800; letter-spacing: 0.02em; color: #c2410c; }
+.iv-logo { max-width: 34%; max-height: 60px; object-fit: contain; }
+.iv-parties { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; margin: 16px 0; overflow-wrap: anywhere; }
+.iv-parties b { display: block; }
+.iv-meta { text-align: right; white-space: nowrap; }
+.iv-meta small { display: inline; }
+.iv-table { width: 100%; border-collapse: collapse; }
+.iv-table th { background: #f2eee4; color: #6b665a; font-size: 0.85em; text-align: right; padding: 5px 6px; }
+.iv-table th:first-child, .iv-table td:first-child { text-align: left; }
+.iv-table td { border-bottom: 1px solid #e5e0d4; padding: 5px 6px; text-align: right; vertical-align: top; font-variant-numeric: tabular-nums; }
+.iv-table td:first-child { overflow-wrap: anywhere; }
+.iv-table td:not(:first-child) { white-space: nowrap; }
+.iv-row { animation: iv-slide 0.4s var(--ease-out) both; }
+.iv-totals { margin: 10px 0 0 auto; width: min(100%, 60%); display: grid; gap: 3px; }
+.iv-totals > div { display: flex; justify-content: space-between; gap: 10px; padding: 2px 6px; }
+.iv-in { animation: iv-slide 0.35s var(--ease-out) both; }
+.iv-grand { background: #c2410c; color: #fff; font-weight: 800; font-size: 1.15em; border-radius: 3px; padding: 6px 8px !important; }
+.iv-note { margin-top: 14px; }
+.iv-note p { margin: 2px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+@keyframes iv-slide { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .iv-item, .iv-row, .iv-in, .iv-paper { animation: none; } }

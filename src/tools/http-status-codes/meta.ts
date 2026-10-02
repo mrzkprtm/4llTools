@@ -7,4 +7,6 @@ export const meta: ToolMeta = {
   keywords: ['http', 'status code', 'response code', '404', '500', '301', '429', 'error code', 'kode status', 'kode respon', 'kode error'],
   symbol: 'Hsc',
   icon: 'pulse',
+  network:
+    'The reference list works offline. The optional live check sends a request from your browser to the URL you enter.',
 }

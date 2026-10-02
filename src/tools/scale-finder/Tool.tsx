@@ -181,7 +181,7 @@ export default function ScaleFinder() {
                       fontSize: layer === 'black' ? '0.6rem' : '0.7rem', fontWeight: 600,
                     }}>
                       {layer === 'white' && <span>{key.note}{key.octave}</span>}
-                      {key.isInScale && <span style={{ fontSize: '0.6rem', opacity: 0.8 }}>{['R','b2','2','b3','3','4','b5','5','b6','6','b7','7'][(rootNum + (scale.intervals[scaleNotes.indexOf(key.note)] || 0)) % 12] ?? ''}</span>}
+                      {key.isInScale && <span style={{ fontSize: '0.6rem', opacity: 0.8 }}>{['R','b2','2','b3','3','4','b5','5','b6','6','b7','7'][((NOTE_TO_NUM[key.note] ?? 0) - rootNum + 12) % 12]}</span>}
                     </div>
                   )
                 })}

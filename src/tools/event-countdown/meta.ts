@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Event Countdown',
-  description: 'Create multiple countdowns to future dates with live ticking, progress bars, and shareable links.',
+  description: 'A flip-clock countdown to any date with a shareable link and confetti when it reaches zero.',
   category: 'Productivity',
-  keywords: ['countdown', 'timer', 'event', 'deadline', 'mundur', 'hitung', 'acara'],
-  symbol: 'Ec',
-  icon: 'timer',
+  keywords: ['countdown timer', 'days until', 'hitung mundur', 'acara', 'ulang tahun'],
+  symbol: 'Ec2',
+  icon: 'calendar',
 }

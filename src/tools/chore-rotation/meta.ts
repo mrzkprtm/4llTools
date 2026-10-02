@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'Chore Rotation',
-  description: 'Fair rotation scheduler for recurring chores among housemates/team. Tracks history and next person.',
+  name: 'Chore Rotation Planner',
+  description: 'Rotate household chores fairly between people each week with a spinning assignment wheel.',
   category: 'Productivity',
-  keywords: ['chore', 'rotation', 'schedule', 'fair', 'rumah', 'tugas', 'beranting', 'adili'],
+  keywords: ['chore chart', 'housework', 'pembagian tugas rumah', 'piket', 'rotation'],
   symbol: 'Cr',
-  icon: 'refresh-cw',
+  icon: 'reload-circle',
 }

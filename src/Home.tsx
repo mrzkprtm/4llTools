@@ -1,7 +1,8 @@
-import { useState, type CSSProperties } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from './components/Icon'
-import ToolTile from './components/ToolTile'
+import ToolGrid from './components/ToolGrid'
+import { categoryPath } from './seo'
 import { categoryKey, groupByCategory } from './tools/grouping'
 import { searchTools, tools } from './tools/registry'
 
@@ -17,8 +18,8 @@ export default function Home() {
           Small tools for everyday jobs. <em>Nothing you type leaves this tab.</em>
         </h1>
         <p className="hero-sub">
-          Scan a QR code, tidy some JSON, work out a loan or resize a photo. Every tool runs in your browser, with no
-          sign-up and no upload.
+          Split a bill, time a workout, tune a guitar, tidy some JSON, or play with physics and algorithm simulations. Every
+          tool runs in your browser, with no sign-up and no upload.
         </p>
         <div className="search-box search-box-lg">
           <Icon name="search" size={20} />
@@ -39,21 +40,10 @@ export default function Home() {
         <section key={category} className="category" data-cat={categoryKey(category)}>
           <h2>
             <span className="cat-dot" aria-hidden="true" />
-            {category}
+            <Link to={categoryPath(category)}>{category}</Link>
             <span className="cat-count">{list.length}</span>
           </h2>
-          <div className="grid">
-            {list.map((t, i) => (
-              <Link key={t.slug} to={`/${t.slug}`} className="card" style={{ '--i': i } as CSSProperties}>
-                <ToolTile tool={t} />
-                <span className="card-body">
-                  <span className="card-name">{t.name}</span>
-                  <span className="card-desc">{t.description}</span>
-                </span>
-                <Icon name="arrow-right" size={18} className="card-arrow" />
-              </Link>
-            ))}
-          </div>
+          <ToolGrid tools={list} />
         </section>
       ))}
     </>

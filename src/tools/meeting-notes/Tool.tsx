@@ -50,15 +50,19 @@ interface Meeting {
 
 export default function MeetingNotes() {
   const [meetings, setMeetings] = useState<Meeting[]>(() => {
-    const saved = localStorage.getItem('meeting-notes')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:meeting-notes')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
   const [activeMeetingId, setActiveMeetingId] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<'list' | 'editor'>('list')
   const [newMeeting, setNewMeeting] = useState({ title: '', date: new Date().toISOString().split('T')[0], time: '09:00', duration: 60, location: '' })
 
   useEffect(() => {
-    try { localStorage.setItem('meeting-notes', JSON.stringify(meetings)) } catch {}
+    try { localStorage.setItem('4lltools:meeting-notes', JSON.stringify(meetings)) } catch {}
   }, [meetings])
 
   const createMeeting = () => {

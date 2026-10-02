@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Voucher {
@@ -19,7 +19,6 @@ function applyVouchers(price: number, vouchers: Voucher[]): { final: number; ste
   const steps = [{ label: 'Original', price: current }]
   for (const v of vouchers) {
     if (!v.active) continue
-    let before = current
     if (v.type === 'percent') {
       current = current * (1 - v.value / 100)
     } else if (v.type === 'fixed') {
@@ -29,6 +28,7 @@ function applyVouchers(price: number, vouchers: Voucher[]): { final: number; ste
     } else if (v.type === 'cap') {
       // cap is handled after other discounts
     }
+    if (v.type === 'cap') continue
     steps.push({ label: v.type === 'cashback' ? `Cashback ${formatCurrency(v.value)}` : `${v.type === 'percent' ? v.value + '% off' : formatCurrency(v.value) + ' off'}`, price: current })
   }
   // Apply cap if any
@@ -46,8 +46,11 @@ function applyVouchers(price: number, vouchers: Voucher[]): { final: number; ste
 export default function DiscountStacker() {
   const [price, setPrice] = useState(100)
   const [vouchers, setVouchers] = useState<Voucher[]>(() => {
-    const saved = localStorage.getItem('discount-stacker')
-    return saved ? JSON.parse(saved) : [
+    try {
+      const saved = localStorage.getItem('discount-stacker')
+      if (saved) return JSON.parse(saved) as Voucher[]
+    } catch {}
+    return [
       { id: 1, type: 'percent', value: 20, active: true },
       { id: 2, type: 'fixed', value: 10, active: true },
       { id: 3, type: 'cashback', value: 5, active: false },
@@ -62,7 +65,7 @@ export default function DiscountStacker() {
   const savings = price - final
 
   const addVoucher = (type: Voucher['type']) => {
-    const defaults: Record<Voucher['type'], Partial<Voucher>> = {
+    const defaults: Record<Voucher['type'], Pick<Voucher, 'value' | 'maxCap'>> = {
       percent: { value: 10 },
       fixed: { value: 5 },
       cashback: { value: 5 },
@@ -71,13 +74,13 @@ export default function DiscountStacker() {
     setVouchers([...vouchers, { id: Date.now(), type, active: true, ...defaults[type] }])
   }
 
-  const updateVoucher = (id: number, field: string, value: string | number | boolean) => {
+  const updateVoucher = (id: number, field: 'value' | 'maxCap' | 'active', value: string | number | boolean) => {
     setVouchers(vouchers.map(v => v.id === id ? { ...v, [field]: value } : v))
   }
 
-  // Find best order by trying permutations (simplified: fixed first, then percent, then cashback, then cap)
+  // Best order: percent discounts first (they apply to the larger amount), then fixed, then cashback, then cap
   const bestOrder = [...vouchers].sort((a, b) => {
-    const order = { fixed: 0, percent: 1, cashback: 2, cap: 3 }
+    const order = { percent: 0, fixed: 1, cashback: 2, cap: 3 }
     return order[a.type] - order[b.type]
   })
   const { final: bestFinal } = applyVouchers(price, bestOrder)
@@ -149,7 +152,7 @@ export default function DiscountStacker() {
         ))}
       </div>
 
-      <Hint>Stack vouchers in order. Fixed discounts first, then percent, then cashback. Cap limits total discount. Tap "Find Best Order" to optimize.</Hint>
+      <Hint>Stack vouchers in order. Percent discounts save the most when applied first, then fixed, then cashback. Cap limits total discount. Tap "Find Best Order" to optimize.</Hint>
     </div>
   )
 }

@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'Reference sheet for math, physics, chemistry, and engineering formulas. Search, filter, and copy LaTeX.',
   category: 'Learning',
   keywords: ['formula', 'sheet', 'reference', 'math', 'physics', 'chemistry', 'engineering', 'latex', 'rumus', 'referensi', 'fisika', 'kimia'],
-  symbol: 'Fs',
+  symbol: 'Fml',
   icon: 'calculator',
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, type WheelEvent } from 'react'
 import { Roll } from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
@@ -15,16 +15,17 @@ interface Node {
 
 const COLORS = ['#e11d48', '#2563eb', '#16a34a', '#ca8a04', '#9333ea', '#0891b2', '#db2777', '#ea580c', '#64748b', '#000000']
 
+const DEFAULT_NODES: Node[] = [
+  { id: 1, text: 'Central Idea', x: 400, y: 300, color: COLORS[0], parentId: null, children: [2, 3, 4], collapsed: false },
+  { id: 2, text: 'Branch 1', x: 150, y: 150, color: COLORS[1], parentId: 1, children: [], collapsed: false },
+  { id: 3, text: 'Branch 2', x: 400, y: 100, color: COLORS[2], parentId: 1, children: [5], collapsed: false },
+  { id: 4, text: 'Branch 3', x: 650, y: 150, color: COLORS[3], parentId: 1, children: [], collapsed: false },
+  { id: 5, text: 'Sub-branch', x: 400, y: 50, color: COLORS[4], parentId: 3, children: [], collapsed: false },
+]
+
 export default function MindMap() {
   const [nodes, setNodes] = useState<Node[]>(() => {
-    const saved = localStorage.getItem('mind-map')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, text: 'Central Idea', x: 400, y: 300, color: COLORS[0], parentId: null, children: [2, 3, 4], collapsed: false },
-      { id: 2, text: 'Branch 1', x: 150, y: 150, color: COLORS[1], parentId: 1, children: [], collapsed: false },
-      { id: 3, text: 'Branch 2', x: 400, y: 100, color: COLORS[2], parentId: 1, children: [5], collapsed: false },
-      { id: 4, text: 'Branch 3', x: 650, y: 150, color: COLORS[3], parentId: 1, children: [], collapsed: false },
-      { id: 5, text: 'Sub-branch', x: 400, y: 50, color: COLORS[4], parentId: 3, children: [], collapsed: false },
-    ]
+    try { const saved = localStorage.getItem('4lltools:mind-map'); return saved ? JSON.parse(saved) : DEFAULT_NODES } catch { return DEFAULT_NODES }
   })
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -38,7 +39,7 @@ export default function MindMap() {
   const svgRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
-    try { localStorage.setItem('mind-map', JSON.stringify(nodes)) } catch {}
+    try { localStorage.setItem('4lltools:mind-map', JSON.stringify(nodes)) } catch {}
   }, [nodes])
 
   const getNode = (id: number) => nodes.find(n => n.id === id)
@@ -128,7 +129,7 @@ export default function MindMap() {
     setPanning(false)
   }
 
-  const handleWheel = (e: WheelEvent) => {
+  const handleWheel = (e: WheelEvent<SVGSVGElement>) => {
     e.preventDefault()
     const delta = e.deltaY > 0 ? 0.9 : 1.1
     const newZoom = Math.min(3, Math.max(0.3, zoom * delta))

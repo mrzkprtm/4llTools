@@ -1,0 +1,77 @@
+.og-counter { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+.og-bar { position: relative; flex: 1 1 140px; overflow: visible; }
+.og-bar > i { border-radius: 4px; }
+.og-mark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--muted); opacity: 0.6; border-radius: 1px; }
+.og-count { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); white-space: nowrap; }
+.og-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 16px; }
+.og-fields > * { min-width: 0; }
+.og-color { display: flex; gap: 8px; align-items: center; }
+.og-color input[type='color'] { width: 44px; height: 40px; padding: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); background: none; flex: none; cursor: pointer; }
+.og-robots { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding-top: 30px; }
+.og-robots-label { font-weight: 600; font-size: 0.92rem; }
+.og-robots label { margin: 0; font-weight: 400; display: flex; gap: 6px; align-items: center; }
+.og-h { margin: 28px 0 0; font-size: 1rem; }
+.og-tabs { gap: 4px; }
+.og-tabs .btn { padding: 6px 11px; font-size: 0.86rem; }
+.og-stage { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); padding: 20px 16px; overflow-x: auto; animation: og-in 0.35s var(--ease-out) both; }
+.og-noimg { display: grid; place-items: center; color: rgba(255, 255, 255, 0.85); font-size: 0.8rem; font-family: var(--mono);
+  background: linear-gradient(135deg, #c2410c, #7c3aed); }
+.og-noimg span { padding: 4px 8px; background: rgba(0, 0, 0, 0.25); border-radius: 4px; }
+
+/* Google */
+.og-google { max-width: 600px; background: #fff; color: #202124; padding: 16px; border-radius: 8px; font-family: arial, sans-serif; }
+.og-g-site { display: flex; gap: 10px; align-items: center; margin-bottom: 6px; }
+.og-g-fav { width: 28px; height: 28px; border-radius: 50%; background: #f1f3f4; border: 1px solid #dadce0; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; color: #5f6368; flex: none; }
+.og-g-name { display: block; font-size: 14px; line-height: 20px; }
+.og-g-url { display: block; font-size: 12px; line-height: 18px; color: #4d5156; overflow-wrap: anywhere; }
+.og-g-title { color: #1a0dab; font-size: 20px; line-height: 26px; margin-bottom: 3px; }
+.og-g-desc { color: #4d5156; font-size: 14px; line-height: 22px; }
+
+/* Facebook / LinkedIn */
+.og-fb { max-width: 500px; background: #fff; border: 1px solid #dadde1; font-family: Helvetica, Arial, sans-serif; color: #1d2129; overflow: hidden; border-radius: 2px; }
+.og-fb-img { display: block; width: 100%; aspect-ratio: 1.91 / 1; object-fit: cover; }
+.og-fb-body { background: #f2f3f5; padding: 10px 12px; border-top: 1px solid #dadde1; }
+.og-fb-host { font-size: 12px; color: #606770; letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.og-fb-title { font-size: 16px; font-weight: 600; line-height: 20px; margin: 3px 0; }
+.og-fb-desc { font-size: 14px; color: #606770; line-height: 20px; }
+
+/* X */
+.og-x { max-width: 510px; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; }
+.og-x-media { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #cfd9de; }
+.og-x-img { display: block; width: 100%; aspect-ratio: 1.91 / 1; object-fit: cover; }
+.og-x-title { position: absolute; left: 12px; bottom: 12px; max-width: calc(100% - 24px); background: rgba(0, 0, 0, 0.77); color: #fff; font-size: 13px; padding: 2px 6px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.og-x-from { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.og-x-sum { display: flex; border: 1px solid #cfd9de; border-radius: 16px; overflow: hidden; background: #fff; color: #0f1419; }
+.og-x-thumb { width: 130px; min-height: 130px; flex: none; object-fit: cover; border-right: 1px solid #cfd9de; }
+.og-x-body { padding: 12px; min-width: 0; }
+.og-x-body .og-x-from { margin: 0; color: #536471; }
+.og-x-stitle { font-size: 15px; }
+.og-x-desc { font-size: 15px; color: #536471; }
+
+/* WhatsApp */
+.og-wa { background: #e5ddd5; padding: 16px; border-radius: 8px; }
+.og-wa-bubble { position: relative; max-width: 360px; margin-left: auto; background: #d9fdd3; border-radius: 8px 0 8px 8px; padding: 4px 4px 20px; box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13); color: #111b21; font-family: system-ui, -apple-system, sans-serif; animation: og-bubble var(--spring-bouncy-ms) var(--spring-bouncy) both; transform-origin: top right; }
+.og-wa-card { display: flex; background: rgba(0, 0, 0, 0.05); border-radius: 6px; overflow: hidden; }
+.og-wa-img { width: 84px; min-height: 84px; flex: none; object-fit: cover; }
+.og-wa-body { padding: 6px 8px; min-width: 0; }
+.og-wa-title { font-size: 13.5px; font-weight: 600; line-height: 1.3; }
+.og-wa-desc { font-size: 12.5px; color: #54656f; line-height: 1.3; margin-top: 2px; }
+.og-wa-host { font-size: 12px; color: #8696a0; margin-top: 2px; }
+.og-wa-link { display: block; font-size: 14px; color: #027eb5; padding: 6px 4px 0; overflow-wrap: anywhere; }
+.og-wa-time { position: absolute; right: 8px; bottom: 3px; font-size: 11px; color: #667781; }
+
+/* Slack / Discord */
+.og-slack { max-width: 520px; border-left: 4px solid #dddddd; padding: 2px 0 2px 12px; font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; color: var(--text); }
+.og-slack-site { font-weight: 700; font-size: 14px; }
+.og-slack-title { color: #1d9bd1; font-weight: 700; font-size: 15px; margin: 2px 0; }
+.og-slack-desc { font-size: 14px; line-height: 1.45; }
+.og-slack-img { display: block; margin-top: 8px; width: 100%; max-width: 360px; aspect-ratio: 1.91 / 1; object-fit: cover; border-radius: 8px; }
+
+.og-issues { margin: 12px 0; padding: 10px 14px 10px 32px; border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: var(--radius-sm); background: var(--sunken); font-size: 0.88rem; }
+.og-issues li { margin: 3px 0; }
+@keyframes og-in { from { opacity: 0; transform: translateY(6px) scale(0.99); } }
+@keyframes og-bubble { from { opacity: 0; transform: scale(0.85); } }
+@media (max-width: 480px) {
+  .og-robots { padding-top: 12px; }
+  .og-x-thumb { width: 96px; min-height: 96px; }
+}

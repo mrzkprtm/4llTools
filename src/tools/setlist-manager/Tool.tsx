@@ -23,21 +23,38 @@ interface Setlist {
 
 export default function SetlistManager() {
   const [setlists, setSetlists] = useState<Setlist[]>(() => {
-    const saved = localStorage.getItem('setlist-manager')
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 1,
-        name: 'Friday Night Gig',
-        date: new Date().toISOString().split('T')[0],
-        venue: 'The Blue Note',
-        created: new Date().toISOString(),
-        songs: [
-          { id: 1, title: 'Sweet Child o\' Mine', artist: 'Guns N\' Roses', key: 'D', bpm: 125, duration: 235, notes: 'Open with main riff' },
-          { id: 2, title: 'Wonderwall', artist: 'Oasis', key: 'Em', bpm: 87, duration: 258, notes: 'Acoustic intro' },
-          { id: 3, title: 'Bohemian Rhapsody', artist: 'Queen', key: 'Bb', bpm: 72, duration: 354, notes: 'Piano solo section' },
-        ],
-      },
-    ]
+    try {
+      const saved = localStorage.getItem('4lltools:setlist-manager')
+      return saved ? JSON.parse(saved) : [
+        {
+          id: 1,
+          name: 'Friday Night Gig',
+          date: new Date().toISOString().split('T')[0],
+          venue: 'The Blue Note',
+          created: new Date().toISOString(),
+          songs: [
+            { id: 1, title: 'Sweet Child o\' Mine', artist: 'Guns N\' Roses', key: 'D', bpm: 125, duration: 235, notes: 'Open with main riff' },
+            { id: 2, title: 'Wonderwall', artist: 'Oasis', key: 'Em', bpm: 87, duration: 258, notes: 'Acoustic intro' },
+            { id: 3, title: 'Bohemian Rhapsody', artist: 'Queen', key: 'Bb', bpm: 72, duration: 354, notes: 'Piano solo section' },
+          ],
+        },
+      ]
+    } catch {
+      return [
+        {
+          id: 1,
+          name: 'Friday Night Gig',
+          date: new Date().toISOString().split('T')[0],
+          venue: 'The Blue Note',
+          created: new Date().toISOString(),
+          songs: [
+            { id: 1, title: 'Sweet Child o\' Mine', artist: 'Guns N\' Roses', key: 'D', bpm: 125, duration: 235, notes: 'Open with main riff' },
+            { id: 2, title: 'Wonderwall', artist: 'Oasis', key: 'Em', bpm: 87, duration: 258, notes: 'Acoustic intro' },
+            { id: 3, title: 'Bohemian Rhapsody', artist: 'Queen', key: 'Bb', bpm: 72, duration: 354, notes: 'Piano solo section' },
+          ],
+        },
+      ]
+    }
   })
   const [activeSetlistId, setActiveSetlistId] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<'list' | 'editor' | 'performance'>('list')
@@ -46,7 +63,7 @@ export default function SetlistManager() {
   const [editingSongId, setEditingSongId] = useState<number | null>(null)
 
   useEffect(() => {
-    try { localStorage.setItem('setlist-manager', JSON.stringify(setlists)) } catch {}
+    try { localStorage.setItem('4lltools:setlist-manager', JSON.stringify(setlists)) } catch {}
   }, [setlists])
 
   const activeSetlist = setlists.find(s => s.id === activeSetlistId)

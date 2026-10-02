@@ -30,15 +30,19 @@ const UNITS = ['pcs', 'kg', 'g', 'L', 'ml', 'pack', 'box', 'can', 'bottle', 'bag
 
 export default function GroceryList() {
   const [items, setItems] = useState<Item[]>(() => {
-    const saved = localStorage.getItem('grocery-list')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:grocery-list')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
   const [filterCategory, setFilterCategory] = useState('')
   const [showPurchased, setShowPurchased] = useState(true)
   const [newItem, setNewItem] = useState({ name: '', category: 'Produce', quantity: 1, unit: 'pcs', price: 0, storeSection: 'Produce' })
 
   useEffect(() => {
-    try { localStorage.setItem('grocery-list', JSON.stringify(items)) } catch {}
+    try { localStorage.setItem('4lltools:grocery-list', JSON.stringify(items)) } catch {}
   }, [items])
 
   const addItem = () => {

@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Contract Generator',
-  description: 'Generate legal contracts from templates: NDA, Service Agreement, Employment, Freelance, Partnership. Fill variables and export.',
+  description: 'Fill in a template to draft NDAs, service agreements and freelance contracts',
   category: 'Work',
   keywords: ['contract', 'generator', 'legal', 'template', 'nda', 'agreement', 'employment', 'freelance', 'partnership', 'kontrak', 'hukum', 'template', 'perjanjian'],
-  symbol: 'Cg',
-  icon: 'file-contract',
+  symbol: 'Con',
+  icon: 'file',
 }

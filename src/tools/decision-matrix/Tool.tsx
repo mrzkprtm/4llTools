@@ -1,204 +1,139 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import Icon from '../../components/Icon'
+import { useFlip } from '../../motion/useFlip'
+import { Hint } from '../../sim/controls'
+import { cell, normalizeWeights, rank, type Criterion, type Option, type Scores } from './logic'
+import './tool.css'
 
-interface Criterion {
-  id: number
-  name: string
-  weight: number
+const KEY = '4lltools:decision-matrix'
+const uid = () => Math.random().toString(36).slice(2, 9)
+const COLORS = ['#1c7ed6', '#e8590c', '#2f9e44', '#ae3ec9', '#f59f00', '#0ca678', '#e03131', '#5c7cfa']
+
+interface State {
+  title: string
+  options: Option[]
+  criteria: Criterion[]
+  scores: Scores
 }
 
-interface Option {
-  id: number
-  name: string
-  scores: Record<number, number>
+function laptop(): State {
+  const options = [{ id: 'o1', name: 'MacBook Air M3' }, { id: 'o2', name: 'ThinkPad X1 Carbon' }, { id: 'o3', name: 'ASUS Zenbook 14' }]
+  const criteria = [
+    { id: 'c1', name: 'Price', weight: 8 },
+    { id: 'c2', name: 'Battery life', weight: 7 },
+    { id: 'c3', name: 'Performance', weight: 6 },
+    { id: 'c4', name: 'Weight', weight: 5 },
+    { id: 'c5', name: 'Screen', weight: 4 },
+    { id: 'c6', name: 'Keyboard', weight: 3 },
+  ]
+  const grid = [
+    [2, 5, 4, 5, 4, 3],
+    [2, 3, 4, 4, 3, 5],
+    [5, 4, 3, 4, 5, 3],
+  ]
+  const scores: Scores = {}
+  options.forEach((o, i) => criteria.forEach((c, j) => (scores[cell(o.id, c.id)] = grid[i][j])))
+  return { title: 'Which laptop to buy?', options, criteria, scores }
 }
 
 export default function DecisionMatrix() {
-  const [criteria, setCriteria] = useState<Criterion[]>(() => {
-    const saved = localStorage.getItem('decision-matrix')
-    return saved ? JSON.parse(saved).criteria : [
-      { id: 1, name: 'Cost', weight: 30 },
-      { id: 2, name: 'Time to Implement', weight: 20 },
-      { id: 3, name: 'Impact', weight: 35 },
-      { id: 4, name: 'Risk', weight: 15 },
-    ]
-  })
-
-  const [options, setOptions] = useState<Option[]>(() => {
-    const saved = localStorage.getItem('decision-matrix')
-    return saved ? JSON.parse(saved).options : [
-      { id: 1, name: 'Option A', scores: { 1: 7, 2: 5, 3: 8, 4: 6 } },
-      { id: 2, name: 'Option B', scores: { 1: 5, 2: 8, 3: 6, 4: 8 } },
-      { id: 3, name: 'Option C', scores: { 1: 8, 2: 6, 3: 7, 4: 5 } },
-    ]
-  })
+  const [s, setS] = useState<State>(laptop)
+  const ready = useRef(false)
+  const bars = useRef<HTMLOListElement>(null)
+  useFlip(bars, { spring: 'bouncy' })
 
   useEffect(() => {
-    try { localStorage.setItem('decision-matrix', JSON.stringify({ criteria, options })) } catch {}
-  }, [criteria, options])
+    try {
+      const raw = localStorage.getItem(KEY)
+      if (raw) setS(JSON.parse(raw) as State)
+    } catch {
+      // Keep the example.
+    }
+    ready.current = true
+  }, [])
 
-  const addCriterion = () => {
-    setCriteria([...criteria, { id: Date.now(), name: `Criterion ${criteria.length + 1}`, weight: 10 }])
-  }
+  useEffect(() => {
+    if (!ready.current) return
+    try {
+      localStorage.setItem(KEY, JSON.stringify(s))
+    } catch {
+      // Storage is optional.
+    }
+  }, [s])
 
-  const removeCriterion = (id: number) => {
-    setCriteria(criteria.filter(c => c.id !== id))
-    setOptions(options.map(o => { const { [id]: removed, ...rest } = o.scores; return { ...o, scores: rest } }))
-  }
-
-  const updateCriterion = (id: number, field: string, value: string | number) => {
-    setCriteria(criteria.map(c => c.id === id ? { ...c, [field]: value } : c))
-  }
-
-  const addOption = () => {
-    const scores: Record<number, number> = {}
-    criteria.forEach(c => { scores[c.id] = 5 })
-    setOptions([...options, { id: Date.now(), name: `Option ${options.length + 1}`, scores }])
-  }
-
-  const removeOption = (id: number) => {
-    setOptions(options.filter(o => o.id !== id))
-  }
-
-  const updateOption = (id: number, field: string, value: string | number | Record<number, number>) => {
-    setOptions(options.map(o => o.id === id ? { ...o, [field]: value } : o))
-  }
-
-  const updateScore = (optionId: number, criterionId: number, score: number) => {
-    setOptions(options.map(o => o.id === optionId ? { ...o, scores: { ...o.scores, [criterionId]: score } } : o))
-  }
-
-  const totalWeight = criteria.reduce((sum, c) => sum + c.weight, 0)
-
-  const results = useMemo(() => {
-    return options.map(opt => {
-      let weightedSum = 0
-      criteria.forEach(c => {
-        const score = opt.scores[c.id] || 0
-        weightedSum += score * c.weight
-      })
-      return { option: opt, score: weightedSum / (totalWeight || 1), rawScore: weightedSum }
-    }).sort((a, b) => b.score - a.score)
-  }, [criteria, options])
-
-  const exportCSV = () => {
-    const headers = ['Option', ...criteria.map(c => c.name), 'Weighted Score']
-    const rows = results.map(r => [
-      r.option.name,
-      ...criteria.map(c => r.option.scores[c.id] || 0),
-      r.score.toFixed(2)
-    ])
-    const csv = [headers, ...rows].map(r => r.join(',')).join('\n')
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'decision-matrix.csv'
-    a.click()
-    URL.revokeObjectURL(url)
-  }
+  const results = rank(s.options, s.criteria, s.scores)
+  const shares = normalizeWeights(s.criteria)
+  const color = (id: string) => COLORS[Math.max(0, s.options.findIndex((o) => o.id === id)) % COLORS.length]
+  const winner = results[0] && results.length > 1 && results[0].rank === 1 && results[1].rank !== 1 ? results[0].id : null
+  const patch = (p: Partial<State>) => setS((x) => ({ ...x, ...p }))
 
   return (
-    <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0 }}>Decision Matrix</h3>
-        <div className="row" style={{ gap: 8 }}>
-          <button className="btn" onClick={addCriterion}>+ Criterion</button>
-          <button className="btn" onClick={addOption}>+ Option</button>
-          <button className="btn" onClick={exportCSV}>Export CSV</button>
-        </div>
+    <div className="dm">
+      <input className="dm-title" type="text" value={s.title} aria-label="Decision" onChange={(e) => patch({ title: e.target.value })} />
+      <ol ref={bars} className="dm-rank" aria-label="Ranking">
+        {results.map((r) => (
+          <li key={r.id} data-flip={r.id} className={r.id === winner ? 'win' : ''} style={{ '--oc': color(r.id) } as CSSProperties}>
+            <span className="dm-pos">{r.id === winner ? <span key={winner} className="dm-crown"><Icon name="crown" size={22} /></span> : `#${r.rank}`}</span>
+            <span className="dm-name">{r.name || 'Untitled'}</span>
+            <span className="dm-track"><i style={{ width: `${r.pct * 100}%` }} /></span>
+            <b className="dm-score">{r.score.toFixed(2)}</b>
+          </li>
+        ))}
+      </ol>
+
+      <h3 className="dm-h">Criteria and weights</h3>
+      <div className="dm-crit">
+        {s.criteria.map((c, j) => (
+          <div key={c.id} className="dm-crow">
+            <input type="text" aria-label="Criterion" value={c.name} onChange={(e) => patch({ criteria: s.criteria.map((x) => (x.id === c.id ? { ...x, name: e.target.value } : x)) })} />
+            <input type="range" min={0} max={10} value={c.weight} aria-label={`Weight of ${c.name}`} onChange={(e) => patch({ criteria: s.criteria.map((x) => (x.id === c.id ? { ...x, weight: Number(e.target.value) } : x)) })} />
+            <span className="dm-share" title="Share of the total weight"><i style={{ width: `${shares[j] * 100}%` }} />{Math.round(shares[j] * 100)}%</span>
+            <button type="button" className="btn dm-x" aria-label={`Remove ${c.name}`} onClick={() => patch({ criteria: s.criteria.filter((x) => x.id !== c.id) })}><Icon name="close" size={16} /></button>
+          </div>
+        ))}
+      </div>
+      <div className="row">
+        <button type="button" className="btn btn-icon" onClick={() => patch({ criteria: [...s.criteria, { id: uid(), name: 'New criterion', weight: 5 }] })}><Icon name="plus" size={18} /> Criterion</button>
+        <button type="button" className="btn" disabled={!s.criteria.length} onClick={() => {
+          // Rescale so the largest weight is 10, keeping the proportions.
+          const max = Math.max(...s.criteria.map((c) => c.weight))
+          patch({ criteria: s.criteria.map((c) => ({ ...c, weight: max ? Math.round((c.weight / max) * 10) : 5 })) })
+        }}>Normalize weights</button>
+        <button type="button" className="btn" onClick={() => patch({ criteria: s.criteria.map((c) => ({ ...c, weight: 5 })) })}>Equal weights</button>
       </div>
 
-      <div style={{ marginBottom: 16 }}>
-        <h4 style={{ marginBottom: 8 }}>Criteria (weights sum: <b>{totalWeight}</b>%)</h4>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {criteria.map((criterion, i) => (
-            <div key={criterion.id} className="pop-row" style={{
-              display: 'flex', alignItems: 'center', gap: 12, padding: 10,
-              background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',
-              animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-              animationDelay: `${i * 40}ms`
-            }}>
-              <input type="text" value={criterion.name} onChange={e => updateCriterion(criterion.id, 'name', e.target.value)} style={{ background: 'transparent', border: 'none', color: 'var(--text)', fontWeight: 500, minWidth: 150 }} />
-              <input type="number" min={0} max={100} value={criterion.weight} onChange={e => updateCriterion(criterion.id, 'weight', Number(e.target.value))} style={{ width: 80 }} />
-              <span className="muted">%</span>
-              <button className="btn" onClick={() => removeCriterion(criterion.id)} style={{ color: 'var(--danger)', marginLeft: 'auto' }}>Remove</button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 600 }}>
-          <thead>
-            <tr>
-              <th style={{ width: 150, textAlign: 'left', padding: '8px 12px', borderBottom: '2px solid var(--border)' }}>Option</th>
-              {criteria.map(c => (
-                <th key={c.id} style={{ textAlign: 'center', padding: '8px 12px', borderBottom: '2px solid var(--border)', fontSize: '0.85rem' }}>
-                  {c.name} ({c.weight}%)
-                </th>
-              ))}
-              <th style={{ textAlign: 'center', padding: '8px 12px', borderBottom: '2px solid var(--border)', fontSize: '0.85rem', color: 'var(--accent)' }}>Weighted Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {options.map((option, oi) => (
-              <tr key={option.id} style={{ animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both', animationDelay: `${oi * 60}ms` }}>
-                <td style={{ padding: '8px 12px', borderBottom: '1px solid var(--border)' }}>
-                  <div className="row" style={{ gap: 8, alignItems: 'center' }}>
-                    <input type="text" value={option.name} onChange={e => updateOption(option.id, 'name', e.target.value)} style={{ background: 'transparent', border: 'none', color: 'var(--text)', fontWeight: 500, width: 120 }} />
-                    <button className="btn" onClick={() => removeOption(option.id)} style={{ padding: '2px 8px', fontSize: '0.7rem', color: 'var(--danger)' }}>Remove</button>
-                  </div>
-                </td>
-                {criteria.map(c => (
-                  <td key={c.id} style={{ textAlign: 'center', padding: '8px 12px', borderBottom: '1px solid var(--border)' }}>
-                    <select value={option.scores[c.id] || 5} onChange={e => updateScore(option.id, c.id, Number(e.target.value))} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)', padding: '4px 8px', width: 80 }}>
-                      {[1,2,3,4,5,6,7,8,9,10].map(v => <option key={v} value={v}>{v}</option>)}
-                    </select>
-                  </td>
-                ))}
-                <td style={{ textAlign: 'center', padding: '8px 12px', borderBottom: '1px solid var(--border)', fontWeight: 700, color: 'var(--accent)', fontSize: '1.1rem' }}>
-                  <Roll value={results.find(r => r.option.id === option.id)?.score.toFixed(2) || '0.00'} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{ marginTop: 16 }}>
-        <h4 style={{ marginBottom: 12 }}>Ranking</h4>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {results.map((result, rank) => (
-            <div key={result.option.id} className="pop-row" style={{
-              display: 'flex', alignItems: 'center', gap: 16, padding: 12,
-              background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-              animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-              animationDelay: `${rank * 60}ms`,
-              borderLeft: rank === 0 ? '4px solid var(--ok)' : '4px solid transparent',
-            }}>
-              <div style={{ fontSize: '1.5rem', fontWeight: 700, color: rank === 0 ? 'var(--ok)' : 'var(--muted)', minWidth: 40 }}>#{rank + 1}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>{result.option.name}</div>
-                <div className="muted" style={{ fontSize: '0.85rem' }}>
-                  {criteria.map(c => `${c.name}: ${result.option.scores[c.id] || 0}`).join(' | ')}
+      <h3 className="dm-h">Score each option (1–5 stars)</h3>
+      <div className="dm-options">
+        {s.options.map((o) => (
+          <section key={o.id} className="dm-opt" style={{ '--oc': color(o.id) } as CSSProperties}>
+            <header>
+              <input type="text" aria-label="Option name" value={o.name} onChange={(e) => patch({ options: s.options.map((x) => (x.id === o.id ? { ...x, name: e.target.value } : x)) })} />
+              <button type="button" className="btn dm-x" aria-label={`Remove ${o.name}`} onClick={() => patch({ options: s.options.filter((x) => x.id !== o.id) })}><Icon name="close" size={16} /></button>
+            </header>
+            {s.criteria.map((c) => {
+              const v = s.scores[cell(o.id, c.id)] ?? 3
+              return (
+                <div key={c.id} className="dm-srow">
+                  <span className="dm-cname">{c.name}</span>
+                  <span className="dm-stars" role="radiogroup" aria-label={`${o.name}: ${c.name}`}>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <button key={n} type="button" role="radio" aria-checked={v === n} aria-label={`${n} star${n > 1 ? 's' : ''}`} className={n <= v ? 'on' : ''} onClick={() => patch({ scores: { ...s.scores, [cell(o.id, c.id)]: n } })}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2 6.4 20.2l1.1-6.3L2.9 9.5l6.3-.9z" /></svg>
+                      </button>
+                    ))}
+                  </span>
                 </div>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent)' }}>
-                  <Roll value={result.score.toFixed(2)} />
-                </div>
-                <div className="muted" style={{ fontSize: '0.8rem' }}>Weighted Score</div>
-              </div>
-            </div>
-          ))}
-        </div>
+              )
+            })}
+          </section>
+        ))}
       </div>
-
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        Score each option 1-10 per criterion. Weights determine importance. Higher weighted score = better choice. Export to CSV.
-      </p>
+      <div className="row">
+        <button type="button" className="btn btn-icon" disabled={s.options.length >= 8} onClick={() => patch({ options: [...s.options, { id: uid(), name: `Option ${s.options.length + 1}` }] })}><Icon name="plus" size={18} /> Option</button>
+        <button type="button" className="btn" onClick={() => setS(laptop())}>Laptop example</button>
+        <button type="button" className="btn" onClick={() => setS({ title: 'My decision', options: [{ id: uid(), name: 'Option A' }, { id: uid(), name: 'Option B' }], criteria: [{ id: uid(), name: 'Cost', weight: 5 }, { id: uid(), name: 'Quality', weight: 5 }], scores: {} })}>Start blank</button>
+      </div>
+      <Hint>Set how much each criterion matters with the sliders, then tap stars to score every option. Each score is multiplied by its weight share, and the bars re-sort live; the leader gets the crown.</Hint>
     </div>
   )
 }

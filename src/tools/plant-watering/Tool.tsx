@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Plant {
@@ -20,52 +20,63 @@ const PLANT_TYPES = [
   { name: 'Custom', interval: 7, color: '#f97316' },
 ] as const
 
+/** YYYY-MM-DD in the visitor's local time zone. */
+function localDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/** Parse YYYY-MM-DD as local midnight. */
+function parseLocal(s: string): Date {
+  return new Date(`${s}T00:00`)
+}
+
 export default function PlantWatering() {
   const [plants, setPlants] = useState<Plant[]>(() => {
-    const saved = localStorage.getItem('plant-watering')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, name: 'Monstera', type: 'Tropical', waterInterval: 5, lastWatered: new Date(Date.now() - 2 * 86400000).toISOString().split('T')[0], color: '#06b6d4' },
-      { id: 2, name: 'Snake Plant', type: 'Succulent', waterInterval: 14, lastWatered: new Date(Date.now() - 10 * 86400000).toISOString().split('T')[0], color: '#84cc16' },
-      { id: 3, name: 'Basil', type: 'Herb', waterInterval: 3, lastWatered: new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0], color: '#84cc16' },
+    try {
+      const saved = localStorage.getItem('plant-watering')
+      if (saved) return JSON.parse(saved) as Plant[]
+    } catch {}
+    return [
+      { id: 1, name: 'Monstera', type: 'Tropical', waterInterval: 5, lastWatered: localDate(new Date(Date.now() - 2 * 86400000)), color: '#06b6d4' },
+      { id: 2, name: 'Snake Plant', type: 'Succulent', waterInterval: 14, lastWatered: localDate(new Date(Date.now() - 10 * 86400000)), color: '#84cc16' },
+      { id: 3, name: 'Basil', type: 'Herb', waterInterval: 3, lastWatered: localDate(new Date(Date.now() - 1 * 86400000)), color: '#84cc16' },
     ]
   })
   const [newName, setNewName] = useState('')
-  const [newType, setNewType] = useState('Tropical')
+  const [newType, setNewType] = useState<string>('Tropical')
 
   useEffect(() => {
     try { localStorage.setItem('plant-watering', JSON.stringify(plants)) } catch {}
   }, [plants])
 
   const today = new Date()
-  const plantStatus = plants.map((plant: Plant) => {
-    const last = new Date(plant.lastWatered)
-    const daysSince = Math.floor((today.getTime() - last.getTime()) / 86400000)
+  const todayStart = parseLocal(localDate(today))
+  const plantStatus = plants.map(plant => {
+    const last = parseLocal(plant.lastWatered)
+    const daysSince = Math.round((todayStart.getTime() - last.getTime()) / 86400000)
     const due = daysSince >= plant.waterInterval
     const daysLeft = plant.waterInterval - daysSince
     return { ...plant, daysSince, daysLeft, due }
   })
 
+  const makePlant = (name: string, typeName: string): Plant => {
+    const type = PLANT_TYPES.find(t => t.name === typeName) ?? PLANT_TYPES[0]
+    return { id: Date.now(), name, type: type.name, waterInterval: type.interval, lastWatered: localDate(today), color: type.color }
+  }
+
   const addPlant = () => {
     if (!newName.trim()) return
-    const type = PLANT_TYPES.find(t => t.name === newType)!
-    setPlants([...plants, {
-      id: Date.now(),
-      name: newName,
-      type: newType,
-      waterInterval: type.interval,
-      lastWatered: today.toISOString().split('T')[0],
-      color: type.color,
-    }])
+    setPlants([...plants, makePlant(newName.trim(), newType)])
     setNewName('')
   }
 
   const waterPlant = (id: number) => {
-    setPlants(plants.map((p: Plant) => p.id === id ? { ...p, lastWatered: today.toISOString().split('T')[0] } : p))
+    setPlants(plants.map(p => p.id === id ? { ...p, lastWatered: localDate(today) } : p))
     playSplash()
   }
 
   const removePlant = (id: number) => {
-    setPlants(plants.filter((p: Plant) => p.id !== id))
+    setPlants(plants.filter(p => p.id !== id))
   }
 
   const playSplash = () => {
@@ -81,6 +92,7 @@ export default function PlantWatering() {
       osc.connect(gain).connect(ctx.destination)
       osc.start()
       osc.stop(ctx.currentTime + 0.3)
+      osc.onended = () => { ctx.close().catch(() => {}) }
     } catch {}
     navigator.vibrate?.([50, 30, 50])
   }
@@ -124,10 +136,10 @@ export default function PlantWatering() {
                 {plant.due && <span className="chip" style={{ background: 'var(--danger)', color: 'white', fontSize: '0.7rem' }}>⚠ Due Now</span>}
               </div>
               <div className="row" style={{ gap: 8, marginTop: 4, fontSize: '0.85rem', color: 'var(--muted)' }}>
-                <span>Last: {fmtDate(new Date(plant.lastWatered))}</span>
+                <span>Last: {fmtDate(parseLocal(plant.lastWatered))}</span>
                 <span>Interval: {plant.waterInterval}d</span>
                 <span style={{ color: plant.due ? 'var(--danger)' : plant.daysLeft <= 1 ? '#eab308' : 'var(--ok)' }}>
-                  {plant.due ? '💧 WATER NOW' : `${plant.daysLeft} day${plant.daysLeft !== 1 ? 's' : ''} left`}
+                  {plant.due ? '💧 WATER NOW' : <><Roll>{plant.daysLeft}</Roll> day{plant.daysLeft !== 1 ? 's' : ''} left</>}
                 </span>
               </div>
             </div>
@@ -144,9 +156,7 @@ export default function PlantWatering() {
 
       <button className="btn" onClick={() => {
         const type = PLANT_TYPES[Math.floor(Math.random() * PLANT_TYPES.length)]
-        addPlant()
-        setNewName(`Plant ${plants.length + 1}`)
-        setNewType(type.name)
+        setPlants([...plants, makePlant(`Plant ${plants.length + 1}`, type.name)])
       }} style={{ marginTop: 16 }}>Add Demo Plant</button>
 
       <Hint>Tap 💧 to water with a splash. Droplet fills as days pass. Red cards = overdue. Stored locally only.</Hint>

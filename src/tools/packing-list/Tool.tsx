@@ -1,281 +1,183 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { Choice, Hint, Slider, Toggle } from '../../sim/controls'
+import Icon from '../../components/Icon'
+import { reducedMotion, SPRINGS } from '../../motion/springs'
+import { CATEGORIES, generateList, TRIP_TYPES, WEATHERS, type Category, type PackItem, type TripSettings } from './logic'
+import './tool.css'
 
-const BASE_ITEMS = [
-  // Essentials
-  { name: 'Passport / ID', category: 'essentials', base: true, conditions: [] },
-  { name: 'Phone & Charger', category: 'essentials', base: true, conditions: [] },
-  { name: 'Wallet (Cash, Cards)', category: 'essentials', base: true, conditions: [] },
-  { name: 'Travel Insurance', category: 'essentials', base: true, conditions: [] },
-  { name: 'Medications', category: 'essentials', base: false, conditions: [] },
-  { name: 'Glasses / Contacts', category: 'essentials', base: false, conditions: [] },
+const KEY = '4lltools:packing-list'
+const COLORS: Record<Category, string> = {
+  Documents: '#e8590c',
+  Clothes: '#1c7ed6',
+  Toiletries: '#0ca678',
+  Health: '#e03131',
+  Electronics: '#ae3ec9',
+  Extras: '#f59f00',
+}
 
-  // Clothing - base
-  { name: 'Underwear', category: 'clothing', base: true, conditions: [], qtyMultiplier: 'days' },
-  { name: 'Socks', category: 'clothing', base: true, conditions: [], qtyMultiplier: 'days' },
-  { name: 'T-shirts / Tops', category: 'clothing', base: true, conditions: [], qtyMultiplier: 'days' },
-  { name: 'Pants / Shorts', category: 'clothing', base: true, conditions: [], qtyMultiplier: 'daysHalf' },
-  { name: 'Pajamas', category: 'clothing', base: true, conditions: [], qtyMultiplier: 'fixed2' },
-  { name: 'Light Jacket', category: 'clothing', base: false, conditions: ['cold', 'rainy'] },
-  { name: 'Heavy Coat', category: 'clothing', base: false, conditions: ['cold'] },
-  { name: 'Rain Jacket / Umbrella', category: 'clothing', base: false, conditions: ['rainy'] },
-  { name: 'Swimwear', category: 'clothing', base: false, conditions: ['beach', 'pool'] },
-  { name: 'Formal Wear', category: 'clothing', base: false, conditions: ['formal'] },
-  { name: 'Hiking Boots', category: 'clothing', base: false, conditions: ['hiking'] },
-  { name: 'Sandals / Flip-flops', category: 'clothing', base: false, conditions: ['beach', 'hot'] },
+interface Saved {
+  settings: TripSettings
+  checked: string[]
+  custom: PackItem[]
+}
 
-  // Toiletries
-  { name: 'Toothbrush & Toothpaste', category: 'toiletries', base: true, conditions: [] },
-  { name: 'Deodorant', category: 'toiletries', base: true, conditions: [] },
-  { name: 'Shampoo & Conditioner', category: 'toiletries', base: false, conditions: [] },
-  { name: 'Body Wash / Soap', category: 'toiletries', base: false, conditions: [] },
-  { name: 'Skincare', category: 'toiletries', base: false, conditions: [] },
-  { name: 'Razor', category: 'toiletries', base: false, conditions: [] },
-  { name: 'Hairbrush / Comb', category: 'toiletries', base: false, conditions: [] },
-  { name: 'Sunscreen', category: 'toiletries', base: false, conditions: ['hot', 'beach', 'outdoor'] },
-  { name: 'Hand Sanitizer', category: 'toiletries', base: false, conditions: [] },
-  { name: 'Wet Wipes', category: 'toiletries', base: false, conditions: [] },
-
-  // Electronics
-  { name: 'Power Bank', category: 'electronics', base: true, conditions: [] },
-  { name: 'Universal Adapter', category: 'electronics', base: false, conditions: ['international'] },
-  { name: 'Camera', category: 'electronics', base: false, conditions: ['photography'] },
-  { name: 'Headphones', category: 'electronics', base: false, conditions: [] },
-  { name: 'Laptop / Tablet', category: 'electronics', base: false, conditions: ['work'] },
-  { name: 'E-reader', category: 'electronics', base: false, conditions: ['reading'] },
-
-  // Health & Safety
-  { name: 'First Aid Kit', category: 'health', base: false, conditions: ['hiking', 'outdoor'] },
-  { name: 'Insect Repellent', category: 'health', base: false, conditions: ['tropical', 'outdoor'] },
-  { name: 'Motion Sickness Meds', category: 'health', base: false, conditions: ['boat', 'car'] },
-  { name: 'Masks', category: 'health', base: false, conditions: [] },
-
-  // Documents
-  { name: 'Boarding Passes / Tickets', category: 'documents', base: true, conditions: [] },
-  { name: 'Hotel Reservations', category: 'documents', base: true, conditions: [] },
-  { name: 'Emergency Contacts', category: 'documents', base: false, conditions: [] },
-  { name: 'Visa Documents', category: 'documents', base: false, conditions: ['international'] },
-
-  // Misc
-  { name: 'Reusable Water Bottle', category: 'misc', base: false, conditions: [] },
-  { name: 'Snacks', category: 'misc', base: false, conditions: [] },
-  { name: 'Book / Kindle', category: 'misc', base: false, conditions: ['reading'] },
-  { name: 'Travel Pillow', category: 'misc', base: false, conditions: ['long-flight'] },
-  { name: 'Eye Mask', category: 'misc', base: false, conditions: ['long-flight'] },
-  { name: 'Earplugs', category: 'misc', base: false, conditions: ['long-flight'] },
-  { name: 'Backpack / Daypack', category: 'misc', base: false, conditions: [] },
-  { name: 'Ziplock Bags', category: 'misc', base: false, conditions: [] },
-  { name: 'Laundry Bag', category: 'misc', base: false, conditions: [] },
-]
-
-const CATEGORIES = [
-  { id: 'essentials', name: 'Essentials', icon: '⭐' },
-  { id: 'clothing', name: 'Clothing', icon: '👕' },
-  { id: 'toiletries', name: 'Toiletries', icon: '🧴' },
-  { id: 'electronics', name: 'Electronics', icon: '📱' },
-  { id: 'health', name: 'Health & Safety', icon: '🩹' },
-  { id: 'documents', name: 'Documents', icon: '📄' },
-  { id: 'misc', name: 'Miscellaneous', icon: '📦' },
-]
+const DEFAULTS: Saved = {
+  settings: { type: 'beach', weather: 'hot', days: 5, travelers: 2, laundry: false, abroad: false },
+  checked: ['id', 'tickets', 'swim'],
+  custom: [],
+}
 
 export default function PackingList() {
-  const [days, setDays] = useState(() => {
-    const saved = localStorage.getItem('packing-list-days')
-    return saved ? Number(saved) : 7
-  })
-  const [tripType, setTripType] = useState(() => {
-    const saved = localStorage.getItem('packing-list-type')
-    return saved || 'leisure'
-  })
-  const [weather, setWeather] = useState(() => {
-    const saved = localStorage.getItem('packing-list-weather')
-    return saved || 'mild'
-  })
-  const [activities, setActivities] = useState(() => {
-    const saved = localStorage.getItem('packing-list-activities')
-    return saved ? JSON.parse(saved) : []
-  })
-  const [customItems, setCustomItems] = useState(() => {
-    const saved = localStorage.getItem('packing-list-custom')
-    return saved ? JSON.parse(saved) : []
-  })
-  const [packedItems, setPackedItems] = useState(() => {
-    const saved = localStorage.getItem('packing-list-packed')
-    return saved ? JSON.parse(saved) : {}
-  })
+  const [settings, setSettings] = useState<TripSettings>(DEFAULTS.settings)
+  const [checked, setChecked] = useState<Set<string>>(() => new Set(DEFAULTS.checked))
+  const [custom, setCustom] = useState<PackItem[]>([])
+  const [draft, setDraft] = useState('')
+  const [draftCat, setDraftCat] = useState<Category>('Extras')
+  const ready = useRef(false)
+  const from = useRef<{ id: string; rect: DOMRect } | null>(null)
+  const caseRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => { try { localStorage.setItem('packing-list-days', String(days)) } catch {} }, [days])
-  useEffect(() => { try { localStorage.setItem('packing-list-type', tripType) } catch {} }, [tripType])
-  useEffect(() => { try { localStorage.setItem('packing-list-weather', weather) } catch {} }, [weather])
-  useEffect(() => { try { localStorage.setItem('packing-list-activities', JSON.stringify(activities)) } catch {} }, [activities])
-  useEffect(() => { try { localStorage.setItem('packing-list-custom', JSON.stringify(customItems)) } catch {} }, [customItems])
-  useEffect(() => { try { localStorage.setItem('packing-list-packed', JSON.stringify(packedItems)) } catch {} }, [packedItems])
-
-  const activeConditions = useMemo(() => {
-    const conds = new Set<string>()
-    if (weather === 'cold') conds.add('cold')
-    if (weather === 'hot') conds.add('hot')
-    if (weather === 'rainy') conds.add('rainy')
-    if (weather === 'mild') conds.add('mild')
-    if (tripType === 'international') conds.add('international')
-    if (tripType === 'beach') conds.add('beach')
-    if (tripType === 'business') conds.add('formal')
-    if (tripType === 'adventure') conds.add('hiking')
-    if (tripType === 'leisure') { conds.add('beach'); conds.add('pool') }
-    activities.forEach(a => conds.add(a))
-    if (days > 10) conds.add('long-flight')
-    return conds
-  }, [days, tripType, weather, activities])
-
-  const getQty = (item: typeof BASE_ITEMS[0]) => {
-    if (!item.qtyMultiplier) return 1
-    switch (item.qtyMultiplier) {
-      case 'days': return days
-      case 'daysHalf': return Math.ceil(days / 2)
-      case 'fixed2': return 2
-      default: return 1
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(KEY)
+      if (raw) {
+        const s = JSON.parse(raw) as Partial<Saved>
+        if (s.settings) setSettings({ ...DEFAULTS.settings, ...s.settings })
+        if (Array.isArray(s.checked)) setChecked(new Set(s.checked))
+        if (Array.isArray(s.custom)) setCustom(s.custom)
+      }
+    } catch {
+      // Storage is optional.
     }
+    ready.current = true
+  }, [])
+
+  useEffect(() => {
+    if (!ready.current) return
+    try {
+      localStorage.setItem(KEY, JSON.stringify({ settings, checked: [...checked], custom } satisfies Saved))
+    } catch {
+      // Storage is optional.
+    }
+  }, [settings, checked, custom])
+
+  const items = useMemo(() => [...generateList(settings), ...custom], [settings, custom])
+  const packed = items.filter((i) => checked.has(i.id))
+  const total = items.length
+  const full = total > 0 && packed.length === total
+
+  // Fly the newly packed tile from its checkbox into the suitcase.
+  useLayoutEffect(() => {
+    const f = from.current
+    from.current = null
+    if (!f || !caseRef.current || reducedMotion()) return
+    const tile = caseRef.current.querySelector<HTMLElement>(`[data-tile="${CSS.escape(f.id)}"]`)
+    if (!tile) return
+    const to = tile.getBoundingClientRect()
+    const dx = f.rect.left + f.rect.width / 2 - (to.left + to.width / 2)
+    const dy = f.rect.top + f.rect.height / 2 - (to.top + to.height / 2)
+    tile.animate(
+      [
+        { transform: `translate(${dx}px, ${dy}px) scale(2.2)`, opacity: 0.4 },
+        { transform: `translate(${dx * 0.4}px, ${dy * 0.4 - 30}px) scale(1.6)`, opacity: 1, offset: 0.45 },
+        { transform: 'none', opacity: 1 },
+      ],
+      { duration: SPRINGS.bouncy.duration + 150, easing: 'cubic-bezier(0.3, 0.9, 0.4, 1.15)' },
+    )
+  }, [checked])
+
+  function toggle(id: string, el: HTMLElement) {
+    const next = new Set(checked)
+    if (next.has(id)) next.delete(id)
+    else {
+      next.add(id)
+      from.current = { id, rect: el.getBoundingClientRect() }
+    }
+    setChecked(next)
   }
 
-  const shouldInclude = (item: typeof BASE_ITEMS[0]) => {
-    if (item.base) return true
-    return item.conditions.some(c => activeConditions.has(c))
+  function addCustom() {
+    const name = draft.trim()
+    if (!name) return
+    const id = `c-${Date.now().toString(36)}`
+    setCustom([...custom, { id, name, category: draftCat, qty: 1 }])
+    setDraft('')
   }
 
-  const groupedItems = useMemo(() => {
-    const groups: Record<string, Array<{ item: typeof BASE_ITEMS[0]; qty: number; key: string }>> = {}
-    BASE_ITEMS.filter(shouldInclude).forEach(item => {
-      if (!groups[item.category]) groups[item.category] = []
-      groups[item.category].push({ item, qty: getQty(item), key: `base-${item.name}` })
-    })
-    customItems.forEach((ci: any, i: number) => {
-      if (!groups[ci.category]) groups[ci.category] = []
-      groups[ci.category].push({ item: ci, qty: ci.qty || 1, key: `custom-${i}` })
-    })
-    return groups
-  }, [activeConditions, customItems])
-
-  const togglePacked = (key: string) => {
-    setPackedItems(prev => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  const addCustomItem = () => {
-    setCustomItems([...customItems, { name: '', category: 'misc', qty: 1 }])
-  }
-
-  const removeCustomItem = (index: number) => {
-    setCustomItems(customItems.filter((_, i) => i !== index))
-  }
-
-  const updateCustomItem = (index: number, field: string, value: string | number) => {
-    setCustomItems(customItems.map((ci, i) => i === index ? { ...ci, [field]: value } : ci))
-  }
-
-  const totalItems = Object.values(groupedItems).flat().length
-  const packedCount = Object.values(groupedItems).flat().filter(i => packedItems[i.key]).length
+  const set = <K extends keyof TripSettings>(k: K, v: TripSettings[K]) => setSettings({ ...settings, [k]: v })
 
   return (
-    <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0 }}>Packing List Generator</h3>
-        <div className="stat"><b><Roll value={packedCount} /></b><span className="muted">/ {totalItems} packed</span></div>
-      </div>
-
-      <div className="row" style={{ gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 100 }}>
-          <span>Trip Duration (days)</span>
-          <input type="number" min={1} max={365} value={days} onChange={e => setDays(Number(e.target.value))} />
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-          <span>Trip Type</span>
-          <select value={tripType} onChange={e => setTripType(e.target.value)}>
-            <option value="leisure">Leisure</option>
-            <option value="business">Business</option>
-            <option value="adventure">Adventure</option>
-            <option value="beach">Beach</option>
-            <option value="international">International</option>
-          </select>
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 120 }}>
-          <span>Weather</span>
-          <select value={weather} onChange={e => setWeather(e.target.value)}>
-            <option value="hot">Hot</option>
-            <option value="mild">Mild</option>
-            <option value="cold">Cold</option>
-            <option value="rainy">Rainy</option>
-          </select>
-        </label>
-        <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-          <span>Activities</span>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-            {['hiking', 'beach', 'pool', 'photography', 'reading', 'work', 'formal', 'outdoor', 'tropical', 'boat', 'car'].map(a => (
-              <label key={a} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', background: 'var(--bg)', padding: '2px 8px', borderRadius: 4, border: '1px solid var(--border)' }}>
-                <input type="checkbox" checked={activities.includes(a)} onChange={e => setActivities(e.target.checked ? [...activities, a] : activities.filter(x => x !== a))} />
-                {a}
-              </label>
-            ))}
-          </div>
-        </label>
-      </div>
-
-      <div style={{ marginBottom: 16 }}>
-        <h4 style={{ marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          Custom Items
-          <button className="btn" onClick={addCustomItem} style={{ padding: '4px 12px', fontSize: '0.8rem' }}>+ Add</button>
-        </h4>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {customItems.map((ci: any, i) => (
-            <div key={i} className="pop-row" style={{
-              display: 'grid', gap: 8, padding: 10,
-              background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',
-              gridTemplateColumns: '1fr 100px 80px auto',
-              animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-              animationDelay: `${i * 30}ms`,
-            }}>
-              <input type="text" placeholder="Item name" value={ci.name} onChange={e => updateCustomItem(i, 'name', e.target.value)} style={{ background: 'transparent', border: 'none', color: 'var(--text)' }} />
-              <select value={ci.category} onChange={e => updateCustomItem(i, 'category', e.target.value)} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)' }}>
-                {CATEGORIES.map(c => <option key={c.id} value={c.id}>{c.icon} {c.name}</option>)}
-              </select>
-              <input type="number" min={1} value={ci.qty || 1} onChange={e => updateCustomItem(i, 'qty', Number(e.target.value))} style={{ width: 60 }} />
-              <button className="btn" onClick={() => removeCustomItem(i)} style={{ color: 'var(--danger)', justifySelf: 'end' }}>✕</button>
-            </div>
-          ))}
+    <div className="pk">
+      <div className="pk-settings pk-noprint">
+        <Choice label="Trip type" value={settings.type} options={TRIP_TYPES} onChange={(v) => set('type', v)} />
+        <Choice label="Weather" value={settings.weather} options={WEATHERS} onChange={(v) => set('weather', v)} />
+        <div className="pk-sliders">
+          <Slider label="Days" value={settings.days} min={1} max={30} onChange={(v) => set('days', v)} />
+          <Slider label="Travelers" value={settings.travelers} min={1} max={8} onChange={(v) => set('travelers', v)} />
+        </div>
+        <div className="row">
+          <Toggle label="Laundry available" checked={settings.laundry} onChange={(v) => set('laundry', v)} />
+          <Toggle label="Going abroad" checked={settings.abroad} onChange={(v) => set('abroad', v)} />
         </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 16 }}>
-        {CATEGORIES.map((cat, ci) => {
-          const items = groupedItems[cat.id] || []
-          if (items.length === 0) return null
-          return (
-            <details key={cat.id} defaultOpen style={{ background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-              <summary style={{ padding: 12, cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div className="row" style={{ gap: 8, alignItems: 'center' }}>
-                  <span style={{ fontSize: '1.5rem' }}>{cat.icon}</span>
-                  <span style={{ fontWeight: 600 }}>{cat.name}</span>
-                </div>
-                <span className="muted">{items.length} items</span>
-              </summary>
-              <div style={{ padding: 12 }}>
-                {items.map(({ item, qty, key }, i) => (
-                  <label key={key} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '8px 0', fontSize: '0.9rem' }}>
-                    <input type="checkbox" checked={packedItems[key]} onChange={() => togglePacked(key)} />
-                    <span style={{ flex: 1, textDecoration: packedItems[key] ? 'line-through' : 'none', color: packedItems[key] ? 'var(--muted)' : 'var(--text)' }}>
-                      {item.name} {qty > 1 && <span className="muted"> (×{qty})</span>}
-                    </span>
-                    {item.conditions.length > 0 && <span className="muted" style={{ fontSize: '0.7rem' }}>[{item.conditions.join(', ')}]</span>}
-                  </label>
-                ))}
-              </div>
-            </details>
-          )
-        })}
-      </div>
+      <div className="pk-layout">
+        <aside className="pk-side pk-noprint">
+          <div ref={caseRef} className={`pk-case ${full ? 'full' : ''}`} aria-label={`${packed.length} of ${total} items packed`} role="img">
+            <span className="pk-handle" />
+            <span className="pk-lid" />
+            <div className="pk-inside">
+              {packed.map((i) => (
+                <span key={i.id} data-tile={i.id} className="pk-tile" style={{ background: COLORS[i.category] }} title={i.name} />
+              ))}
+            </div>
+          </div>
+          <p className="pk-count"><b>{packed.length}</b> / {total} packed{full ? ' · ready to go!' : ''}</p>
+          <div className="bar"><i style={{ transform: `scaleX(${total ? packed.length / total : 0})` }} /></div>
+          <div className="row">
+            <button type="button" className="btn btn-icon" onClick={() => window.print()}><Icon name="printer" size={18} />Print</button>
+            <button type="button" className="btn" onClick={() => setChecked(new Set())} disabled={!packed.length}>Unpack all</button>
+          </div>
+        </aside>
 
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        List auto-generates based on trip details. Check items as you pack. Custom items supported. All data saved locally.
-      </p>
+        <div className="pk-list">
+          <h3 className="pk-print-title">Packing list: {TRIP_TYPES.find((t) => t[0] === settings.type)?.[1]}, {settings.days} days, {settings.travelers} traveler{settings.travelers > 1 ? 's' : ''}</h3>
+          {CATEGORIES.map((cat) => {
+            const list = items.filter((i) => i.category === cat)
+            if (!list.length) return null
+            const done = list.filter((i) => checked.has(i.id)).length
+            return (
+              <section key={cat} className="pk-group">
+                <h4><i style={{ background: COLORS[cat] }} />{cat} <span className="muted">{done}/{list.length}</span></h4>
+                <ul>
+                  {list.map((i) => (
+                    <li key={i.id} className={checked.has(i.id) ? 'on' : ''}>
+                      <label>
+                        <input type="checkbox" checked={checked.has(i.id)} onChange={(e) => toggle(i.id, e.currentTarget)} />
+                        <span className="pk-name">{i.name}</span>
+                        {i.qty > 1 && <span className="pk-qty">×{i.qty}</span>}
+                      </label>
+                      {i.id.startsWith('c-') && (
+                        <button type="button" className="pk-x pk-noprint" aria-label={`Remove ${i.name}`} onClick={() => { setCustom(custom.filter((c) => c.id !== i.id)); const n = new Set(checked); n.delete(i.id); setChecked(n) }}>×</button>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          })}
+          <form className="pk-add pk-noprint" onSubmit={(e) => { e.preventDefault(); addCustom() }}>
+            <input type="text" placeholder="Add your own item…" aria-label="Custom item" value={draft} onChange={(e) => setDraft(e.target.value)} />
+            <select aria-label="Category" value={draftCat} onChange={(e) => setDraftCat(e.target.value as Category)}>
+              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+            </select>
+            <button type="submit" className="btn primary" disabled={!draft.trim()}>Add</button>
+          </form>
+        </div>
+      </div>
+      <div className="pk-noprint">
+        <Hint>Pick the trip and weather, then tick items as you pack; each one drops into the suitcase. Clothes scale with the number of days (capped at 4 days&apos; worth when you can do laundry). Your list and ticks are saved on this device.</Hint>
+      </div>
     </div>
   )
 }

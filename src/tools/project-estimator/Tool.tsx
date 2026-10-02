@@ -35,22 +35,33 @@ const RISK_MULTIPLIERS = { low: 1.0, medium: 1.25, high: 1.5 }
 
 export default function ProjectEstimator() {
   const [tasks, setTasks] = useState<Task[]>(() => {
-    const saved = localStorage.getItem('project-estimator')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, name: 'Requirements gathering', category: 'Planning', effort: 16, rate: 100, assignee: 'BA', dependencies: '', risk: 'low', notes: '' },
-      { id: 2, name: 'UI/UX Design', category: 'Design', effort: 40, rate: 120, assignee: 'Designer', dependencies: '1', risk: 'medium', notes: '' },
-      { id: 3, name: 'Frontend Development', category: 'Development', effort: 80, rate: 110, assignee: 'Frontend Dev', dependencies: '2', risk: 'high', notes: '' },
-      { id: 4, name: 'Backend API', category: 'Development', effort: 60, rate: 115, assignee: 'Backend Dev', dependencies: '1', risk: 'medium', notes: '' },
-      { id: 5, name: 'Integration Testing', category: 'Testing', effort: 24, rate: 90, assignee: 'QA', dependencies: '3,4', risk: 'low', notes: '' },
-      { id: 6, name: 'Documentation', category: 'Documentation', effort: 16, rate: 80, assignee: 'Tech Writer', dependencies: '5', risk: 'low', notes: '' },
-    ]
+    try {
+      const saved = localStorage.getItem('4lltools:project-estimator')
+      return saved ? JSON.parse(saved) : [
+        { id: 1, name: 'Requirements gathering', category: 'Planning', effort: 16, rate: 100, assignee: 'BA', dependencies: '', risk: 'low', notes: '' },
+        { id: 2, name: 'UI/UX Design', category: 'Design', effort: 40, rate: 120, assignee: 'Designer', dependencies: '1', risk: 'medium', notes: '' },
+        { id: 3, name: 'Frontend Development', category: 'Development', effort: 80, rate: 110, assignee: 'Frontend Dev', dependencies: '2', risk: 'high', notes: '' },
+        { id: 4, name: 'Backend API', category: 'Development', effort: 60, rate: 115, assignee: 'Backend Dev', dependencies: '1', risk: 'medium', notes: '' },
+        { id: 5, name: 'Integration Testing', category: 'Testing', effort: 24, rate: 90, assignee: 'QA', dependencies: '3,4', risk: 'low', notes: '' },
+        { id: 6, name: 'Documentation', category: 'Documentation', effort: 16, rate: 80, assignee: 'Tech Writer', dependencies: '5', risk: 'low', notes: '' },
+      ]
+    } catch {
+      return [
+        { id: 1, name: 'Requirements gathering', category: 'Planning', effort: 16, rate: 100, assignee: 'BA', dependencies: '', risk: 'low', notes: '' },
+        { id: 2, name: 'UI/UX Design', category: 'Design', effort: 40, rate: 120, assignee: 'Designer', dependencies: '1', risk: 'medium', notes: '' },
+        { id: 3, name: 'Frontend Development', category: 'Development', effort: 80, rate: 110, assignee: 'Frontend Dev', dependencies: '2', risk: 'high', notes: '' },
+        { id: 4, name: 'Backend API', category: 'Development', effort: 60, rate: 115, assignee: 'Backend Dev', dependencies: '1', risk: 'medium', notes: '' },
+        { id: 5, name: 'Integration Testing', category: 'Testing', effort: 24, rate: 90, assignee: 'QA', dependencies: '3,4', risk: 'low', notes: '' },
+        { id: 6, name: 'Documentation', category: 'Documentation', effort: 16, rate: 80, assignee: 'Tech Writer', dependencies: '5', risk: 'low', notes: '' },
+      ]
+    }
   })
   const [contingency, setContingency] = useState(20)
   const [hourlyRate, setHourlyRate] = useState(100)
   const [newTask, setNewTask] = useState({ name: '', category: 'Development', effort: 8, rate: 100, assignee: '', dependencies: '', risk: 'medium' as const, notes: '' })
 
   useEffect(() => {
-    try { localStorage.setItem('project-estimator', JSON.stringify(tasks)) } catch {}
+    try { localStorage.setItem('4lltools:project-estimator', JSON.stringify(tasks)) } catch {}
   }, [tasks])
 
   const addTask = () => {

@@ -1,0 +1,47 @@
+.spt-box {
+  --spt-c: #2f9e44;
+  position: relative; display: grid; justify-items: center; gap: 10px; padding: 22px 16px 16px; border-radius: var(--radius);
+  background: var(--spt-c); color: #fff; transition: background-color 1.2s ease; overflow: hidden; text-align: center;
+}
+.spt-box.spt-yellow { --spt-c: #e6a100; color: #1b1a17; }
+.spt-box.spt-red { --spt-c: #d9362b; }
+.spt-box.spt-over { --spt-c: #b3161b; }
+.spt-box.spt-over.running { animation: spt-pulse 1.1s ease-in-out infinite; }
+.spt-phase { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.9; }
+.spt-digits { font-family: var(--mono); font-weight: 700; font-size: clamp(64px, 20vw, 190px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.spt-sec { font-size: 1rem; animation: rise 0.35s var(--ease-out) both; }
+.spt-track { position: relative; width: 100%; max-width: 900px; height: 34px; border-radius: 8px; background: rgba(0, 0, 0, 0.18); overflow: hidden; }
+.spt-seg { position: absolute; top: 0; bottom: 0; border-right: 2px solid rgba(255, 255, 255, 0.55); display: flex; align-items: center; justify-content: center; overflow: hidden; transition: background-color 0.3s; z-index: 1; }
+.spt-seg em { font-style: normal; font-size: 0.72rem; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; }
+.spt-seg.on { background: rgba(255, 255, 255, 0.28); box-shadow: inset 0 0 0 2px currentColor; }
+.spt-seg.done em { opacity: 0.6; text-decoration: line-through; }
+.spt-fill { position: absolute; inset: 0; background: rgba(255, 255, 255, 0.22); transform-origin: left; transition: transform 0.25s linear; }
+.spt-mark { position: absolute; top: 0; bottom: 0; width: 3px; margin-left: -1.5px; background: currentColor; z-index: 2; transition: left 0.25s linear; }
+.spt-end { position: absolute; top: -2px; bottom: -2px; width: 0; border-left: 3px dashed currentColor; z-index: 2; }
+.spt-controls { justify-content: center; margin: 4px 0 0; }
+.spt-controls .btn { min-height: 42px; }
+.spt-box .btn:not(.primary) { background: rgba(255, 255, 255, 0.9); color: #1b1a17; border-color: transparent; }
+.spt-box .btn.primary { background: #1b1a17; border-color: #1b1a17; color: #fff; }
+.spt-keys { text-align: center; font-size: 0.8rem; margin: 8px 0 0; }
+.spt-keys kbd { font-family: var(--mono); font-size: 0.72rem; padding: 1px 5px; border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; background: var(--sunken); }
+.spt-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 18px; margin-top: 8px; }
+.spt-h { font-size: 1.05rem; margin: 14px 0 6px; }
+.spt-grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.spt-grid3 label { margin: 0; font-size: 0.82rem; }
+.spt-grid3 input { margin-top: 4px; }
+.spt-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.spt-list li { display: grid; grid-template-columns: 1fr 76px 40px; gap: 6px; align-items: center; padding: 3px; border-radius: var(--radius-sm); transition: box-shadow 0.25s; animation: rise 0.3s var(--ease-out) both; }
+.spt-list li.on { box-shadow: 0 0 0 2px var(--accent); }
+.spt-list input { padding: 8px 10px; }
+.spt-x { width: 40px; height: 40px; border: 0; background: transparent; color: var(--muted); font-size: 1.2rem; cursor: pointer; border-radius: 6px; }
+.spt-x:hover { color: var(--danger); background: var(--sunken); }
+.spt-box:fullscreen { display: flex; flex-direction: column; justify-content: center; border-radius: 0; padding: 4vh 4vw; }
+.spt-box:fullscreen .spt-digits { font-size: min(34vw, 55vh); }
+.spt-box:fullscreen .spt-sec { font-size: 2rem; }
+.spt-box:fullscreen .spt-phase { font-size: 1.4rem; }
+.spt-box:fullscreen .spt-track { height: 48px; max-width: none; }
+@keyframes spt-pulse { 0%, 100% { background-color: #b3161b; } 50% { background-color: #e5383b; } }
+@media (prefers-reduced-motion: reduce) {
+  .spt-box, .spt-fill, .spt-mark { transition: none; }
+  .spt-box.spt-over.running { animation: none; }
+}

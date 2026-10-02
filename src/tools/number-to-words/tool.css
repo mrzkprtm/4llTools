@@ -1,0 +1,9 @@
+.nw-in { font-family: var(--mono); font-size: 1.25rem; }
+.nw-out { position: relative; margin: 12px 0 0; padding: 16px 18px; min-height: 64px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); font-size: 1.2rem; line-height: 1.55; font-weight: 600; overflow-wrap: anywhere; }
+.nw-out.is-empty { color: var(--muted); font-weight: 400; font-size: 1rem; }
+.nw-word { white-space: nowrap; display: inline-block; }
+.nw-opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px 14px; align-items: end; margin: 12px 0; }
+.nw-opts > label { font-weight: 400; margin: 0; }
+.nw-read { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 8px 0 0; font-size: 0.88rem; }
+.nw-examples { display: flex; flex-wrap: wrap; gap: 6px; }
+.nw-examples .btn { font-family: var(--mono); font-size: 0.82rem; padding: 4px 10px; }

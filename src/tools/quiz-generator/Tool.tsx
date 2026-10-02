@@ -41,8 +41,7 @@ const SAMPLE_QUIZ: Quiz = {
 
 export default function QuizGenerator() {
   const [quizzes, setQuizzes] = useState<Quiz[]>(() => {
-    const saved = localStorage.getItem('quiz-generator')
-    return saved ? JSON.parse(saved) : [SAMPLE_QUIZ]
+    try { const saved = localStorage.getItem('4lltools:quiz-generator'); return saved ? JSON.parse(saved) : [SAMPLE_QUIZ] } catch { return [SAMPLE_QUIZ] }
   })
   const [activeQuizId, setActiveQuizId] = useState<number | null>(null)
   const [viewMode, setViewMode] = useState<'list' | 'editor' | 'take'>('list')
@@ -54,7 +53,7 @@ export default function QuizGenerator() {
   const [timerRunning, setTimerRunning] = useState(false)
 
   useEffect(() => {
-    try { localStorage.setItem('quiz-generator', JSON.stringify(quizzes)) } catch {}
+    try { localStorage.setItem('4lltools:quiz-generator', JSON.stringify(quizzes)) } catch {}
   }, [quizzes])
 
   const activeQuiz = quizzes.find(q => q.id === activeQuizId)
@@ -324,7 +323,7 @@ export default function QuizGenerator() {
                 )}
 
                 {question.type === 'short-answer' && (
-                  <input type="text" value={question.correctAnswer} onChange={e => updateQuestion(activeQuiz!.id, question.id, 'correctAnswer', e.target.value)} placeholder="Correct answer (case-insensitive)" style={{ width: '100%' }} />
+                  <input type="text" value={question.correctAnswer as string} onChange={e => updateQuestion(activeQuiz!.id, question.id, 'correctAnswer', e.target.value)} placeholder="Correct answer (case-insensitive)" style={{ width: '100%' }} />
                 )}
 
                 <textarea value={question.explanation} onChange={e => updateQuestion(activeQuiz!.id, question.id, 'explanation', e.target.value)} placeholder="Explanation (shown after answer if enabled)" rows={2} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--text)', padding: 8, fontFamily: 'inherit', resize: 'vertical', width: '100%' }} />
@@ -412,7 +411,7 @@ export default function QuizGenerator() {
                   )}
 
                   {currentQuestion.type === 'short-answer' && (
-                    <input type="text" value={answers[currentQuestion.id] || ''} onChange={e => handleAnswer(currentQuestion.id, e.target.value)} placeholder="Type your answer..." style={{ width: '100%', padding: 12, fontSize: '1rem' }} />
+                    <input type="text" value={(answers[currentQuestion.id] as string) || ''} onChange={e => handleAnswer(currentQuestion.id, e.target.value)} placeholder="Type your answer..." style={{ width: '100%', padding: 12, fontSize: '1rem' }} />
                   )}
                 </div>
               )}

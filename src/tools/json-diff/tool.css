@@ -1,0 +1,23 @@
+.jd-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); font-family: var(--mono); font-size: 0.84rem; max-height: 460px; overflow: auto; }
+.jd-list li { display: grid; grid-template-columns: 1.4em minmax(0, 1fr); gap: 4px 8px; padding: 6px 10px; border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); animation: jd-in 0.32s var(--ease-out) backwards; }
+.jd-list li:last-child { border-bottom: 0; }
+.jd-sign { font-weight: 700; text-align: center; }
+.jd-path { font-weight: 600; word-break: break-all; }
+.jd-vals { grid-column: 2; white-space: pre-wrap; word-break: break-word; }
+.jd-add { background: color-mix(in srgb, var(--ok) 9%, transparent); }
+.jd-add .jd-sign { color: var(--ok); }
+.jd-remove { background: color-mix(in srgb, var(--danger) 9%, transparent); }
+.jd-remove .jd-sign { color: var(--danger); }
+.jd-replace { background: color-mix(in srgb, #d97706 10%, transparent); }
+.jd-replace .jd-sign { color: #d97706; }
+.jd-old { color: var(--danger); text-decoration: line-through; text-decoration-thickness: 1px; }
+.jd-new { color: var(--ok); }
+.jd-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 0.82rem; }
+.jd-table th, .jd-table td { border: 1px solid var(--border); padding: 5px 8px; text-align: left; vertical-align: top; white-space: pre-wrap; word-break: break-word; }
+.jd-table th { background: var(--sunken); font-family: inherit; }
+.jd-table tr { animation: jd-in 0.32s var(--ease-out) backwards; }
+.jd-table td.jd-l { background: color-mix(in srgb, var(--danger) 8%, transparent); }
+.jd-table td.jd-r { background: color-mix(in srgb, var(--ok) 8%, transparent); }
+.jd-table td.jd-none { color: var(--muted); font-style: italic; }
+.jd-same { text-align: center; padding: 22px; border: 1px dashed var(--ok); border-radius: var(--radius-sm); color: var(--ok); font-weight: 600; animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+@keyframes jd-in { from { opacity: 0; transform: translateX(-8px); } }

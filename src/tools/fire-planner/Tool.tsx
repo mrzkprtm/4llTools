@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useState, useEffect } from 'react'
+import Roll from '../../motion/Roll'
 
 interface SimulationPoint {
   age: number
@@ -12,8 +11,14 @@ function formatCurrency(n: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
 }
 
-function formatNumber(n: number): string {
-  return new Intl.NumberFormat('en-US').format(n)
+/** Small seeded PRNG so the same inputs always give the same simulation (and prerender matches the client). */
+function mulberry32(seed: number) {
+  return () => {
+    seed = (seed + 0x6d2b79f5) | 0
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
 }
 
 function runMonteCarlo(
@@ -25,17 +30,20 @@ function runMonteCarlo(
   volatility: number,
   simulations: number = 200
 ): SimulationPoint[][] {
-  const years = retirementAge - currentAge
+  const years = Math.max(1, retirementAge - currentAge)
   const allPaths: SimulationPoint[][] = []
+  const random = mulberry32(12345)
 
   for (let s = 0; s < simulations; s++) {
     const path: SimulationPoint[] = []
     let portfolio = currentPortfolio
     for (let y = 0; y <= years; y++) {
-      const age = currentAge + y
-      const annualReturn = expectedReturn + (Math.random() - 0.5) * volatility * 2
-      portfolio = portfolio * (1 + annualReturn) + monthlyContribution * 12
-      path.push({ age, portfolio: Math.max(0, portfolio), contributions: currentPortfolio + monthlyContribution * 12 * y })
+      // Year 0 is today's portfolio; each later year adds a random return plus a year of contributions
+      if (y > 0) {
+        const annualReturn = expectedReturn + (random() - 0.5) * volatility * 2
+        portfolio = Math.max(0, portfolio * (1 + annualReturn) + monthlyContribution * 12)
+      }
+      path.push({ age: currentAge + y, portfolio, contributions: currentPortfolio + monthlyContribution * 12 * y })
     }
     allPaths.push(path)
   }
@@ -56,12 +64,12 @@ export default function FirePlanner() {
     setSimulations(runMonteCarlo(currentAge, retirementAge, currentPortfolio, monthlyContribution, expectedReturn / 100, volatility / 100))
   }, [currentAge, retirementAge, currentPortfolio, monthlyContribution, expectedReturn, volatility])
 
-  const years = retirementAge - currentAge
+  const years = simulations[0].length - 1
   const finalPortfolios = simulations.map(p => p[p.length - 1].portfolio)
   const medianFinal = finalPortfolios.sort((a, b) => a - b)[Math.floor(finalPortfolios.length / 2)]
   const fireNumber = medianFinal
   const safeWithdrawal = fireNumber * withdrawalRate / 100
-  const yearsToFire = currentPortfolio >= fireNumber ? 0 : Math.ceil(Math.log(fireNumber / currentPortfolio) / Math.log(1 + expectedReturn / 100 + monthlyContribution * 12 / currentPortfolio))
+  const yearsToFire = currentPortfolio >= fireNumber ? 0 : currentPortfolio <= 0 ? years : Math.ceil(Math.log(fireNumber / currentPortfolio) / Math.log(1 + expectedReturn / 100 + monthlyContribution * 12 / currentPortfolio))
 
   return (
     <div>
@@ -118,7 +126,9 @@ export default function FirePlanner() {
 
             const w = canvas.width / dpr
             const h = canvas.height / dpr
-            const maxPortfolio = Math.max(...simulations.flatMap(p => p.map(d => d.portfolio)))
+            const css = getComputedStyle(canvas)
+            const cssVar = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback
+            const maxPortfolio = Math.max(1, ...simulations.flatMap(p => p.map(d => d.portfolio)))
             const minAge = simulations[0][0].age
             const maxAge = simulations[0][simulations[0].length - 1].age
 
@@ -173,7 +183,7 @@ export default function FirePlanner() {
             ctx.stroke()
 
             // Draw contributions line
-            ctx.strokeStyle = 'var(--accent)'
+            ctx.strokeStyle = cssVar('--accent', '#e11d48')
             ctx.lineWidth = 2
             ctx.setLineDash([5, 5])
             ctx.beginPath()
@@ -187,7 +197,7 @@ export default function FirePlanner() {
             ctx.setLineDash([])
 
             // Axes
-            ctx.strokeStyle = 'var(--border)'
+            ctx.strokeStyle = cssVar('--border', '#ccc')
             ctx.lineWidth = 1
             ctx.beginPath()
             ctx.moveTo(20, 20)
@@ -196,18 +206,22 @@ export default function FirePlanner() {
             ctx.stroke()
 
             // Labels
-            ctx.fillStyle = 'var(--muted)'
-            ctx.font = '11px var(--mono)'
-            ctx.textAlign = 'center'
-            for (let y = 0; y <= 4; y++) {
+            ctx.fillStyle = cssVar('--muted', '#888')
+            ctx.font = `11px ${cssVar('--mono', 'monospace')}`
+            ctx.textAlign = 'left'
+            for (let y = 1; y <= 4; y++) {
               const val = (maxPortfolio * y / 4)
-              const yPos = h - 20 - (y / 4) * (h - 40)
-              ctx.fillText(formatCurrency(val), 12, yPos + 4)
+              const yPos = h - 20 - (y / 4) * (h - 60)
+              ctx.fillText(formatCurrency(val), 24, yPos - 4)
             }
-            for (let y = 0; y <= years; y += Math.max(1, Math.floor(years / 5))) {
+            ctx.textAlign = 'center'
+            const step = Math.max(1, Math.floor(years / 5))
+            for (let y = 0; y <= years; y += step) {
+              if (years - y < step / 2 && y !== years) continue
               const x = (y / years) * (w - 40) + 20
-              ctx.fillText(String(minAge + y), x, h - 8)
+              ctx.fillText(String(minAge + y), x, h - 6)
             }
+            if (years % step !== 0) ctx.fillText(String(maxAge), w - 20, h - 6)
           }}
         />
       </div>
@@ -218,7 +232,7 @@ export default function FirePlanner() {
           <div style={{ fontFamily: 'var(--mono)', fontSize: '1.5rem', fontWeight: 700 }}><Roll>{formatCurrency(medianFinal)}</Roll></div>
         </div>
         <div style={{ padding: 12, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-          <div className="muted" style={{ fontSize: '0.85rem' }}>Monthly Income (4% Rule)</div>
+          <div className="muted" style={{ fontSize: '0.85rem' }}>Monthly Income ({withdrawalRate}% Rule)</div>
           <div style={{ fontFamily: 'var(--mono)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--ok)' }}><Roll>{formatCurrency(safeWithdrawal / 12)}</Roll></div>
         </div>
         <div style={{ padding: 12, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>

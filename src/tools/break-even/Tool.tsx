@@ -11,29 +11,47 @@ interface CostItem {
 
 export default function BreakEvenCalculator() {
   const [fixedCosts, setFixedCosts] = useState<CostItem[]>(() => {
-    const saved = localStorage.getItem('break-even-fixed')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, name: 'Rent', type: 'fixed', amount: 2000 },
-      { id: 2, name: 'Salaries', type: 'fixed', amount: 5000 },
-      { id: 3, name: 'Insurance', type: 'fixed', amount: 500 },
-      { id: 4, name: 'Software', type: 'fixed', amount: 300 },
-    ]
+    try {
+      const saved = localStorage.getItem('4lltools:break-even-fixed')
+      return saved ? JSON.parse(saved) : [
+        { id: 1, name: 'Rent', type: 'fixed', amount: 2000 },
+        { id: 2, name: 'Salaries', type: 'fixed', amount: 5000 },
+        { id: 3, name: 'Insurance', type: 'fixed', amount: 500 },
+        { id: 4, name: 'Software', type: 'fixed', amount: 300 },
+      ]
+    } catch {
+      return [
+        { id: 1, name: 'Rent', type: 'fixed', amount: 2000 },
+        { id: 2, name: 'Salaries', type: 'fixed', amount: 5000 },
+        { id: 3, name: 'Insurance', type: 'fixed', amount: 500 },
+        { id: 4, name: 'Software', type: 'fixed', amount: 300 },
+      ]
+    }
   })
   const [variableCosts, setVariableCosts] = useState<CostItem[]>(() => {
-    const saved = localStorage.getItem('break-even-variable')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, name: 'Materials', type: 'variable', amount: 15 },
-      { id: 2, name: 'Labor per unit', type: 'variable', amount: 10 },
-      { id: 3, name: 'Packaging', type: 'variable', amount: 3 },
-      { id: 4, name: 'Shipping', type: 'variable', amount: 5 },
-    ]
+    try {
+      const saved = localStorage.getItem('4lltools:break-even-variable')
+      return saved ? JSON.parse(saved) : [
+        { id: 1, name: 'Materials', type: 'variable', amount: 15 },
+        { id: 2, name: 'Labor per unit', type: 'variable', amount: 10 },
+        { id: 3, name: 'Packaging', type: 'variable', amount: 3 },
+        { id: 4, name: 'Shipping', type: 'variable', amount: 5 },
+      ]
+    } catch {
+      return [
+        { id: 1, name: 'Materials', type: 'variable', amount: 15 },
+        { id: 2, name: 'Labor per unit', type: 'variable', amount: 10 },
+        { id: 3, name: 'Packaging', type: 'variable', amount: 3 },
+        { id: 4, name: 'Shipping', type: 'variable', amount: 5 },
+      ]
+    }
   })
   const [sellingPrice, setSellingPrice] = useState(50)
   const [targetProfit, setTargetProfit] = useState(0)
   const [taxRate, setTaxRate] = useState(0)
 
-  useEffect(() => { try { localStorage.setItem('break-even-fixed', JSON.stringify(fixedCosts)) } catch {} }, [fixedCosts])
-  useEffect(() => { try { localStorage.setItem('break-even-variable', JSON.stringify(variableCosts)) } catch {} }, [variableCosts])
+  useEffect(() => { try { localStorage.setItem('4lltools:break-even-fixed', JSON.stringify(fixedCosts)) } catch {} }, [fixedCosts])
+  useEffect(() => { try { localStorage.setItem('4lltools:break-even-variable', JSON.stringify(variableCosts)) } catch {} }, [variableCosts])
 
   const addFixedCost = () => {
     setFixedCosts([...fixedCosts, { id: Date.now(), name: 'New Fixed Cost', type: 'fixed', amount: 0 }])

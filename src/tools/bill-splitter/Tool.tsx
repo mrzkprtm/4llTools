@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Item {

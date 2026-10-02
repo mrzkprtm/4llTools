@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'BPM Tapper',
-  description: 'Tap along to music to find the exact BPM. Visual beat indicator, average calculation, and tap history.',
+  name: 'BPM Tap Tempo',
+  description: 'Tap along to a song to find its tempo, with a pulsing ring that shows how steady you are.',
   category: 'Music',
-  keywords: ['bpm', 'tapper', 'tempo', 'beat', 'music', 'dj', 'producer', 'tap', 'tempo', 'bpm', 'ketoelan'],
+  keywords: ['tap tempo', 'bpm counter', 'beats per minute', 'tempo lagu'],
   symbol: 'Bt',
-  icon: 'heart-pulse',
+  icon: 'hand-pointer',
 }

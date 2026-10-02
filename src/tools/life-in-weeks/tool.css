@@ -1,0 +1,22 @@
+.lw-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; align-items: end; }
+.lw-inputs label { display: grid; gap: 4px; font-size: 0.86rem; font-weight: 600; margin: 0; }
+.lw-stats { margin-bottom: 14px; }
+.lw-grid-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 14px; align-items: start; }
+@media (max-width: 700px) { .lw-grid-wrap { grid-template-columns: 1fr; } .lw-info { order: -1; } }
+.lw-stage { max-width: 560px; }
+.lw-info { position: sticky; top: 12px; display: grid; gap: 4px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); font-size: 0.86rem; min-height: 72px; transition: border-color 0.2s, box-shadow 0.2s; }
+.lw-info.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.lw-tag { justify-self: start; padding: 2px 8px; border: 2px solid; border-radius: 999px; font-size: 0.78rem; font-weight: 600; animation: lw-pop 0.35s var(--spring-bouncy); }
+.lw-h { margin: 20px 0 8px; font-size: 1rem; }
+.lw-ms { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.lw-ms li { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); font-size: 0.88rem; animation: lw-pop 0.35s var(--ease-out); }
+.lw-ms li > span { flex: 1; min-width: 0; }
+.lw-ms i { width: 12px; height: 12px; border-radius: 50%; flex: none; }
+.lw-x { border: 0; background: transparent; color: var(--muted); font-size: 1.2rem; line-height: 1; min-width: 36px; min-height: 36px; border-radius: 6px; cursor: pointer; }
+.lw-x:hover { color: var(--danger); background: var(--surface); }
+.lw-add { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; margin-top: 8px; }
+@media (max-width: 480px) { .lw-add { grid-template-columns: 1fr 1fr; } .lw-add input:first-child { grid-column: 1 / -1; } }
+.lw-add input[type='date'] { width: auto; }
+.lw-fun { margin-top: 18px; }
+@keyframes lw-pop { from { opacity: 0; transform: scale(0.9); } }
+@media (prefers-reduced-motion: reduce) { .lw-tag, .lw-ms li { animation: none; } }

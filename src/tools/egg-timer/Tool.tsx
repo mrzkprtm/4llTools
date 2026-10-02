@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import Roll from '../../motion/Roll'
 
 const EGG_TYPES = [
   { name: 'Soft', time: 4 * 60, yolk: 0.3 },
@@ -31,24 +30,23 @@ export default function EggTimer() {
   const baseTime = EGG_TYPES[eggType].time
   const adjustedTime = Math.round(baseTime * SIZES[size].factor * TEMPS[temp].factor)
 
+  // A new doneness/size/temperature starts a fresh countdown
   useEffect(() => {
-    if (!running) return
+    setRunning(false)
     setTimeLeft(adjustedTime)
-  }, [eggType, size, temp, adjustedTime, running])
+  }, [adjustedTime])
 
   useEffect(() => {
     if (!running) return
-    const interval = setInterval(() => {
-      setTimeLeft(t => {
-        if (t <= 1) {
-          setRunning(false)
-          playSound()
-          return 0
-        }
-        return t - 1
-      })
-    }, 1000)
+    const interval = setInterval(() => setTimeLeft(t => Math.max(0, t - 1)), 1000)
     return () => clearInterval(interval)
+  }, [running])
+
+  useEffect(() => {
+    if (running && timeLeft <= 0) {
+      setRunning(false)
+      playSound()
+    }
   }, [running, timeLeft])
 
   const playSound = () => {
@@ -65,20 +63,25 @@ export default function EggTimer() {
         osc.start(t)
         osc.stop(t + 0.3)
       }
+      setTimeout(() => { ctx.close().catch(() => {}) }, 1500)
     } catch {}
     navigator.vibrate?.([200, 100, 200, 100, 200])
   }
 
   const toggle = () => {
     if (running) setRunning(false)
-    else { setRunning(true) }
+    else {
+      if (timeLeft <= 0) setTimeLeft(adjustedTime)
+      setRunning(true)
+    }
   }
 
   const reset = () => {
     setRunning(false)
+    setTimeLeft(adjustedTime)
   }
 
-  const totalTime = EGG_TYPES[eggType].time * SIZES[size].factor * TEMPS[temp].factor
+  const totalTime = adjustedTime
   const progress = totalTime > 0 ? 1 - timeLeft / totalTime : 0
   const yolkSet = EGG_TYPES[eggType].yolk * progress
 
@@ -102,7 +105,7 @@ export default function EggTimer() {
 
       // Egg shell
       ctx.beginPath()
-      ctx.ellipse(100, 100, 60, 80, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX, centerY, 60, 80, 0, 0, Math.PI * 2)
       ctx.fillStyle = '#f5f0e1'
       ctx.fill()
       ctx.strokeStyle = '#d4c4a8'
@@ -111,12 +114,12 @@ export default function EggTimer() {
 
       // Egg white
       ctx.beginPath()
-      ctx.ellipse(100, 100, 50, 70, 0, 0, Math.PI * 2)
+      ctx.ellipse(centerX, centerY, 50, 70, 0, 0, Math.PI * 2)
       ctx.fillStyle = 'rgba(255,255,255,0.9)'
       ctx.fill()
 
       // Yolk - position changes as it sets
-      const yolkY = 100 + (1 - yolkSet) * 20
+      const yolkY = centerY + (1 - yolkSet) * 20
       const yolkR = 25 * (0.8 + 0.2 * yolkSet)
       const yolkColor = `hsl(${35 + yolkSet * 20}, 100%, ${50 - yolkSet * 15}%)`
 
@@ -131,26 +134,24 @@ export default function EggTimer() {
     draw()
   }, [yolkSet])
 
-  const totalTime = EGG_TYPES[eggType].time * SIZES[size].factor * TEMPS[temp].factor
-
   return (
     <div>
       <div className="row" style={{ gap: 16, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 16 }}>
         <div style={{ flex: 1, minWidth: 150 }}>
           <label>Doneness</label>
-          <select value={eggType} onChange={e => { setEggType(Number(e.target.value)); setRunning(false) }}>
+          <select value={eggType} onChange={e => setEggType(Number(e.target.value))}>
             {EGG_TYPES.map((e, i) => <option key={e.name} value={i}>{e.name} ({Math.round(e.time/60)} min)</option>)}
           </select>
         </div>
         <div style={{ flex: 1, minWidth: 150 }}>
           <label>Egg Size</label>
-          <select value={size} onChange={e => { setSize(Number(e.target.value)); setRunning(false) }}>
+          <select value={size} onChange={e => setSize(Number(e.target.value))}>
             {SIZES.map((s, i) => <option key={s.name} value={i}>{s.name}</option>)}
           </select>
         </div>
         <div style={{ flex: 1, minWidth: 150 }}>
           <label>Start Temperature</label>
-          <select value={temp} onChange={e => { setTemp(Number(e.target.value)); setRunning(false) }}>
+          <select value={temp} onChange={e => setTemp(Number(e.target.value))}>
             {TEMPS.map((t, i) => <option key={t.name} value={i}>{t.name}</option>)}
           </select>
         </div>
@@ -161,14 +162,14 @@ export default function EggTimer() {
       </div>
 
       <div className="row" style={{ justifyContent: 'center', gap: 8, marginBottom: 16 }}>
-        <span style={{ fontFamily: 'var(--mono)', fontSize: '2rem', fontWeight: 700, color: 'var(--accent)' }}><Roll>{timeLeft}</Roll>s</span>
+        <span style={{ fontFamily: 'var(--mono)', fontSize: '2rem', fontWeight: 700, color: 'var(--accent)' }}><Roll>{fmt(timeLeft)}</Roll></span>
       </div>
 
       <div className="row" style={{ justifyContent: 'center', gap: 12, marginBottom: 16 }}>
-        <button className="btn primary" onClick={() => { setRunning(!running) }} style={{ minWidth: 140 }}>
-          {timeLeft <= 0 ? 'Done!' : running ? 'Pause' : 'Start'}
+        <button className="btn primary" onClick={toggle} style={{ minWidth: 140 }}>
+          {timeLeft <= 0 ? 'Done! Restart' : running ? 'Pause' : 'Start'}
         </button>
-        <button className="btn" onClick={() => { setRunning(false); }}>Reset</button>
+        <button className="btn" onClick={reset}>Reset</button>
       </div>
 
       <div className="stats">

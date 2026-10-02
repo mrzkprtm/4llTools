@@ -20,14 +20,18 @@ const DEFAULT_SCENARIOS: Scenario[] = [
 
 export default function ROICalculator() {
   const [scenarios, setScenarios] = useState<Scenario[]>(() => {
-    const saved = localStorage.getItem('roi-calculator')
-    return saved ? JSON.parse(saved) : DEFAULT_SCENARIOS
+    try {
+      const saved = localStorage.getItem('4lltools:roi-calculator')
+      return saved ? JSON.parse(saved) : DEFAULT_SCENARIOS
+    } catch {
+      return DEFAULT_SCENARIOS
+    }
   })
   const [discountRate, setDiscountRate] = useState(10)
   const [newScenario, setNewScenario] = useState({ name: '', initialInvestment: 0, annualReturn: 0, annualCost: 0, years: 1, salvageValue: 0 })
 
   useEffect(() => {
-    try { localStorage.setItem('roi-calculator', JSON.stringify(scenarios)) } catch {}
+    try { localStorage.setItem('4lltools:roi-calculator', JSON.stringify(scenarios)) } catch {}
   }, [scenarios])
 
   const addScenario = () => {

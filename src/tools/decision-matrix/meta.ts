@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'Decision Matrix',
-  description: 'Score options against weighted criteria to make objective decisions. Export results as CSV.',
+  name: 'Weighted Decision Matrix',
+  description: 'Score options against weighted criteria and watch the ranking bars re-sort as you adjust.',
   category: 'Productivity',
-  keywords: ['decision', 'matrix', 'weighted', 'criteria', 'keputusan', 'matriks', 'bobot', 'kriteria'],
+  keywords: ['decision making', 'pros and cons', 'pengambilan keputusan', 'pilih'],
   symbol: 'Dm',
-  icon: 'checklist',
+  icon: 'scale-light',
 }

@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'Visual mind mapping with nodes, connections, colors, and export to image. Organize ideas hierarchically.',
   category: 'Learning',
   keywords: ['mind', 'map', 'brainstorm', 'visual', 'organize', 'peta', 'pikiran', 'brainstorming', 'ide', 'struktur'],
-  symbol: 'Mm',
+  symbol: 'Map',
   icon: 'git-branch',
 }

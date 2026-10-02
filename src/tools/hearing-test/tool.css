@@ -1,0 +1,37 @@
+.ht { display: grid; gap: 14px; }
+.ht-warn { margin: 0; padding: 10px 12px; border-radius: 8px; border-left: 3px solid var(--danger); background: color-mix(in srgb, var(--danger) 7%, var(--surface)); font-size: 0.9rem; }
+.ht-top { gap: 10px; }
+.ht-card { display: grid; gap: 12px; justify-items: start; padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.ht-card p { margin: 0; }
+.ht-big { min-height: 46px; }
+.ht-small { font-size: 0.84rem; margin: 0; }
+.ht-now-row { display: flex; align-items: center; gap: 12px; width: 100%; }
+.ht-freq { font-family: var(--mono); font-size: 2rem; }
+.ht-level { width: 100%; height: 8px; border-radius: 99px; background: var(--sunken); overflow: hidden; }
+.ht-level i { display: block; height: 100%; background: linear-gradient(90deg, var(--ok), #f59f00, var(--danger)); transition: width var(--spring-soft-ms) var(--spring-soft); }
+.ht-hear { justify-self: stretch; min-height: 72px; font-size: 1.2rem; transition: box-shadow 0.2s; }
+.ht-hear.live { box-shadow: 0 0 0 6px var(--accent-soft); }
+.ht-bar { height: 6px; border-radius: 99px; background: var(--sunken); overflow: hidden; width: 100%; }
+.ht-bar i { display: block; height: 100%; background: var(--accent); transition: width 0.4s ease-out; }
+.ht-chart { width: 100%; max-width: 620px; display: block; margin-inline: auto; }
+.ht-grid { stroke: var(--border); stroke-width: 1; }
+.ht-grid.ht-now { stroke: var(--accent); stroke-width: 2; }
+.ht-tick { font: 10px var(--mono); fill: var(--muted); }
+.ht-line { fill: none; stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: ht-draw 0.8s ease-out forwards; }
+.ht-pt { fill: var(--surface); stroke-width: 2.5; transform-box: fill-box; transform-origin: center; animation: pop 0.4s var(--spring-bouncy) both; }
+@keyframes ht-draw { to { stroke-dashoffset: 0; } }
+.ht-wave { display: flex; gap: 5px; align-items: center; height: 40px; }
+.ht-wave i { width: 6px; height: 10px; border-radius: 3px; background: var(--accent); }
+.ht-wave.on i { animation: ht-eq 0.9s ease-in-out infinite alternate; }
+.ht-wave i:nth-child(2) { animation-delay: 0.15s; } .ht-wave i:nth-child(3) { animation-delay: 0.3s; } .ht-wave i:nth-child(4) { animation-delay: 0.45s; } .ht-wave i:nth-child(5) { animation-delay: 0.6s; }
+@keyframes ht-eq { to { height: 36px; } }
+.ht-sweep { font-family: var(--mono); font-size: clamp(2.2rem, 10vw, 3.4rem); line-height: 1; }
+.ht-result { font-size: 1.05rem; }
+@media (prefers-reduced-motion: reduce) {
+  .ht-line { animation: none; stroke-dashoffset: 0; }
+  .ht-pt, .ht-hear { animation: none; }
+  .ht-wave.on i { animation: none; height: 24px; }
+}
+.ht-hear { position: relative; overflow: hidden; }
+.ht-ripple { position: absolute; inset: 0; background: #fff; opacity: 0; animation: ht-ripple 0.45s ease-out; pointer-events: none; }
+@keyframes ht-ripple { from { opacity: 0.45; } to { opacity: 0; } }

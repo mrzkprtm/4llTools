@@ -27,26 +27,38 @@ const DEFAULT_ENVELOPES = [
 
 export default function BudgetEnvelope() {
   const [envelopes, setEnvelopes] = useState<Envelope[]>(() => {
-    const saved = localStorage.getItem('budget-envelope')
-    return saved ? JSON.parse(saved) : DEFAULT_ENVELOPES.map((e, i) => ({ ...e, id: i + 1, spent: 0 }))
+    try {
+      const saved = localStorage.getItem('4lltools:budget-envelope')
+      return saved ? JSON.parse(saved) : DEFAULT_ENVELOPES.map((e, i) => ({ ...e, id: i + 1, spent: 0 }))
+    } catch {
+      return DEFAULT_ENVELOPES.map((e, i) => ({ ...e, id: i + 1, spent: 0 }))
+    }
   })
   const [monthlyIncome, setMonthlyIncome] = useState(() => {
-    const saved = localStorage.getItem('budget-envelope-income')
-    return saved ? Number(saved) : 2000
+    try {
+      const saved = localStorage.getItem('4lltools:budget-envelope-income')
+      return saved ? Number(saved) : 2000
+    } catch {
+      return 2000
+    }
   })
   const [newEnvelope, setNewEnvelope] = useState({ name: '', allocated: 0, color: COLORS[0], recurring: true, frequency: 'monthly' as const })
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editForm, setEditForm] = useState<{ name: string; allocated: number; color: string; recurring: boolean; frequency: 'weekly' | 'monthly' | 'yearly' }>({ name: '', allocated: 0, color: COLORS[0], recurring: true, frequency: 'monthly' })
   const [transactions, setTransactions] = useState<{ id: number; envelopeId: number; amount: number; description: string; date: string }[]>(() => {
-    const saved = localStorage.getItem('budget-envelope-transactions')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:budget-envelope-transactions')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
 
   useEffect(() => {
-    try { localStorage.setItem('budget-envelope', JSON.stringify(envelopes)) } catch {}
+    try { localStorage.setItem('4lltools:budget-envelope', JSON.stringify(envelopes)) } catch {}
   }, [envelopes])
-  useEffect(() => { try { localStorage.setItem('budget-envelope-income', String(monthlyIncome)) } catch {} }, [monthlyIncome])
-  useEffect(() => { try { localStorage.setItem('budget-envelope-transactions', JSON.stringify(transactions)) } catch {} }, [transactions])
+  useEffect(() => { try { localStorage.setItem('4lltools:budget-envelope-income', String(monthlyIncome)) } catch {} }, [monthlyIncome])
+  useEffect(() => { try { localStorage.setItem('4lltools:budget-envelope-transactions', JSON.stringify(transactions)) } catch {} }, [transactions])
 
   const totalAllocated = envelopes.reduce((sum, e) => sum + e.allocated, 0)
   const totalSpent = envelopes.reduce((sum, e) => sum + e.spent, 0)

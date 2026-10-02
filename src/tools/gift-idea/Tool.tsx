@@ -76,12 +76,16 @@ export default function GiftIdea() {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [savedGifts, setSavedGifts] = useState<number[]>(() => {
-    const saved = localStorage.getItem('gift-idea-saved')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:gift-idea-saved')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
 
   useEffect(() => {
-    try { localStorage.setItem('gift-idea-saved', JSON.stringify(savedGifts)) } catch {}
+    try { localStorage.setItem('4lltools:gift-idea-saved', JSON.stringify(savedGifts)) } catch {}
   }, [savedGifts])
 
   const filteredGifts = useMemo(() => {

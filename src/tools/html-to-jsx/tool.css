@@ -1,0 +1,5 @@
+.jx-opts { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 12px 0; }
+.jx-opts label { font-weight: 400; margin: 0; }
+.jx-notes { margin: 8px 0 0; padding-left: 20px; font-size: 0.88rem; }
+.jx-notes li { animation: jx-in 0.3s var(--ease-out) backwards; }
+@keyframes jx-in { from { opacity: 0; transform: translateY(4px); } }

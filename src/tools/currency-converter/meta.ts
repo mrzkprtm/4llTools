@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'Convert between 150+ currencies with live rates (mock), historical charts, and offline mode.',
   category: 'Travel',
   keywords: ['currency', 'converter', 'exchange', 'rate', 'mata', 'uang', 'konversi', 'nilai', 'tukar'],
-  symbol: 'Cc',
-  icon: 'currency',
+  symbol: 'Cur',
+  icon: 'dollar-circle',
 }

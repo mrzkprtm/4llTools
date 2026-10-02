@@ -1,9 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { headTags, homeMeta, structuredData, toolMeta } from './seo'
+import {
+  categoryMeta,
+  headTags,
+  homeMeta,
+  llmsTxt,
+  relatedTools,
+  toolFaq,
+  toolMeta,
+  toolStructuredData,
+} from './seo'
+import { groupByCategory } from './tools/grouping'
 import { tools } from './tools/registry'
 
 describe('seo', () => {
-  const pages = [homeMeta, ...tools.map(toolMeta)]
+  const pages = [homeMeta(tools), ...groupByCategory(tools).map(([c, l]) => categoryMeta(c, l)), ...tools.map(toolMeta)]
 
   it('gives every page a unique title and description of a length search engines show in full', () => {
     for (const p of pages) {
@@ -16,15 +26,35 @@ describe('seo', () => {
   })
 
   it('writes an absolute canonical link and escapes quotes', () => {
-    const html = headTags({ title: 'A "b"', description: 'x', path: '/qr-reader' })
+    const html = headTags({ title: 'A "b"', description: 'x', path: '/qr-reader', image: '/og/qr-reader.png' })
     expect(html).toMatch(/<link rel="canonical" href="https:\/\/[^"]+\/qr-reader" \/>/)
+    expect(html).toMatch(/<meta property="og:image" content="https:\/\/[^"]+\/og\/qr-reader.png" \/>/)
     expect(html).toContain('A &quot;b&quot;')
   })
 
-  it('describes a tool page as a free web application', () => {
+  it('describes a tool page as a free web application with breadcrumbs and a FAQ', () => {
     const tool = tools.find((t) => t.slug === 'qr-reader')!
-    const [app] = structuredData(toolMeta(tool), tool) as { '@type': string; isAccessibleForFree: boolean }[]
-    expect(app['@type']).toBe('WebApplication')
-    expect(app.isAccessibleForFree).toBe(true)
+    const types = toolStructuredData(toolMeta(tool), tool).map((o) => (o as { '@type': string })['@type'])
+    expect(types).toEqual(['WebApplication', 'BreadcrumbList', 'FAQPage'])
+  })
+
+  it('only promises privacy for tools that keep data on the device', () => {
+    const dns = tools.find((t) => t.slug === 'dns-lookup')!
+    expect(toolFaq(dns).map((f) => f.a).join(' ')).not.toContain('never leaves your device')
+    const qr = tools.find((t) => t.slug === 'qr-reader')!
+    expect(toolFaq(qr).map((f) => f.a).join(' ')).toContain('never leaves your device')
+  })
+
+  it('links every tool to related tools, never itself', () => {
+    for (const t of tools) {
+      const related = relatedTools(t, tools)
+      expect(related.length, t.slug).toBeGreaterThan(0)
+      expect(related.map((r) => r.slug)).not.toContain(t.slug)
+    }
+  })
+
+  it('lists every tool in llms.txt', () => {
+    const txt = llmsTxt(tools)
+    for (const t of tools) expect(txt).toContain(`/${t.slug})`)
   })
 })

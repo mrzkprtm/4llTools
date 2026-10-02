@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'Freelance Rate Calculator',
-  description: 'Calculate your minimum hourly rate based on expenses, desired income, billable hours, and market rates.',
+  description: 'Find the hourly and day rate you need from your income goal, costs and billable hours.',
   category: 'Work',
-  keywords: ['freelance', 'rate', 'hourly', 'calculator', 'income', 'expenses', 'billable', 'freelancer', 'rate', 'kalkulator', 'penghasilan', 'biaya', 'jam'],
-  symbol: 'Fr',
-  icon: 'dollar-sign',
+  keywords: ['freelancer rate', 'hourly rate', 'tarif freelance', 'harga jasa'],
+  symbol: 'Fr2',
+  icon: 'briefcase',
 }

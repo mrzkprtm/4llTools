@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'Day Planner',
-  description: 'Time-block your day in 30-min slots with drag-to-resize tasks, focus mode timer, and daily stats.',
+  name: 'Day Planner & Time Blocking',
+  description: 'Drag and resize time blocks on a day timeline with a live now line, saved in your browser.',
   category: 'Productivity',
-  keywords: ['planner', 'schedule', 'time-block', 'daily', 'perencanaan', 'jadwal', 'fokus'],
-  symbol: 'Dp',
-  icon: 'calendar-clock',
+  keywords: ['time blocking', 'daily schedule', 'agenda', 'jadwal harian', 'perencana'],
+  symbol: 'Dy',
+  icon: 'calendar-plus',
 }

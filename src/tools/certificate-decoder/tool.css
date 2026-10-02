@@ -1,0 +1,30 @@
+.ce-drop { border-radius: var(--radius-sm); transition: box-shadow 0.2s, transform var(--spring-snap-ms) var(--spring-snap); }
+.ce-drop.is-drag { box-shadow: 0 0 0 3px var(--accent); transform: scale(1.01); }
+.ce-file { position: relative; overflow: hidden; cursor: pointer; margin: 0; font-weight: 500; }
+.ce-file input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.ce-file:focus-within { box-shadow: 0 0 0 3px var(--accent-soft); }
+.ce-results { display: grid; gap: 14px; margin-top: 12px; }
+.ce-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; background: var(--surface); min-width: 0; animation: ce-in 0.45s var(--spring-snap) both; }
+@keyframes ce-in { from { opacity: 0; transform: translateY(10px) scale(0.985); } }
+.ce-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 8px; }
+.ce-head h3 { margin: 0; font-size: 1.05rem; overflow-wrap: anywhere; }
+.ce-table-wrap { overflow-x: auto; }
+.ce-table th { width: 170px; white-space: nowrap; vertical-align: top; }
+.ce-table td { overflow-wrap: anywhere; }
+.ce-mono { font-family: var(--mono); font-size: 0.8rem; word-break: break-all; }
+.ce-fp { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ce-fp .btn { padding: 4px 8px; font-size: 0.8rem; }
+.ce-sans { display: flex; flex-wrap: wrap; gap: 4px; }
+.ce-san { font-family: var(--mono); font-size: 0.78rem; padding: 2px 7px; border-radius: 4px; background: var(--accent-soft); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.chip.ce-soon { color: #b45309; border-color: color-mix(in srgb, #d97706 45%, transparent); background: color-mix(in srgb, #d97706 12%, transparent); }
+.ce-small { font-size: 0.85rem; }
+.ce-chain { padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--sunken); }
+.ce-chain-title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; }
+.ce-chain-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.ce-chain-list li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; animation: ce-in 0.4s var(--spring-snap) both; }
+.ce-node { font-weight: 600; padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); overflow-wrap: anywhere; }
+.ce-link { font-size: 0.82rem; padding-left: 14px; font-family: var(--mono); }
+.ce-link.ok { color: var(--ok); }
+.ce-link.bad { color: var(--danger); }
+.ce-how { margin-top: 18px; }
+.ce-cmd { flex: 1; min-width: 0; font-size: 0.8rem; overflow-x: auto; white-space: nowrap; word-break: normal; }

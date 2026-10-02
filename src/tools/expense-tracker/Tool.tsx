@@ -24,15 +24,19 @@ const CURRENCIES = ['USD', 'EUR', 'GBP', 'IDR', 'SGD', 'AUD', 'CAD']
 
 export default function ExpenseTracker() {
   const [expenses, setExpenses] = useState<Expense[]>(() => {
-    const saved = localStorage.getItem('expense-tracker')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:expense-tracker')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
   const [filterCategory, setFilterCategory] = useState('')
   const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7))
   const [newExpense, setNewExpense] = useState({ date: new Date().toISOString().split('T')[0], category: 'Meals & Entertainment', vendor: '', amount: 0, currency: 'USD', taxDeductible: true, description: '', receipt: '' })
 
   useEffect(() => {
-    try { localStorage.setItem('expense-tracker', JSON.stringify(expenses)) } catch {}
+    try { localStorage.setItem('4lltools:expense-tracker', JSON.stringify(expenses)) } catch {}
   }, [expenses])
 
   const addExpense = () => {

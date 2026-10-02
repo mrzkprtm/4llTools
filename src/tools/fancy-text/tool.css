@@ -1,0 +1,22 @@
+.ft-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.ft-row {
+  width: 100%; display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 12px; align-items: center; text-align: left;
+  padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--sunken); color: var(--text);
+  font: inherit; cursor: pointer; transition: border-color 0.15s, background-color 0.2s, transform 0.12s var(--ease-out);
+}
+.ft-row:hover { border-color: var(--accent); }
+.ft-row:active { transform: scale(0.985); }
+.ft-row:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 1px; border-color: var(--accent); }
+.ft-row.is-copied { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 8%, var(--sunken)); }
+.ft-name { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+.ft-out { font-size: 1.15rem; overflow-wrap: anywhere; line-height: 1.4; }
+.ft-row.is-copied .ft-out { animation: pop var(--spring-bouncy-ms) var(--spring-bouncy); }
+.ft-meta { justify-self: end; }
+.ft-len { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); padding: 2px 7px; border-radius: 999px; border: 1px solid var(--border); }
+.ft-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+@media (max-width: 520px) {
+  .ft-row { grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; }
+  .ft-name { grid-column: 1; }
+  .ft-meta { grid-column: 2; grid-row: 1; }
+  .ft-out { grid-column: 1 / -1; }
+}

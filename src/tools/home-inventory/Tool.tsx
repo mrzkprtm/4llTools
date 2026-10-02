@@ -23,16 +23,28 @@ const CATEGORIES = ['Electronics', 'Furniture', 'Appliances', 'Decor', 'Clothing
 
 export default function HomeInventory() {
   const [items, setItems] = useState<Item[]>(() => {
-    const saved = localStorage.getItem('home-inventory')
-    return saved ? JSON.parse(saved) : []
+    try {
+      const saved = localStorage.getItem('4lltools:home-inventory')
+      return saved ? JSON.parse(saved) : []
+    } catch {
+      return []
+    }
   })
   const [rooms, setRooms] = useState<string[]>(() => {
-    const saved = localStorage.getItem('home-inventory-rooms')
-    return saved ? JSON.parse(saved) : ROOMS
+    try {
+      const saved = localStorage.getItem('4lltools:home-inventory-rooms')
+      return saved ? JSON.parse(saved) : ROOMS
+    } catch {
+      return ROOMS
+    }
   })
   const [categories, setCategories] = useState<string[]>(() => {
-    const saved = localStorage.getItem('home-inventory-categories')
-    return saved ? JSON.parse(saved) : CATEGORIES
+    try {
+      const saved = localStorage.getItem('4lltools:home-inventory-categories')
+      return saved ? JSON.parse(saved) : CATEGORIES
+    } catch {
+      return CATEGORIES
+    }
   })
   const [filterRoom, setFilterRoom] = useState('')
   const [filterCategory, setFilterCategory] = useState('')
@@ -41,9 +53,9 @@ export default function HomeInventory() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editForm, setEditForm] = useState({ name: '', room: 'Living Room', category: 'Electronics', purchaseDate: '', purchasePrice: 0, currentValue: 0, warrantyExpiry: '', serialNumber: '', brand: '', model: '', notes: '', receipt: '' })
 
-  useEffect(() => { try { localStorage.setItem('home-inventory', JSON.stringify(items)) } catch {} }, [items])
-  useEffect(() => { try { localStorage.setItem('home-inventory-rooms', JSON.stringify(rooms)) } catch {} }, [rooms])
-  useEffect(() => { try { localStorage.setItem('home-inventory-categories', JSON.stringify(categories)) } catch {} }, [categories])
+  useEffect(() => { try { localStorage.setItem('4lltools:home-inventory', JSON.stringify(items)) } catch {} }, [items])
+  useEffect(() => { try { localStorage.setItem('4lltools:home-inventory-rooms', JSON.stringify(rooms)) } catch {} }, [rooms])
+  useEffect(() => { try { localStorage.setItem('4lltools:home-inventory-categories', JSON.stringify(categories)) } catch {} }, [categories])
 
   const addItem = () => {
     if (!newItem.name.trim()) return

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 
 export default function RunningPace() {
   const [mode, setMode] = useState<'pace' | 'time' | 'distance'>('pace')
@@ -10,48 +10,41 @@ export default function RunningPace() {
   const [paceSeconds, setPaceSeconds] = useState(0)
 
   const totalTimeSec = timeMinutes * 60 + timeSeconds
-  const totalDistanceKm = distance
-  const paceSecPerKm = totalDistanceKm > 0 ? totalTimeSec / totalDistanceKm : 0
-  const paceMin = Math.floor(paceSecPerKm / 60)
-  const paceSec = Math.round(paceSecPerKm % 60)
+  const paceInputSec = paceMinutes * 60 + paceSeconds
 
-  const timeFromPaceSec = totalDistanceKm * (paceMinutes * 60 + paceSeconds)
-  const timeH = Math.floor(timeFromPaceSec / 3600)
-  const timeM = Math.floor((timeFromPaceSec % 3600) / 60)
-  const timeS = Math.round(timeFromPaceSec % 60)
+  const paceSecPerKm = distance > 0 ? totalTimeSec / distance : 0
+  const paceRounded = Math.round(paceSecPerKm)
+  const paceMin = Math.floor(paceRounded / 60)
+  const paceSec = paceRounded % 60
 
-  const distFromPace = totalTimeSec > 0 ? totalTimeSec / (paceMinutes * 60 + paceSeconds) : 0
+  const timeFromPaceSec = distance * paceInputSec
+  const distFromPace = paceInputSec > 0 ? totalTimeSec / paceInputSec : 0
+
+  // The run everything else is based on, whichever value is being calculated
+  const runTimeSec = mode === 'time' ? timeFromPaceSec : totalTimeSec
+  const runDistanceKm = mode === 'distance' ? distFromPace : distance
 
   // Riegel prediction
-  const riegel = (t1: number, d1: number, d2: number) => t1 * Math.pow(d2 / d1, 1.06)
-  const marathonTime = riegel(totalTimeSec, distance, 42.195)
-  const halfMarathonTime = riegel(totalTimeSec, distance, 21.0975)
-  const tenKTime = riegel(totalTimeSec, distance, 10)
-  const fiveKTime = riegel(totalTimeSec, distance, 5)
-
-  const fmtTime = (sec: number) => {
-    const h = Math.floor(sec / 3600)
-    const m = Math.floor((sec % 3600) / 60)
-    const s = Math.round(sec % 60)
-    return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`
-  }
+  const riegel = (t1: number, d1: number, d2: number) => d1 > 0 ? t1 * Math.pow(d2 / d1, 1.06) : 0
 
   return (
     <div>
       <div className="row" style={{ gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 16 }}>
         <label style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
           <span>Calculate</span>
-          <select value={mode} onChange={e => setMode(e.target.value as any)} className="btn">
+          <select value={mode} onChange={e => setMode(e.target.value as typeof mode)} className="btn">
             <option value="pace">Pace from Time & Distance</option>
             <option value="time">Time from Pace & Distance</option>
             <option value="distance">Distance from Pace & Time</option>
           </select>
         </label>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
-          <span>Distance (km)</span>
-          <input type="number" step={0.01} min={0.1} value={distance} onChange={e => setDistance(Number(e.target.value))} />
-        </div>
+        {mode !== 'distance' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 150 }}>
+            <span>Distance (km)</span>
+            <input type="number" step={0.01} min={0.1} value={distance} onChange={e => setDistance(Number(e.target.value))} />
+          </div>
+        )}
 
         {(mode === 'pace' || mode === 'distance') && (
           <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
@@ -80,8 +73,8 @@ export default function RunningPace() {
 
       <div className="stats" style={{ marginBottom: 16 }}>
         <div className="stat"><b style={{ fontSize: '1.5rem' }}><Roll>{mode === 'pace' ? `${paceMin}:${String(paceSec).padStart(2, '0')}` : mode === 'time' ? fmtTime(timeFromPaceSec) : `${distFromPace.toFixed(2)} km`}</Roll></b><span className="muted">{mode === 'pace' ? 'Pace/km' : mode === 'time' ? 'Time' : 'Distance'}</span></div>
-        <div className="stat"><b><Roll>{mode !== 'time' ? fmtTime(totalTimeSec) : fmtTime(timeFromPaceSec)}</Roll></b><span className="muted">Total Time</span></div>
-        <div className="stat"><b><Roll>{totalDistanceKm.toFixed(2)}</Roll></b><span className="muted">Distance (km)</span></div>
+        <div className="stat"><b><Roll>{fmtTime(runTimeSec)}</Roll></b><span className="muted">Total Time</span></div>
+        <div className="stat"><b><Roll>{runDistanceKm.toFixed(2)}</Roll></b><span className="muted">Distance (km)</span></div>
       </div>
 
       <div style={{ marginBottom: 16 }}>
@@ -95,7 +88,7 @@ export default function RunningPace() {
           ].map(r => (
             <div key={r.name} className="stat" style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{r.name}</div>
-              <div style={{ fontFamily: 'var(--mono)', fontWeight: 700, fontSize: '1.1rem' }}><Roll>{fmtTime(riegel(totalTimeSec || paceSecPerKm * distance, distance, r.dist))}</Roll></div>
+              <div style={{ fontFamily: 'var(--mono)', fontWeight: 700, fontSize: '1.1rem' }}><Roll>{fmtTime(riegel(runTimeSec, runDistanceKm, r.dist))}</Roll></div>
             </div>
           ))}
         </div>

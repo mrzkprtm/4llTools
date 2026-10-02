@@ -1,0 +1,25 @@
+.cf-quick { display: flex; flex-wrap: wrap; gap: 6px; }
+.cf-quick .btn { min-height: 40px; padding: 7px 11px; font-size: 0.84rem; }
+.cf-trav { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-weight: 500; font-size: 0.9rem; }
+.cf-trav input { width: 70px; }
+.cf-legs { display: grid; gap: 6px; margin: 10px 0; }
+.cf-leg { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 8px 10px; border: 1px solid var(--border); border-left: 5px solid var(--accent); border-radius: var(--radius-sm); background: var(--surface); }
+.cf-leg select { flex: 1 1 200px; min-width: 0; }
+.cf-n { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.cf-km { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-weight: 500; font-size: 0.84rem; color: var(--muted); }
+.cf-km input { width: 90px; }
+.cf-kg { margin-left: auto; font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.cf-x { border: 0; background: none; color: var(--muted); font-size: 1.3rem; min-width: 40px; min-height: 40px; cursor: pointer; border-radius: 6px; }
+.cf-x:hover { color: var(--danger); background: var(--sunken); }
+.cf-bubbles { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; min-height: 90px; margin: 18px 0 6px; padding: 12px; border-radius: var(--radius); background: var(--sunken); border: 1px solid var(--border); }
+.cf-bubble {
+  border-radius: 50%; display: grid; place-content: center; justify-items: center; color: #fff; font-size: 1.1rem; line-height: 1.1; opacity: 0.9;
+  box-shadow: inset 0 -6px 14px rgba(0, 0, 0, 0.18); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both;
+  transition: width var(--spring-bouncy-ms) var(--spring-bouncy), height var(--spring-bouncy-ms) var(--spring-bouncy), background-color 0.3s;
+}
+.cf-bubble small { font-family: var(--mono); font-size: 0.7rem; font-weight: 700; }
+.cf-forest { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 14px; padding: 10px; min-height: 48px; border-radius: var(--radius); background: color-mix(in srgb, var(--ok) 8%, var(--surface)); border: 1px solid color-mix(in srgb, var(--ok) 30%, var(--border)); align-items: flex-end; }
+.cf-tree { font-size: 1.25rem; line-height: 1; transform-origin: bottom center; animation: cf-grow 0.5s var(--spring-bouncy) both; animation-delay: var(--d); }
+.cf-more { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); align-self: center; margin-left: 6px; }
+.cf-note { font-size: 0.8rem; margin-top: 12px; }
+@keyframes cf-grow { from { transform: scale(0); opacity: 0; } to { transform: none; opacity: 1; } }

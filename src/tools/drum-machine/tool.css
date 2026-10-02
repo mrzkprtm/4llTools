@@ -1,0 +1,31 @@
+.dm-top { align-items: center; }
+.dm-play { min-height: 48px; min-width: 120px; justify-content: center; }
+.dm-bpm { font-family: var(--mono); color: var(--muted); margin-right: auto; }
+.dm-bpm b { font-size: 1.4rem; color: var(--text); }
+.dm-top .btn { min-height: 40px; }
+.dm-scroll { overflow-x: auto; padding-bottom: 4px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.dm-grid { display: grid; gap: 4px; padding: 10px; min-width: 700px; }
+.dm-row { display: grid; grid-template-columns: 112px repeat(16, minmax(30px, 1fr)); gap: 4px; align-items: center; --c: hsl(calc(var(--hue) + 20) 70% 52%); }
+.dm-label { display: flex; gap: 4px; position: sticky; left: 0; background: var(--surface); z-index: 1; height: 100%; align-items: center; padding-right: 4px; }
+.dm-name { flex: 1; text-align: left; border: 0; background: none; color: var(--text); font: 600 0.84rem inherit; cursor: pointer; padding: 8px 2px; min-height: 40px; }
+.dm-name::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--c); margin-right: 6px; }
+.dm-mute { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border); background: var(--sunken); color: var(--muted); font: 700 0.75rem var(--mono); cursor: pointer; }
+.dm-mute.on { background: var(--danger); color: #fff; border-color: var(--danger); }
+.dm-row.muted .dm-cell.on { opacity: 0.35; }
+.dm-cell {
+  height: 40px; border-radius: 6px; border: 1px solid var(--border); background: var(--sunken); cursor: pointer; padding: 0; touch-action: manipulation;
+  transition: transform var(--spring-bouncy-ms) var(--spring-bouncy), background-color 0.12s, box-shadow 0.12s;
+}
+.dm-cell.beat { background: color-mix(in srgb, var(--text) 9%, var(--sunken)); }
+.dm-cell.on { background: var(--c); border-color: var(--c); transform: scale(1.04); }
+.dm-cell.now { box-shadow: 0 0 0 2px var(--accent); }
+.dm-cell.on.now { transform: scale(1.14); box-shadow: 0 0 0 2px var(--accent), 0 0 16px -2px var(--c); }
+.dm-ruler span { text-align: center; font: 600 0.75rem var(--mono); color: var(--muted); border-radius: 4px; transition: background-color 0.1s; }
+.dm-ruler span.now { background: var(--accent); color: var(--accent-text, #fff); }
+.dm-mixer { border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 12px; background: var(--surface); display: grid; gap: 8px; }
+.dm-mixer summary { cursor: pointer; font-weight: 600; min-height: 28px; }
+.dm-mixer[open] { gap: 10px; }
+@media (prefers-reduced-motion: reduce) {
+  .dm-cell { transition: none; }
+  .dm-cell.on, .dm-cell.on.now { transform: none; }
+}

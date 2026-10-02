@@ -1,10 +1,10 @@
 import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
-  name: 'Clothing Size Converter',
-  description: 'Convert clothing sizes between US, UK, EU, JP, CN, and AU standards for men, women, and children. Includes shoe sizes.',
+  name: 'Clothing & Shoe Size Converter',
+  description: 'Convert clothing and shoe sizes between US, UK, EU, Asia and Indonesia with a measuring guide.',
   category: 'Everyday',
-  keywords: ['clothing', 'size', 'converter', 'conversion', 'chart', 'international', 'shoe', 'pakaian', 'ukuran', 'konversi', 'sepatu', 'internasional', 'baju', 'celana'],
-  symbol: 'Cs',
-  icon: 'shirt',
+  keywords: ['size chart', 'ukuran baju', 'ukuran sepatu', 'shoe size', 'konversi'],
+  symbol: 'Cz2',
+  icon: 't-shirt',
 }

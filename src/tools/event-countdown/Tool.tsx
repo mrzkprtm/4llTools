@@ -1,136 +1,144 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Roll } from '../../motion/Roll'
-import { reducedMotion } from '../../motion/springs'
+import { useEffect, useRef, useState } from 'react'
+import CopyButton from '../../components/CopyButton'
+import Icon from '../../components/Icon'
+import { Hint } from '../../sim/controls'
+import { confetti } from './confetti'
+import FlipCard from './FlipCard'
+import { breakdown, decodeHash, encodeHash, nextAnnual, nextIdulFitri, parseLocal, progress, toLocal, type EventInfo } from './logic'
+import './tool.css'
 
-interface Event {
-  id: number
-  name: string
-  date: string
-  color: string
+const KEY = '4lltools:event-countdown'
+const R = 54
+const C = 2 * Math.PI * R
+const pad = (n: number) => String(n).padStart(2, '0')
+
+function defaultEvent(now: Date): EventInfo {
+  return { name: `New Year ${now.getFullYear() + 1}`, at: `${now.getFullYear() + 1}-01-01T00:00`, created: now.getTime() }
 }
 
-const COLORS = ['#e11d48', '#2563eb', '#16a34a', '#ca8a04', '#9333ea', '#0891b2', '#db2777', '#ea580c']
-
 export default function EventCountdown() {
-  const [events, setEvents] = useState<Event[]>(() => {
-    const saved = localStorage.getItem('event-countdown')
-    return saved ? JSON.parse(saved) : [
-      { id: 1, name: 'New Year', date: new Date(new Date().getFullYear() + 1, 0, 1).toISOString().split('T')[0], color: COLORS[0] },
-    ]
-  })
+  const [ev, setEv] = useState<EventInfo | null>(null)
+  const [now, setNow] = useState(() => Date.now())
+  const [bday, setBday] = useState('')
+  const [link, setLink] = useState('')
+  const wasCounting = useRef(false)
+
+  // The hash wins over what was saved, so shared links open straight away.
+  useEffect(() => {
+    const read = () => {
+      const fromHash = decodeHash(location.hash)
+      let saved: EventInfo | null = null
+      try {
+        saved = decodeHash(localStorage.getItem(KEY) ?? '')
+      } catch {
+        saved = null
+      }
+      setEv({ ...(fromHash ?? saved ?? defaultEvent(new Date())) })
+    }
+    read()
+    window.addEventListener('hashchange', read)
+    return () => window.removeEventListener('hashchange', read)
+  }, [])
 
   useEffect(() => {
-    try { localStorage.setItem('event-countdown', JSON.stringify(events)) } catch {}
-  }, [events])
+    if (!ev) return
+    const hash = encodeHash(ev)
+    try {
+      localStorage.setItem(KEY, hash)
+    } catch {
+      // Storage is optional.
+    }
+    if (location.hash !== hash) history.replaceState(null, '', hash)
+    setLink(location.href)
+  }, [ev])
 
-  const now = useMemo(() => new Date(), [])
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 250)
+    return () => clearInterval(id)
+  }, [])
 
-  const addEvent = () => {
-    const nextYear = new Date()
-    nextYear.setFullYear(nextYear.getFullYear() + 1)
-    setEvents([...events, { id: Date.now(), name: `Event ${events.length + 1}`, date: nextYear.toISOString().split('T')[0], color: COLORS[events.length % COLORS.length] }])
+  const target = ev ? parseLocal(ev.at).getTime() : 0
+  const left = target - now
+  const parts = breakdown(left)
+  const created = ev?.created ?? now
+  const prog = progress(created, target, now)
+
+  // Celebrate when the countdown reaches zero while the page is open.
+  useEffect(() => {
+    if (!ev) return
+    if (!parts.done) wasCounting.current = true
+    else if (wasCounting.current) {
+      wasCounting.current = false
+      confetti()
+    }
+  }, [parts.done, ev])
+
+  function set(name: string, at: string) {
+    setEv({ name, at, created: Date.now() })
   }
 
-  const deleteEvent = (id: number) => {
-    setEvents(events.filter(e => e.id !== id))
-  }
-
-  const getTimeLeft = (targetDate: string) => {
-    const target = new Date(targetDate + 'T23:59:59')
-    const diff = target.getTime() - now.getTime()
-    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0, past: true, totalDays: 0 }
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000)
-    const totalDays = diff / (1000 * 60 * 60 * 24)
-    return { days, hours, minutes, seconds, past: false, totalDays }
-  }
-
-  const getProgress = (targetDate: string) => {
-    const target = new Date(targetDate + 'T23:59:59')
-    const start = new Date(target)
-    start.setFullYear(start.getFullYear() - 1)
-    const total = target.getTime() - start.getTime()
-    const elapsed = now.getTime() - start.getTime()
-    return Math.max(0, Math.min(100, (elapsed / total) * 100))
-  }
+  const d = new Date(now)
+  const fitri = nextIdulFitri(d)
+  const when = ev ? parseLocal(ev.at) : null
 
   return (
-    <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16 }}>
-        <h3 style={{ margin: 0 }}>Event Countdown</h3>
-        <button className="btn" onClick={addEvent}>+ Add Event</button>
+    <div className="ec">
+      <div className="ec-stage">
+        <div className="ec-ringwrap">
+          <svg viewBox="0 0 120 120" className="ec-ring" aria-hidden="true">
+            <circle cx="60" cy="60" r={R} className="ec-ring-bg" />
+            <circle cx="60" cy="60" r={R} className="ec-ring-fg" strokeDasharray={C} strokeDashoffset={C * (1 - prog)} />
+          </svg>
+          <div className="ec-ring-text">
+            <b>{Math.floor(prog * 100)}%</b>
+            <span>of the wait</span>
+          </div>
+        </div>
+        <div className="ec-main">
+          <h2 className="ec-name">{ev?.name ?? '…'}</h2>
+          <p className="muted ec-when">{when ? when.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</p>
+          <div className="ec-flip" role="timer" aria-live="off" aria-label={`${parts.days} days, ${parts.hours} hours, ${parts.minutes} minutes, ${parts.seconds} seconds left`}>
+            <FlipCard value={parts.days > 99 ? String(parts.days) : pad(parts.days)} label="days" />
+            <FlipCard value={pad(parts.hours)} label="hours" />
+            <FlipCard value={pad(parts.minutes)} label="min" />
+            <FlipCard value={pad(parts.seconds)} label="sec" />
+          </div>
+          {parts.done && ev && <p className="ec-done pop">🎉 It’s here! {ev.name} has started.</p>}
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gap: 16 }}>
-        {events.map((event, i) => {
-          const timeLeft = getTimeLeft(event.date)
-          const progress = getProgress(event.date)
-          return (
-            <div key={event.id} className="pop-row" style={{
-              display: 'grid', gap: 12, padding: 16,
-              background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)',
-              gridTemplateColumns: 'auto 1fr auto', alignItems: 'center',
-              animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
-              animationDelay: `${i * 60}ms`,
-              borderLeft: `4px solid ${event.color}`,
-            }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, minWidth: 180 }}>
-                <div className="row" style={{ gap: 8, alignItems: 'center' }}>
-                  <input type="text" value={event.name} onChange={e => setEvents(events.map(ev => ev.id === event.id ? { ...ev, name: e.target.value } : ev))} style={{ background: 'transparent', border: 'none', color: 'var(--text)', fontWeight: 600, fontSize: '1.1rem' }} />
-                  <input type="color" value={event.color} onChange={e => setEvents(events.map(ev => ev.id === event.id ? { ...ev, color: e.target.value } : ev))} style={{ width: 32, height: 32, border: 'none', borderRadius: '50%', cursor: 'pointer' }} />
-                  <input type="date" value={event.date} onChange={e => setEvents(events.map(ev => ev.id === event.id ? { ...ev, date: e.target.value } : ev))} style={{ background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: '4px', color: 'var(--text)', padding: '4px 8px' }} />
-                  <button className="btn" onClick={() => deleteEvent(event.id)} style={{ color: 'var(--danger)', padding: '4px 8px' }}>Delete</button>
-                </div>
-                <div style={{ height: 6, background: 'var(--bg)', borderRadius: 3, overflow: 'hidden' }}>
-                  <div style={{ width: `${progress}%`, height: '100%', background: event.color, borderRadius: 3, transition: 'width 0.3s' }} />
-                </div>
-                <span className="muted" style={{ fontSize: '0.8rem' }}>{Math.round(progress)}% of the year elapsed</span>
-              </div>
-
-              <div className="row" style={{ gap: 8, justifyContent: 'center' }}>
-                {!timeLeft.past && (
-                  <>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 60 }}>
-                      <Roll value={timeLeft.days} style={{ fontSize: '2rem', fontWeight: 700, color: event.color, lineHeight: 1 }} />
-                      <span className="muted" style={{ fontSize: '0.7rem', textTransform: 'uppercase' }}>Days</span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 60 }}>
-                      <Roll value={timeLeft.hours} style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--text)', lineHeight: 1 }} />
-                      <span className="muted" style={{ fontSize: '0.7rem', textTransform: 'uppercase' }}>Hours</span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 60 }}>
-                      <Roll value={timeLeft.minutes} style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--muted)', lineHeight: 1 }} />
-                      <span className="muted" style={{ fontSize: '0.7rem', textTransform: 'uppercase' }}>Mins</span>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 60 }}>
-                      <Roll value={timeLeft.seconds} style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--muted)', lineHeight: 1 }} />
-                      <span className="muted" style={{ fontSize: '0.7rem', textTransform: 'uppercase' }}>Secs</span>
-                    </div>
-                  </>
-                )}
-                {timeLeft.past && (
-                  <div style={{ color: 'var(--danger)', fontWeight: 600, fontSize: '1.2rem' }}>Event Passed!</div>
-                )}
-              </div>
-
-              <div style={{ textAlign: 'right', minWidth: 120 }}>
-                <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{new Date(event.date).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
-                {!timeLeft.past && (
-                  <div style={{ fontWeight: 600, color: event.color, marginTop: 4 }}>
-                    <Roll value={Math.ceil(timeLeft.totalDays)} /> days total
-                  </div>
-                )}
-              </div>
-            </div>
-          )
-        })}
+      <div className="two-col ec-form">
+        <label>
+          Event name
+          <input type="text" value={ev?.name ?? ''} maxLength={80} onChange={(e) => ev && setEv({ ...ev, name: e.target.value })} />
+        </label>
+        <label>
+          Date and time
+          <input type="datetime-local" value={ev?.at ?? ''} onChange={(e) => e.target.value && ev && set(ev.name, e.target.value)} />
+        </label>
       </div>
 
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        Countdowns update live. Progress bar shows year progress. All data stored locally.
-      </p>
+      <div className="row ec-presets">
+        <button type="button" className="btn" onClick={() => set(`New Year ${d.getFullYear() + 1}`, `${d.getFullYear() + 1}-01-01T00:00`)}>🎆 New Year</button>
+        {fitri && <button type="button" className="btn" onClick={() => set(`Idul Fitri ${fitri.slice(0, 4)}`, `${fitri}T00:00`)}>🌙 Idul Fitri</button>}
+        <button type="button" className="btn" onClick={() => set(`Independence Day`, toLocal(nextAnnual(8, 17, d)).slice(0, 10) + 'T00:00')}>🇮🇩 17 Agustus</button>
+        <span className="ec-bday">
+          <input type="date" aria-label="Birthday" value={bday} onChange={(e) => setBday(e.target.value)} />
+          <button type="button" className="btn" disabled={!bday} onClick={() => {
+            const [, m, day] = bday.split('-').map(Number)
+            set('My birthday', toLocal(nextAnnual(m, day, d)).slice(0, 10) + 'T00:00')
+          }}>🎂 Birthday</button>
+        </span>
+      </div>
+
+      <div className="row">
+        <CopyButton text={link} label="Copy share link" />
+        <button type="button" className="btn btn-icon" onClick={() => confetti()}>
+          <Icon name="shooting-star" size={18} /> Test confetti
+        </button>
+      </div>
+      <Hint>Pick a preset or type your own event. The link keeps the name and date in its # part, so anyone who opens it sees the same countdown; the ring fills from when you set it up.</Hint>
+      {fitri && <p className="muted ec-note">Idul Fitri follows the Indonesian government’s expected date and may shift by a day after the sidang isbat.</p>}
     </div>
   )
 }

@@ -1,219 +1,235 @@
-import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import { useEffect, useRef, useState } from 'react'
+import Stage from '../../sim/Stage'
+import { Choice, Hint, SimLayout, Slider, Toggle } from '../../sim/controls'
+import { circle, clear, line, rrect, text } from '../../sim/draw'
+import { alpha, useTheme } from '../../sim/theme'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
+import Icon from '../../components/Icon'
+import { clampBpm, MAX_BPM, METERS, MIN_BPM, schedule, SUBDIVISIONS, tapBpm, tempoName, type Cursor, type Subdivision, type Tick } from './logic'
+import './tool.css'
 
-const TIME_SIGNATURES = [
-  { name: '4/4', beats: 4, subdivision: 1 },
-  { name: '3/4', beats: 3, subdivision: 1 },
-  { name: '2/4', beats: 2, subdivision: 1 },
-  { name: '6/8', beats: 6, subdivision: 3 },
-  { name: '9/8', beats: 9, subdivision: 3 },
-  { name: '12/8', beats: 12, subdivision: 3 },
-  { name: '5/4', beats: 5, subdivision: 1 },
-  { name: '7/8', beats: 7, subdivision: 1 },
-]
+const W = 600
+const H = 380
+const LOOKAHEAD = 0.12
+const FREQ = { bar: 1760, group: 1320, beat: 1000, sub: 720 } as const
+const GAIN = { bar: 1, group: 0.8, beat: 0.65, sub: 0.35 } as const
 
-const SUBDIVISIONS = [
-  { label: 'Quarter (♩)', value: 1, beatsPerClick: 1 },
-  { label: 'Eighth (♪)', value: 2, beatsPerClick: 0.5 },
-  { label: 'Triplet (♪♪♪)', value: 3, beatsPerClick: 1/3 },
-  { label: 'Sixteenth (♬)', value: 4, beatsPerClick: 0.25 },
-]
+interface Beat { time: number; beat: number; count: number }
 
 export default function Metronome() {
-  const [bpm, setBpm] = useState(120)
-  const [timeSig, setTimeSig] = useState(TIME_SIGNATURES[0])
-  const [subdivision, setSubdivision] = useState(SUBDIVISIONS[0])
-  const [running, setRunning] = useState(false)
-  const [beat, setBeat] = useState(0)
-  const [subBeat, setSubBeat] = useState(0)
-  const [volume, setVolume] = useState(0.5)
-  const [accentFirst, setAccentFirst] = useState(true)
-  const [tapTimes, setTapTimes] = useState<number[]>([])
+  const theme = useTheme()
+  const [bpm, setBpm] = useState(96)
+  const [meterId, setMeterId] = useState('4/4')
+  const [custom, setCustom] = useState(5)
+  const [sub, setSub] = useState<Subdivision>(1)
+  const [accent, setAccent] = useState(true)
+  const [volume, setVolume] = useState(70)
+  const [playing, setPlaying] = useState(false)
+  const [taps, setTaps] = useState<number[]>([])
+  const still = useRef(reducedMotion())
 
-  const audioContextRef = useRef<AudioContext | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout>()
+  const meter = meterId === 'custom' ? { id: 'custom', beats: custom, groups: [custom] } : METERS.find((m) => m.id === meterId)!
+  const settings = { bpm, beats: meter.beats, groups: meter.groups, subdivision: sub, accentFirst: accent }
+  const live = useRef(settings)
+  live.current = settings
 
-  const getAudioContext = () => {
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
-    }
-    return audioContextRef.current
+  const audio = useRef<{ ctx: AudioContext; out: GainNode } | null>(null)
+  const cursor = useRef<Cursor>({ next: 0, index: 0 })
+  const beats = useRef<Beat[]>([])
+  const timer = useRef(0)
+
+  function click(t: Tick) {
+    const a = audio.current
+    if (!a) return
+    const osc = a.ctx.createOscillator()
+    const g = a.ctx.createGain()
+    osc.type = t.level === 'sub' ? 'triangle' : 'square'
+    osc.frequency.value = FREQ[t.level]
+    g.gain.setValueAtTime(0.0001, t.time)
+    g.gain.exponentialRampToValueAtTime(0.4 * GAIN[t.level], t.time + 0.002)
+    g.gain.exponentialRampToValueAtTime(0.0001, t.time + 0.05)
+    osc.connect(g).connect(a.out)
+    osc.start(t.time)
+    osc.stop(t.time + 0.06)
   }
 
-  const playClick = (isAccent: boolean) => {
+  function restartCursor() {
+    const a = audio.current
+    if (!a) return
+    cursor.current = { next: a.ctx.currentTime + 0.06, index: 0 }
+    beats.current = []
+  }
+
+  function start() {
     try {
-      const ctx = getAudioContext()
-      const osc = ctx.createOscillator()
-      const gain = ctx.createGain()
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-
-      osc.type = 'square'
-      osc.frequency.value = isAccent ? 880 : 440
-      gain.gain.value = volume * (isAccent ? 1 : 0.6)
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1)
-
-      osc.start()
-      osc.stop(ctx.currentTime + 0.1)
-    } catch (e) {
-      console.warn('Audio not available', e)
-    }
-  }
-
-  const msPerBeat = useMemo(() => 60000 / bpm / subdivision.value, [bpm, subdivision])
-
-  useEffect(() => {
-    if (running) {
-      intervalRef.current = setInterval(() => {
-        const totalSubBeats = timeSig.beats * subdivision.value
-        const isAccent = accentFirst && (subBeat % totalSubBeats === 0)
-        playClick(isAccent)
-
-        setSubBeat(s => (s + 1) % totalSubBeats)
-        if (subBeat % subdivision.value === subdivision.value - 1) {
-          setBeat(b => (b + 1) % timeSig.beats)
-        }
-      }, msPerBeat)
-    } else {
-      clearInterval(intervalRef.current)
-    }
-    return () => clearInterval(intervalRef.current)
-  }, [running, msPerBeat, timeSig, subdivision, accentFirst, beat, subBeat])
-
-  const handleTap = () => {
-    const now = Date.now()
-    setTapTimes(prev => [...prev.slice(-4), now])
-    if (tapTimes.length >= 1) {
-      const intervals = tapTimes.slice(-4).map((t, i, arr) => i > 0 ? t - arr[i-1] : 0).slice(1)
-      if (intervals.length > 0) {
-        const avg = intervals.reduce((a, b) => a + b, 0) / intervals.length
-        const tappedBpm = Math.round(60000 / avg)
-        if (tappedBpm > 30 && tappedBpm < 300) setBpm(tappedBpm)
+      if (!audio.current) {
+        const ctx = new AudioContext()
+        const out = ctx.createGain()
+        out.connect(ctx.destination)
+        audio.current = { ctx, out }
       }
+      const a = audio.current
+      void a.ctx.resume()
+      a.out.gain.value = volume / 100
+      restartCursor()
+      let count = 0
+      const run = () => {
+        const s = live.current
+        const { ticks, cursor: c } = schedule(cursor.current, a.ctx.currentTime + LOOKAHEAD, s)
+        cursor.current = c
+        for (const t of ticks) {
+          click(t)
+          if (t.sub === 0) beats.current.push({ time: t.time, beat: t.beat, count: count++ })
+        }
+        if (beats.current.length > 16) beats.current.splice(0, beats.current.length - 16)
+      }
+      run()
+      timer.current = window.setInterval(run, 25)
+      setPlaying(true)
+    } catch {
+      setPlaying(false)
     }
   }
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Space') { e.preventDefault(); handleTap() }
+  function stop() {
+    clearInterval(timer.current)
+    beats.current = []
+    setPlaying(false)
   }
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+  // Meter or subdivision changes restart counting from beat 1.
+  useEffect(() => { if (playing) restartCursor() }, [meter.beats, sub, meterId]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (audio.current) audio.current.out.gain.setTargetAtTime(volume / 100, audio.current.ctx.currentTime, 0.02) }, [volume])
+  useEffect(() => () => {
+    clearInterval(timer.current)
+    void audio.current?.ctx.close()
   }, [])
 
-  const formatTime = (ms: number) => {
-    const s = Math.floor(ms / 1000)
-    const m = Math.floor(s / 60)
-    return `${m}:${(s % 60).toString().padStart(2, '0')}`
+  function tap() {
+    const now = performance.now()
+    const next = [...taps.filter((t) => now - t < 4000), now].slice(-8)
+    setTaps(next)
+    const b = tapBpm(next)
+    if (b) setBpm(b)
   }
 
-  const totalClicks = beat * subdivision.value + subBeat
-  const progress = totalClicks / (timeSig.beats * subdivision.value)
+  const nudge = (d: number) => setBpm((b) => clampBpm(b + d))
+
+  function draw(c: CanvasRenderingContext2D) {
+    clear(c, W, H, theme.sunken)
+    const a = audio.current
+    const now = a?.ctx.currentTime ?? 0
+    const list = beats.current
+    let last: Beat | undefined
+    let next: Beat | undefined
+    for (const b of list) {
+      if (b.time <= now) last = b
+      else if (!next) next = b
+    }
+    const beatLen = 60 / live.current.bpm
+    let angle = 0
+    let flash = 0
+    if (playing && last) {
+      const span = next ? next.time - last.time : beatLen
+      const phase = Math.min(1, (now - last.time) / span)
+      angle = still.current ? 0 : 0.42 * Math.cos(Math.PI * (last.count + phase))
+      flash = Math.exp(-(now - last.time) * 9)
+    }
+    // Metronome body.
+    const px = W / 2
+    const py = 300
+    c.beginPath()
+    c.moveTo(px - 110, 340)
+    c.lineTo(px - 46, 60)
+    c.lineTo(px + 46, 60)
+    c.lineTo(px + 110, 340)
+    c.closePath()
+    c.fillStyle = theme.surface
+    c.fill()
+    c.strokeStyle = theme.border
+    c.lineWidth = 2
+    c.stroke()
+    for (let i = 0; i <= 10; i++) {
+      const y = 90 + i * 18
+      line(c, px - 16, y, px + 16, y, alpha(theme.muted, 0.35), 1)
+    }
+    rrect(c, px - 120, 330, 240, 22, 6, theme.text)
+    // Arc of travel.
+    c.beginPath()
+    c.arc(px, py, 230, -Math.PI / 2 - 0.44, -Math.PI / 2 + 0.44)
+    c.strokeStyle = alpha(theme.text, 0.1)
+    c.setLineDash([4, 6])
+    c.stroke()
+    c.setLineDash([])
+    // Arm and sliding weight (higher = slower, like the real thing).
+    const len = 235
+    const tipX = px + Math.sin(angle) * len
+    const tipY = py - Math.cos(angle) * len
+    line(c, px, py, tipX, tipY, theme.text, 4)
+    const wpos = 0.35 + 0.55 * (1 - (live.current.bpm - MIN_BPM) / (MAX_BPM - MIN_BPM))
+    const wx = px + Math.sin(angle) * len * wpos
+    const wy = py - Math.cos(angle) * len * wpos
+    c.save()
+    c.translate(wx, wy)
+    c.rotate(angle)
+    rrect(c, -18, -13, 36, 26, 5, flash > 0.1 ? theme.accent : alpha(theme.accent, 0.8), theme.surface, 2)
+    c.restore()
+    circle(c, px, py, 8, theme.surface, theme.text, 3)
+    // Beat dots.
+    const n = live.current.beats
+    const gap = Math.min(52, 520 / n)
+    const x0 = W / 2 - ((n - 1) * gap) / 2
+    for (let i = 0; i < n; i++) {
+      const on = playing && last?.beat === i
+      const lvl = i === 0 && live.current.accentFirst ? 1.25 : 1
+      const r = (on ? 9 + 6 * flash : 9) * lvl
+      circle(c, x0 + i * gap, 28, r + 6, on ? alpha(theme.accent, 0.25 * flash) : undefined)
+      circle(c, x0 + i * gap, 28, r, on ? theme.accent : alpha(theme.text, 0.12), on ? undefined : theme.border)
+    }
+    text(c, `${live.current.bpm} BPM`, 22, 370, { color: theme.muted, size: 13 })
+    text(c, tempoName(live.current.bpm), W - 22, 370, { color: theme.muted, size: 13, align: 'right' })
+  }
+
+  const options = [...METERS.map((m) => [m.id, m.id] as const), ['custom', 'Custom'] as const]
 
   return (
-    <div>
-      <div className="row" style={{ justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-        <h3 style={{ margin: 0 }}>Metronome</h3>
-        <div className="row" style={{ gap: 8, alignItems: 'center' }}>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 100 }}>
-            <span className="muted" style={{ fontSize: '0.7rem' }}>Time Sig</span>
-            <select value={timeSig.name} onChange={e => setTimeSig(TIME_SIGNATURES.find(t => t.name === e.target.value)!)} style={{ width: 80 }}>
-              {TIME_SIGNATURES.map(t => <option key={t.name} value={t.name}>{t.name}</option>)}
-            </select>
-          </label>
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 130 }}>
-            <span className="muted" style={{ fontSize: '0.7rem' }}>Subdivision</span>
-            <select value={subdivision.value} onChange={e => setSubdivision(SUBDIVISIONS.find(s => s.value === Number(e.target.value))!)} style={{ width: 100 }}>
-              {SUBDIVISIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <div className="pop-row" style={{ padding: 24, textAlign: 'center', background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', marginBottom: 16, animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both' }}>
-        <div className="muted" style={{ fontSize: '0.9rem', marginBottom: 8 }}>BPM</div>
-        <div style={{ fontSize: '4rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)', marginBottom: 16 }}>
-          <Roll value={bpm} />
-        </div>
-
-        <div className="row" style={{ justifyContent: 'center', gap: 16, marginBottom: 16 }}>
-          <button className="btn" onClick={() => setBpm(b => Math.max(20, b - 10))} style={{ minWidth: 60 }}>-10</button>
-          <button className="btn" onClick={() => setBpm(b => Math.max(20, b - 1))} style={{ minWidth: 60 }}>-1</button>
-          <button className="btn" onClick={() => setBpm(b => Math.min(300, b + 1))} style={{ minWidth: 60 }}>+1</button>
-          <button className="btn" onClick={() => setBpm(b => Math.min(300, b + 10))} style={{ minWidth: 60 }}>+10</button>
-        </div>
-
-        <div style={{ width: 200, height: 200, margin: '0 auto 16px', position: 'relative' }}>
-          <svg width="200" height="200" viewBox="0 0 200 200" style={{ transform: `rotate(${beat * (360 / timeSig.beats) + subBeat * (360 / (timeSig.beats * subdivision.value))}deg)` }}>
-            <circle cx="100" cy="100" r="90" fill="none" stroke="var(--border)" strokeWidth="2" />
-            <line x1="100" y1="100" x2="100" y2="10" stroke="var(--accent)" strokeWidth="4" strokeLinecap="round" />
-            <circle cx="100" cy="10" r="8" fill="var(--accent)" />
-          </svg>
-          <div style={{
-            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-            width: 120, height: 120, borderRadius: '50%', border: '4px solid var(--border)',
-            background: `conic-gradient(var(--accent) ${progress * 100}%, var(--border) 0%)`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, fontFamily: 'var(--mono)', color: 'var(--accent)' }}>
-              {beat + 1} / {timeSig.beats}
-            </div>
+    <SimLayout
+      stage={
+        <>
+          <Stage world={[W, H]} running onFrame={draw} label={`Metronome at ${bpm} beats per minute in ${meter.beats} beats per bar${playing ? ', playing' : ', stopped'}.`} />
+          <div className="row me-transport">
+            <button type="button" className="btn primary btn-icon me-play" onClick={playing ? stop : start} aria-pressed={playing}>
+              <Icon key={playing ? 's' : 'p'} name={playing ? 'stop-circle' : 'play-circle'} size={20} />
+              {playing ? 'Stop' : 'Start'}
+            </button>
+            <button type="button" className="btn me-tap" onClick={tap}>
+              <Icon name="hand-pointer" size={18} /> Tap tempo
+            </button>
           </div>
+          <Hint>Press Start, then set the tempo with the slider, the ± buttons or by tapping along. Sound is scheduled on the audio clock, so it stays steady even when the page is busy.</Hint>
+        </>
+      }
+    >
+      <div className="me-bpm">
+        <button type="button" className="btn me-step" onClick={() => nudge(-1)} aria-label="Slower by 1">−</button>
+        <div className="me-bpm-num">
+          <b><Roll>{String(bpm)}</Roll></b>
+          <span key={tempoName(bpm)} className="settle-in">{tempoName(bpm)}</span>
         </div>
-
-        <div className="row" style={{ justifyContent: 'center', gap: 12 }}>
-          <button className="btn" onClick={() => { setRunning(!running); if (!running) { setBeat(0); setSubBeat(0) } }} style={{ padding: '16px 32px', fontSize: '1.2rem', minWidth: 140, background: running ? 'var(--danger)' : 'var(--ok)' }}>
-            {running ? 'Stop' : 'Start'}
-          </button>
-          <button className="btn" onClick={handleTap} style={{ padding: '16px 32px', fontSize: '1.2rem', minWidth: 140, background: 'var(--accent)' }}>
-            Tap Tempo
-          </button>
-        </div>
-
-        <div className="muted" style={{ marginTop: 16, fontSize: '0.85rem' }}>
-          Tap Space or click "Tap Tempo" 4+ times. {tapTimes.length > 0 && <span>Tap BPM: ~{Math.round(60000 / (tapTimes.slice(-4).reduce((a, b, i, arr) => i > 0 ? a + (b - arr[i-1]) : 0, 0) / Math.max(1, tapTimes.length - 1)))}</span>}
-        </div>
+        <button type="button" className="btn me-step" onClick={() => nudge(1)} aria-label="Faster by 1">+</button>
       </div>
-
-      <div className="row" style={{ gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
-        <div className="pop-row" style={{ flex: 1, minWidth: 200, padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-          <h4 style={{ margin: '0 0 12px' }}>Quick Tempos</h4>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(60px, 1fr))', gap: 8 }}>
-            {[40, 50, 60, 70, 80, 90, 100, 110, 120, 128, 140, 160, 180, 200].map(t => (
-              <button key={t} className="btn" onClick={() => setBpm(t)} style={{
-                background: bpm === t ? 'var(--accent)' : 'var(--bg)',
-                color: bpm === t ? 'white' : 'var(--text)',
-                border: bpm === t ? '2px solid var(--accent)' : '1px solid var(--border)',
-              }}>
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="pop-row" style={{ flex: 1, minWidth: 200, padding: 16, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
-          <h4 style={{ margin: '0 0 12px' }}>Settings</h4>
-          <div style={{ display: 'grid', gap: 12 }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
-              <input type="checkbox" checked={accentFirst} onChange={e => setAccentFirst(e.target.checked)} />
-              <span>Accent first beat</span>
-            </label>
-            <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <div className="row" style={{ justifyContent: 'space-between' }}>
-                <span>Volume</span>
-                <span>{Math.round(volume * 100)}%</span>
-              </div>
-              <input type="range" min={0} max={1} step={0.05} value={volume} onChange={e => setVolume(Number(e.target.value))} />
-            </label>
-          </div>
-        </div>
+      <div className="row me-quick">
+        {[-10, -5, 5, 10].map((d) => (
+          <button key={d} type="button" className="btn" onClick={() => nudge(d)}>{d > 0 ? `+${d}` : d}</button>
+        ))}
       </div>
-
-      <p className="muted" style={{ marginTop: 12, fontSize: '0.85rem' }}>
-        Precise metronome with visual pendulum. Supports common time signatures and subdivisions. Tap tempo with Space bar. Audio requires user interaction.
-      </p>
-    </div>
+      <Slider label="Tempo" value={bpm} min={MIN_BPM} max={MAX_BPM} unit=" BPM" onChange={setBpm} />
+      <Choice label="Time signature" value={meterId} options={options} onChange={setMeterId} />
+      {meterId === 'custom' && <Slider label="Beats per bar" value={custom} min={1} max={12} format={(v) => `${v}/4`} onChange={setCustom} />}
+      <Choice label="Subdivision" value={sub} options={SUBDIVISIONS} onChange={setSub} />
+      <Toggle label="Accent the first beat" checked={accent} onChange={setAccent} />
+      <Slider label="Volume" value={volume} min={0} max={100} unit="%" onChange={setVolume} />
+    </SimLayout>
   )
 }

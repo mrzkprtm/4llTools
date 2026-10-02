@@ -1,0 +1,25 @@
+.stt-stage { display: flex; align-items: center; gap: 18px; margin: 18px 0 8px; flex-wrap: wrap; }
+.stt-mic {
+  position: relative; width: 84px; height: 84px; border-radius: 50%; border: 1px solid var(--border-strong);
+  background: var(--surface); color: var(--text); display: grid; place-items: center; cursor: pointer; flex: none;
+  transition: transform 0.15s var(--ease-out), background-color 0.2s, border-color 0.2s;
+}
+.stt-mic:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--accent); }
+.stt-mic:active:not(:disabled) { transform: scale(0.94); }
+.stt-mic:focus-visible { outline: 3px solid var(--accent-soft); outline-offset: 3px; }
+.stt-mic .mj { position: relative; z-index: 1; }
+.stt-mic.on { background: var(--accent); border-color: var(--accent); color: var(--accent-text); --icon-1: var(--accent-text); --icon-2: color-mix(in srgb, var(--accent-text) 35%, transparent); }
+.stt-ring { position: absolute; inset: -1px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; pointer-events: none; }
+.stt-mic.on .stt-ring { animation: stt-ring 1.8s ease-out infinite; }
+.stt-mic.on .stt-ring.r2 { animation-delay: 0.9s; }
+.stt-mic.hearing .stt-ring { animation-duration: 0.9s; }
+@keyframes stt-ring { 0% { transform: scale(1); opacity: 0.7; } 100% { transform: scale(1.6); opacity: 0; } }
+.stt-state { display: block; font-size: 1rem; margin-bottom: 6px; }
+.stt-wave { display: inline-flex; align-items: center; gap: 3px; height: 26px; }
+.stt-wave i { width: 4px; height: 4px; border-radius: 2px; background: var(--border-strong); }
+.stt-wave.idle i { background: var(--accent); opacity: 0.5; animation: stt-wave 1.6s ease-in-out infinite; --h: 8px; }
+.stt-wave.on i { background: var(--accent); animation: stt-wave 0.55s ease-in-out infinite alternate; --h: 24px; }
+.stt-wave.on i:nth-child(odd) { --h: 16px; }
+@keyframes stt-wave { 0% { height: 4px; } 100% { height: var(--h); } }
+.stt-partial { margin: 6px 0 0; color: var(--muted); font-style: italic; animation: stt-fade 0.2s both; overflow-wrap: anywhere; }
+@keyframes stt-fade { from { opacity: 0; } }

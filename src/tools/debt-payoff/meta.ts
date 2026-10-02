@@ -5,6 +5,6 @@ export const meta: ToolMeta = {
   description: 'Snowball vs avalanche race with balances shrinking month by month on an animated timeline.',
   category: 'Money',
   keywords: ['debt', 'payoff', 'snowball', 'avalanche', 'hutang', 'lunas', 'cicilan'],
-  symbol: 'Dp',
+  symbol: 'Dbt',
   icon: 'presentation-chart',
 }

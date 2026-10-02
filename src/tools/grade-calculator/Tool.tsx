@@ -17,18 +17,50 @@ interface Assignment {
   weight?: number
 }
 
-const GRADE_SCALES = {
-  'us-4': { name: 'US 4.0', a: 93, aMinus: 90, bPlus: 87, b: 83, bMinus: 80, cPlus: 77, c: 73, cMinus: 70, dPlus: 67, d: 63, dMinus: 60 },
-  'us-4-simple': { name: 'US 4.0 (Simple)', a: 90, b: 80, c: 70, d: 60 },
-  'indonesia': { name: 'Indonesia (A-E)', a: 85, b: 70, c: 55, d: 40 },
-  'uk': { name: 'UK (First-Third)', first: 70, upperSecond: 60, lowerSecond: 50, third: 40 },
-  'percentage': { name: 'Percentage Only' },
+interface GradeBand {
+  letter: string
+  min: number
+  gpa: number
+}
+
+const GRADE_SCALES: Record<string, { name: string; bands: GradeBand[] }> = {
+  'us-4': {
+    name: 'US 4.0',
+    bands: [
+      { letter: 'A', min: 93, gpa: 4.0 }, { letter: 'A-', min: 90, gpa: 3.7 }, { letter: 'B+', min: 87, gpa: 3.3 },
+      { letter: 'B', min: 83, gpa: 3.0 }, { letter: 'B-', min: 80, gpa: 2.7 }, { letter: 'C+', min: 77, gpa: 2.3 },
+      { letter: 'C', min: 73, gpa: 2.0 }, { letter: 'C-', min: 70, gpa: 1.7 }, { letter: 'D+', min: 67, gpa: 1.3 },
+      { letter: 'D', min: 63, gpa: 1.0 }, { letter: 'D-', min: 60, gpa: 0.7 },
+    ],
+  },
+  'us-4-simple': {
+    name: 'US 4.0 (Simple)',
+    bands: [
+      { letter: 'A', min: 90, gpa: 4.0 }, { letter: 'B', min: 80, gpa: 3.0 }, { letter: 'C', min: 70, gpa: 2.0 }, { letter: 'D', min: 60, gpa: 1.0 },
+    ],
+  },
+  'indonesia': {
+    name: 'Indonesia (A-E)',
+    bands: [
+      { letter: 'A', min: 85, gpa: 4.0 }, { letter: 'B', min: 70, gpa: 3.0 }, { letter: 'C', min: 55, gpa: 2.0 }, { letter: 'D', min: 40, gpa: 1.0 },
+    ],
+  },
+  'uk': {
+    name: 'UK (First-Third)',
+    bands: [
+      { letter: 'First', min: 70, gpa: 4.0 }, { letter: '2:1', min: 60, gpa: 3.5 }, { letter: '2:2', min: 50, gpa: 3.0 }, { letter: 'Third', min: 40, gpa: 2.0 },
+    ],
+  },
+  'percentage': { name: 'Percentage Only', bands: [] },
 }
 
 export default function GradeCalculator() {
   const [categories, setCategories] = useState<Category[]>(() => {
-    const saved = localStorage.getItem('grade-calculator')
-    return saved ? JSON.parse(saved) : [
+    try {
+      const saved = localStorage.getItem('4lltools:grade-calculator')
+      if (saved) return JSON.parse(saved) as Category[]
+    } catch {}
+    return [
       { id: 1, name: 'Homework', weight: 20, assignments: [{ id: 1, name: 'HW 1', score: 90, maxScore: 100 }, { id: 2, name: 'HW 2', score: 85, maxScore: 100 }] },
       { id: 3, name: 'Midterm', weight: 30, assignments: [{ id: 3, name: 'Midterm Exam', score: 78, maxScore: 100 }] },
       { id: 4, name: 'Final', weight: 35, assignments: [{ id: 4, name: 'Final Exam', score: 0, maxScore: 100 }] },
@@ -40,7 +72,7 @@ export default function GradeCalculator() {
   const [showWhatIf, setShowWhatIf] = useState(false)
 
   useEffect(() => {
-    try { localStorage.setItem('grade-calculator', JSON.stringify(categories)) } catch {}
+    try { localStorage.setItem('4lltools:grade-calculator', JSON.stringify(categories)) } catch {}
   }, [categories])
 
   const addCategory = () => {
@@ -87,44 +119,12 @@ export default function GradeCalculator() {
   const earnedWeight = categoryStats.filter(c => c.totalMax > 0).reduce((s, c) => s + c.weight, 0)
   const currentGradeAdjusted = earnedWeight > 0 ? categoryStats.filter(c => c.totalMax > 0).reduce((s, c) => s + c.weighted, 0) / earnedWeight * 100 : 0
 
-  const getLetterGrade = (percentage: number) => {
-    const s = GRADE_SCALES[scale as keyof typeof GRADE_SCALES]
-    if (scale === 'us-4') {
-      if (percentage >= s.a) return { letter: 'A', gpa: 4.0 }
-      if (percentage >= s.aMinus) return { letter: 'A-', gpa: 3.7 }
-      if (percentage >= s.bPlus) return { letter: 'B+', gpa: 3.3 }
-      if (percentage >= s.b) return { letter: 'B', gpa: 3.0 }
-      if (percentage >= s.bMinus) return { letter: 'B-', gpa: 2.7 }
-      if (percentage >= s.cPlus) return { letter: 'C+', gpa: 2.3 }
-      if (percentage >= s.c) return { letter: 'C', gpa: 2.0 }
-      if (percentage >= s.cMinus) return { letter: 'C-', gpa: 1.7 }
-      if (percentage >= s.dPlus) return { letter: 'D+', gpa: 1.3 }
-      if (percentage >= s.d) return { letter: 'D', gpa: 1.0 }
-      if (percentage >= s.dMinus) return { letter: 'D-', gpa: 0.7 }
-      return { letter: 'F', gpa: 0.0 }
-    }
-    if (scale === 'us-4-simple') {
-      if (percentage >= s.a) return { letter: 'A', gpa: 4.0 }
-      if (percentage >= s.b) return { letter: 'B', gpa: 3.0 }
-      if (percentage >= s.c) return { letter: 'C', gpa: 2.0 }
-      if (percentage >= s.d) return { letter: 'D', gpa: 1.0 }
-      return { letter: 'F', gpa: 0.0 }
-    }
-    if (scale === 'indonesia') {
-      if (percentage >= s.a) return { letter: 'A', gpa: 4.0 }
-      if (percentage >= s.b) return { letter: 'B', gpa: 3.0 }
-      if (percentage >= s.c) return { letter: 'C', gpa: 2.0 }
-      if (percentage >= s.d) return { letter: 'D', gpa: 1.0 }
-      return { letter: 'E', gpa: 0.0 }
-    }
-    if (scale === 'uk') {
-      if (percentage >= s.first) return { letter: 'First', gpa: 4.0 }
-      if (percentage >= s.upperSecond) return { letter: '2:1', gpa: 3.5 }
-      if (percentage >= s.lowerSecond) return { letter: '2:2', gpa: 3.0 }
-      if (percentage >= s.third) return { letter: 'Third', gpa: 2.0 }
-      return { letter: 'Fail', gpa: 0.0 }
-    }
-    return { letter: `${percentage.toFixed(1)}%`, gpa: percentage / 25 }
+  const getLetterGrade = (percentage: number): GradeBand => {
+    const bands = GRADE_SCALES[scale]?.bands
+    if (!bands || bands.length === 0) return { letter: `${percentage.toFixed(1)}%`, min: 0, gpa: percentage / 25 }
+    const band = bands.find(b => percentage >= b.min)
+    if (band) return band
+    return { letter: scale === 'indonesia' ? 'E' : 'F', min: 0, gpa: 0.0 }
   }
 
   const currentLetter = getLetterGrade(currentGradeAdjusted)
@@ -132,22 +132,9 @@ export default function GradeCalculator() {
   const calculateNeeded = () => {
     const remainingWeight = totalWeight - earnedWeight
     if (remainingWeight <= 0) return null
-    const target = GRADE_SCALES[scale as keyof typeof GRADE_SCALES]
-    let targetPct = 0
-    if (scale === 'us-4') {
-      const targets: Record<string, number> = { 'A': 93, 'A-': 90, 'B+': 87, 'B': 83, 'B-': 80, 'C+': 77, 'C': 73, 'C-': 70, 'D+': 67, 'D': 63, 'D-': 60 }
-      targetPct = targets[targetGrade] || 93
-    } else if (scale === 'us-4-simple') {
-      const targets: Record<string, number> = { 'A': 90, 'B': 80, 'C': 70, 'D': 60 }
-      targetPct = targets[targetGrade] || 90
-    } else if (scale === 'indonesia') {
-      const targets: Record<string, number> = { 'A': 85, 'B': 70, 'C': 55, 'D': 40 }
-      targetPct = targets[targetGrade] || 85
-    } else if (scale === 'uk') {
-      const targets: Record<string, number> = { 'First': 70, '2:1': 60, '2:2': 50, 'Third': 40 }
-      targetPct = targets[targetGrade] || 70
-    }
-    const needed = (targetPct * totalWeight - currentGrade * earnedWeight) / remainingWeight
+    const band = GRADE_SCALES[scale]?.bands.find(b => b.letter === targetGrade)
+    if (!band) return null
+    const needed = (band.min * totalWeight - currentGrade * earnedWeight) / remainingWeight
     return Math.max(0, Math.min(100, needed))
   }
 

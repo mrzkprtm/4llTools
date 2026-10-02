@@ -1,0 +1,28 @@
+.wb-sec { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px 16px; background: var(--sunken); margin-top: 14px; }
+.wb-sec:first-of-type { margin-top: 4px; }
+.wb-sec h2 { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 1.05rem; }
+.wb-state { width: 9px; height: 9px; border-radius: 50%; background: var(--border-strong, var(--border)); transition: background-color 0.3s; }
+.wb-state.on { background: var(--ok); animation: wb-live 1.6s ease-in-out infinite; }
+.wb-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 0 12px; }
+.wb-video { position: relative; width: 100%; max-width: 640px; aspect-ratio: 16 / 9; background: #0d0d0c; border-radius: var(--radius-sm); overflow: hidden; margin-top: 12px; display: grid; place-items: center; }
+.wb-video video { width: 100%; height: 100%; object-fit: contain; transition: transform var(--spring-snap-ms) var(--spring-snap); }
+.wb-video video.mirror { transform: scaleX(-1); }
+.wb-video .wb-empty { color: #bdbab2; font-size: 0.9rem; padding: 16px; text-align: center; }
+.wb-flash { position: absolute; inset: 0; background: #fff; pointer-events: none; animation: wb-flash 0.45s ease-out both; }
+.wb-shot { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.wb-shot img { width: 160px; max-width: 100%; border-radius: 6px; border: 1px solid var(--border); animation: pop var(--spring-bouncy-ms) var(--spring-bouncy) both; }
+.wb-meter { display: flex; align-items: flex-end; gap: 3px; height: 90px; margin-top: 12px; padding: 8px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); }
+.wb-meter i { flex: 1; height: 100%; border-radius: 3px 3px 1px 1px; background: linear-gradient(to top, var(--ok), #eab308 70%, var(--danger)); transform-origin: bottom; transform: scaleY(0.02); transition: transform 0.07s linear; }
+.wb-level { position: relative; height: 12px; margin-top: 10px; border-radius: 6px; background: var(--surface); border: 1px solid var(--border); overflow: hidden; }
+.wb-level > i { position: absolute; inset: 0; background: linear-gradient(90deg, var(--ok) 0 70%, #eab308 70% 88%, var(--danger) 88%); transform-origin: left; transform: scaleX(0); transition: transform 0.06s linear; }
+.wb-level > b { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--text); left: 0; transition: transform 0.15s; }
+.wb-db { font-family: var(--mono); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.wb-speakers { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+.wb-spk { display: grid; justify-items: center; gap: 6px; padding: 14px 18px; min-width: 110px; }
+.wb-spk svg { transition: transform var(--spring-bouncy-ms) var(--spring-bouncy); }
+.wb-spk.playing svg { transform: scale(1.15); }
+.wb-spk.playing .wb-wave { animation: wb-wave 0.6s ease-out infinite; }
+.wb-wave { opacity: 0.3; transform-box: fill-box; transform-origin: left center; }
+@keyframes wb-live { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 60%, transparent); } 50% { box-shadow: 0 0 0 5px transparent; } }
+@keyframes wb-flash { from { opacity: 0.9; } to { opacity: 0; } }
+@keyframes wb-wave { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }

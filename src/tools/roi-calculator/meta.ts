@@ -2,9 +2,9 @@ import type { ToolMeta } from '../types'
 
 export const meta: ToolMeta = {
   name: 'ROI Calculator',
-  description: 'Calculate Return on Investment for projects, marketing campaigns, equipment, or any investment. Compare multiple scenarios.',
+  description: 'Work out return on investment and payback time for any spend',
   category: 'Work',
   keywords: ['roi', 'calculator', 'return', 'investment', 'profit', 'project', 'marketing', 'equipment', 'roi', 'kalkulator', 'pengembalian', 'investasi', 'keuntungan'],
   symbol: 'Rc',
-  icon: 'trending-up',
+  icon: 'analytics',
 }

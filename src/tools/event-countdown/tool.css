@@ -1,0 +1,44 @@
+.ec-stage { display: flex; gap: 20px; align-items: center; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.ec-main { flex: 1; min-width: 0; }
+.ec-name { margin: 0; font-size: 1.4rem; overflow-wrap: anywhere; }
+.ec-when { margin: 2px 0 12px; font-size: 0.88rem; }
+.ec-ringwrap { position: relative; width: 120px; flex: none; }
+.ec-ring { display: block; width: 100%; transform: rotate(-90deg); }
+.ec-ring circle { fill: none; stroke-width: 9; }
+.ec-ring-bg { stroke: var(--sunken); }
+.ec-ring-fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 0.6s var(--ease-out, ease-out); }
+.ec-ring-text { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.ec-ring-text b { font-family: var(--mono); font-size: 1.3rem; }
+.ec-ring-text span { font-size: 0.7rem; color: var(--muted); }
+
+.ec-flip { --h: 76px; display: flex; gap: 8px; flex-wrap: nowrap; }
+.ec-unit { flex: 1 1 0; min-width: 0; max-width: 104px; display: grid; gap: 4px; justify-items: center; }
+.ec-card { position: relative; width: 100%; height: var(--h); perspective: 300px; border-radius: 8px; font-family: var(--mono); font-weight: 700; font-size: calc(var(--h) * 0.5); color: #f8f6f0; box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.5); }
+.ec-half { position: absolute; left: 0; right: 0; height: 50%; overflow: hidden; background: #2b2a27; }
+.ec-half span { display: block; height: var(--h); line-height: var(--h); text-align: center; font-variant-numeric: tabular-nums; letter-spacing: -0.03em; }
+.ec-top { top: 0; border-radius: 8px 8px 0 0; background: #33312d; border-bottom: 1px solid rgba(0, 0, 0, 0.45); }
+.ec-bottom { bottom: 0; border-radius: 0 0 8px 8px; }
+.ec-bottom span { margin-top: calc(var(--h) / -2); }
+.ec-flap-top { transform-origin: 50% 100%; animation: ec-flip-top 0.3s ease-in forwards; backface-visibility: hidden; z-index: 2; }
+.ec-flap-bottom { transform-origin: 50% 0; transform: rotateX(90deg); animation: ec-flip-bottom 0.3s 0.3s ease-out forwards; backface-visibility: hidden; z-index: 2; }
+@keyframes ec-flip-top { to { transform: rotateX(-90deg); filter: brightness(0.7); } }
+@keyframes ec-flip-bottom { from { transform: rotateX(90deg); filter: brightness(1.4); } to { transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .ec-flap-top { display: none; }
+  .ec-flap-bottom { transform: none; }
+}
+.ec-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.ec-done { margin: 12px 0 0; font-weight: 700; color: var(--ok); }
+.ec-form { margin-top: 16px; }
+.ec-form label { display: grid; gap: 4px; font-size: 0.86rem; font-weight: 600; }
+.ec-form input { margin: 0; }
+.ec-presets .btn { min-height: 40px; }
+.ec-bday { display: inline-flex; gap: 6px; align-items: center; }
+.ec-bday input { width: auto; margin: 0; padding: 8px; }
+.ec-note { font-size: 0.8rem; margin: 4px 0 0; }
+@media (max-width: 560px) {
+  .ec-stage { flex-direction: column-reverse; padding: 14px; gap: 14px; }
+  .ec-ringwrap { width: 96px; }
+  .ec-flip { --h: 62px; gap: 6px; }
+  .ec-main { width: 100%; }
+}

@@ -1,0 +1,30 @@
+.dn-input-row { display: flex; gap: 8px; }
+.dn-input-row input { flex: 1; min-width: 0; }
+.dn-types { margin-top: 12px; }
+.dn-types .btn { padding: 6px 11px; font-size: 0.86rem; }
+.dn-typeinfo { font-size: 0.86rem; margin: 6px 0 0; }
+.dn-results { display: grid; gap: 12px; margin-top: 14px; }
+.dn-block { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; background: var(--surface); min-width: 0; }
+.dn-busy { opacity: 0.8; }
+.dn-bar { margin-top: 10px; }
+.dn-h { margin: 0 0 6px; font-size: 0.95rem; display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.dn-h code { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); font-weight: 400; word-break: break-all; }
+.dn-chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 8px; }
+.dn-meta { font-size: 0.78rem; font-family: var(--mono); }
+.dn-explain { font-size: 0.88rem; margin: 4px 0; }
+.dn-table-wrap { overflow-x: auto; }
+.dn-table td { vertical-align: top; }
+.dn-name { font-family: var(--mono); font-size: 0.8rem; white-space: nowrap; }
+.dn-data { font-family: var(--mono); font-size: 0.82rem; word-break: break-all; min-width: 180px; }
+.dn-type { font-family: var(--mono); font-size: 0.72rem; padding: 1px 6px; border-radius: 4px; background: var(--accent-soft); }
+.dn-parsed { margin-top: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--sunken); border: 1px solid var(--border); }
+.dn-parsed-title { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 6px; }
+.dn-tags { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 0.86rem; }
+.dn-tags li { display: grid; grid-template-columns: minmax(90px, max-content) 1fr; gap: 10px; align-items: baseline; }
+.dn-tags code { font-family: var(--mono); font-size: 0.78rem; word-break: break-all; padding: 1px 6px; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); }
+.dn-tag-good { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent) !important; }
+.dn-tag-bad { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, transparent) !important; }
+.dn-warn { margin: 6px 0 0; font-size: 0.86rem; color: var(--danger); animation: dn-in 0.35s var(--ease-out) both; }
+@keyframes dn-in { from { opacity: 0; transform: translateX(-6px); } }
+@media (max-width: 480px) { .dn-tags li { grid-template-columns: 1fr; gap: 2px; } }
+.dn-idle { font-size: 0.88rem; margin: 12px 0 0; animation: dn-in 0.35s var(--ease-out) both; }
