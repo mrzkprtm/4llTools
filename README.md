@@ -227,7 +227,7 @@ Click a category to expand it. Every name links to the live tool.
 
 </details>
 
-#### Everyday tools (200)
+#### Everyday tools (234)
 
 <details>
 <summary><b>🛠️ Developer</b> · 28 tools</summary>
@@ -266,6 +266,84 @@ Click a category to expand it. Every name links to the live tool.
 </details>
 
 <details>
+<summary><b>🌙 Everyday</b> · 18 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Env` | [Budget Envelope System](https://4lltools.morizdigital.com/budget-envelope) | Plan spending with cash-style envelopes and track every fill and purchase |
+| `Cz2` | [Clothing & Shoe Size Converter](https://4lltools.morizdigital.com/clothing-size) | Convert clothing and shoe sizes between US, UK, EU, Asia and Indonesia with a measuring guide |
+| `Tsb` | [Digital Tasbih & Tally Counter](https://4lltools.morizdigital.com/digital-tasbih) | Count dhikr or anything else with a big tap button, bead animation and saved totals |
+| `Er` | [Event RSVP Tracker](https://4lltools.morizdigital.com/event-rsvp) | Track guest RSVPs, meal choices and plus-ones for any event |
+| `Gft` | [Gift Idea Generator](https://4lltools.morizdigital.com/gift-idea) | Get gift suggestions matched to the recipient, occasion and budget |
+| `Grc` | [Grocery List](https://4lltools.morizdigital.com/grocery-list) | Build a sorted grocery list with categories, quantities and prices |
+| `Hj` | [Hijri Calendar Converter](https://4lltools.morizdigital.com/hijri-calendar) | Convert dates between Gregorian and Hijri, with moon phases and a Ramadan and Eid countdown |
+| `Hi` | [Home Inventory](https://4lltools.morizdigital.com/home-inventory) | Catalog your belongings by room with values and warranty dates |
+| `Lw` | [Life in Weeks](https://4lltools.morizdigital.com/life-in-weeks) | See every week of a life as a grid that fills up to today, with your milestones marked |
+| `Mea` | [Meal Planner](https://4lltools.morizdigital.com/meal-planner) | Weekly meal planner with recipes, grocery auto-generation, nutrition tracking, and shopping list export |
+| `Pc` | [Pet Care Tracker](https://4lltools.morizdigital.com/pet-care) | Track feeding, medication and vet visits for every pet |
+| `Plt` | [Plant Care Tracker](https://4lltools.morizdigital.com/plant-care) | Track watering, fertilizing and sunlight for your plants |
+| `Ps2` | [Prayer Times & Qibla](https://4lltools.morizdigital.com/prayer-times) | Calculate daily prayer times from your location and find the qibla with a compass |
+| `Pg` | [Pregnancy Due Date & Week by Week](https://4lltools.morizdigital.com/pregnancy-week) | Find your due date and follow each week of pregnancy with baby size shown as a growing fruit |
+| `Rt` | [Reaction Time Test](https://4lltools.morizdigital.com/reaction-time) | Wait for green, tap as fast as you can and compare your reaction time with typical ranges |
+| `Sk` | [Scoreboard & Score Keeper](https://4lltools.morizdigital.com/scoreboard) | Keep score for badminton, football, cards or board games with big tap-to-score panels |
+| `Tc` | [Tip Calculator](https://4lltools.morizdigital.com/tip-calculator) | Work out a tip and split it per person in seconds, with rounding that suits your wallet |
+| `Wt` | [Weton & Javanese Calendar](https://4lltools.morizdigital.com/weton-calculator) | Find the weton, pasaran and neptu of any date on a turning Javanese calendar wheel |
+
+</details>
+
+<details>
+<summary><b>📚 Learning</b> · 18 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Cit` | [Citation Generator](https://4lltools.morizdigital.com/citation-generator) | Generate citations in APA, MLA, Chicago, Harvard, IEEE formats for books, journals, websites, and more |
+| `Fq` | [Flag & Capital Quiz](https://4lltools.morizdigital.com/flag-quiz) | Guess the country from its flag or capital, with a streak meter and a region filter |
+| `Fcd` | [Flashcards & Spaced Repetition](https://4lltools.morizdigital.com/flashcards) | Study with flip cards and spaced repetition boxes, import CSV decks and keep them in your browser |
+| `Fml` | [Formula Sheet](https://4lltools.morizdigital.com/formula-sheet) | Reference sheet for math, physics, chemistry, and engineering formulas. Search, filter, and copy LaTeX |
+| `Fv2` | [Fraction Visualizer](https://4lltools.morizdigital.com/fraction-visualizer) | Add, compare and simplify fractions with pie and bar models that split and merge on screen |
+| `Grd` | [Grade Calculator](https://4lltools.morizdigital.com/grade-calculator) | Calculate weighted grades, GPA, and what you need on final exam. Supports multiple grading scales |
+| `Hw` | [Handwriting Tracing Practice](https://4lltools.morizdigital.com/handwriting-tracing) | Trace letters and numbers with animated stroke order, then print practice worksheets |
+| `Ab` | [Interactive Abacus (Soroban)](https://4lltools.morizdigital.com/abacus) | Slide the beads of a soroban abacus, read the value live and follow guided addition lessons |
+| `Pe` | [Interactive Periodic Table](https://4lltools.morizdigital.com/periodic-table) | Explore every element with detail cards and animated heatmaps of periodic trends |
+| `Voc` | [Language Vocabulary Builder](https://4lltools.morizdigital.com/language-vocab) | Build vocabulary lists with translations and spaced review |
+| `Lc` | [Learn to Tell Time](https://4lltools.morizdigital.com/learn-clock) | Drag the hands of a clock and read the time in words in English or Indonesian, then take a quiz |
+| `Mm2` | [Mental Math Trainer](https://4lltools.morizdigital.com/mental-math) | Race the clock on arithmetic sprints at your level and watch your streak and score climb |
+| `Map` | [Mind Map](https://4lltools.morizdigital.com/mind-map) | Visual mind mapping with nodes, connections, colors, and export to image. Organize ideas hierarchically |
+| `Mu` | [Multiplication Practice](https://4lltools.morizdigital.com/multiplication-practice) | Learn times tables with dot arrays that group into the answer, plus a quiz with streaks |
+| `Qiz` | [Quiz Generator](https://4lltools.morizdigital.com/quiz-generator) | Build quizzes with multiple choice, true or false and short answers |
+| `Srp` | [Spaced Repetition Scheduler](https://4lltools.morizdigital.com/spaced-repetition) | SM-2 algorithm scheduler for any review items. Add items, set ease, and get optimal review dates |
+| `Stu` | [Study Planner](https://4lltools.morizdigital.com/study-planner) | Plan study sessions by subject, set goals, track hours, and see progress with weekly calendar view |
+| `Ws` | [Word Scramble Game](https://4lltools.morizdigital.com/word-scramble) | Unscramble shuffled letters that snap into place, with English and Indonesian word lists |
+
+</details>
+
+<details>
+<summary><b>💼 Work</b> · 18 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Be` | [Break-Even Calculator](https://4lltools.morizdigital.com/break-even) | Find the break-even point for a product or service from fixed and variable costs |
+| `Con` | [Contract Generator](https://4lltools.morizdigital.com/contract-generator) | Fill in a template to draft NDAs, service agreements and freelance contracts |
+| `Exp` | [Expense Tracker](https://4lltools.morizdigital.com/expense-tracker) | Log expenses by category with monthly totals and simple reports |
+| `Fr2` | [Freelance Rate Calculator](https://4lltools.morizdigital.com/freelance-rate) | Find the hourly and day rate you need from your income goal, costs and billable hours |
+| `Gn` | [Gantt Chart Maker](https://4lltools.morizdigital.com/gantt-chart) | Plan a project by dragging task bars and dependencies on a timeline, then save it as PNG |
+| `Iv` | [Invoice Generator](https://4lltools.morizdigital.com/invoice-generator) | Fill in an invoice with a live preview, tax and discount, and download it as a PDF |
+| `Mn` | [Meeting Notes](https://4lltools.morizdigital.com/meeting-notes) | Capture agenda, decisions and action items in structured meeting notes |
+| `Wh` | [Online Whiteboard](https://4lltools.morizdigital.com/whiteboard) | Sketch with pens, shapes, sticky notes and text on a board you can pan and zoom |
+| `Oc` | [Org Chart Builder](https://4lltools.morizdigital.com/org-chart) | Build an organization chart that lays itself out as you add and move people |
+| `Ot` | [Overtime Pay Calculator](https://4lltools.morizdigital.com/overtime-pay) | Work out overtime pay under Indonesian rules for weekdays, rest days and public holidays |
+| `Spt` | [Presentation Speaker Timer](https://4lltools.morizdigital.com/speaker-timer) | A big full-screen countdown for talks that changes color as time runs low |
+| `Pjm` | [Project Estimator](https://4lltools.morizdigital.com/project-estimator) | Estimate effort and cost for a project from its task breakdown |
+| `Rc` | [ROI Calculator](https://4lltools.morizdigital.com/roi-calculator) | Work out return on investment and payback time for any spend |
+| `Sal` | [Salary Calculator](https://4lltools.morizdigital.com/salary-calculator) | Calculate net salary from gross, with tax brackets, deductions, and allowances for multiple countries |
+| `Sc` | [Seating Chart Planner](https://4lltools.morizdigital.com/seating-planner) | Drag guests onto tables for weddings and events, with rules for who sits together or apart |
+| `Sh2` | [Shift Scheduler](https://4lltools.morizdigital.com/shift-scheduler) | Drag shifts onto a week grid and see coverage gaps and overtime in a heatmap |
+| `Su2` | [Team Standup Timer](https://4lltools.morizdigital.com/standup-timer) | Shuffle who speaks next and give each person a countdown in your daily standup |
+| `Tsh` | [Timesheet](https://4lltools.morizdigital.com/timesheet) | Track work hours by project and week, with overtime and CSV export |
+
+</details>
+
+<details>
 <summary><b>⏱️ Utility</b> · 16 tools</summary>
 
 | | Tool | What it does |
@@ -286,6 +364,29 @@ Click a category to expand it. Every name links to the live tool.
 | `Tch` | [Touchscreen Multi-Touch Tester](https://4lltools.morizdigital.com/touch-tester) | See every finger on a touchscreen and paint the screen to find dead zones |
 | `Ty` | [Typing Speed Test](https://4lltools.morizdigital.com/typing-test) | Test your typing speed in WPM and accuracy with English or Indonesian words |
 | `Wb` | [Webcam & Mic Test](https://4lltools.morizdigital.com/webcam-mic-test) | Check your webcam, microphone level and left/right speakers before a video call |
+
+</details>
+
+<details>
+<summary><b>🎵 Music</b> · 15 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `An` | [Ambient Noise Generator](https://4lltools.morizdigital.com/ambient-noise) | Play rain, brown, pink or white noise, fan or cafe sounds with a sleep timer, made live in your browser |
+| `Bt` | [BPM Tap Tempo](https://4lltools.morizdigital.com/bpm-tapper) | Tap along to a song to find its tempo, with a pulsing ring that shows how steady you are |
+| `Ct` | [Chord Transposer](https://4lltools.morizdigital.com/chord-transposer) | Transpose chords to any key. Supports chord charts, Nashville numbers, and capo positions |
+| `Co5` | [Circle of Fifths](https://4lltools.morizdigital.com/circle-of-fifths) | Turn the circle of fifths to any key to see its scale, relative minor and chords, and hear them |
+| `Dr` | [Drum Machine](https://4lltools.morizdigital.com/drum-machine) | Program a 16-step beat with synthesized drums, a moving playhead, tempo and swing |
+| `Et2` | [Ear Training](https://4lltools.morizdigital.com/ear-training) | Train your ear to recognize intervals and chords with quizzes and a progress chart |
+| `Gc` | [Guitar Chord Finder](https://4lltools.morizdigital.com/chord-finder) | Look up guitar chords with animated finger positions, hear them strummed and transpose with a capo |
+| `Tu` | [Instrument Tuner](https://4lltools.morizdigital.com/instrument-tuner) | Tune a guitar, ukulele, bass or violin with your microphone and a live needle gauge |
+| `Ivl` | [Interval Calculator](https://4lltools.morizdigital.com/interval-calculator) | Work out the interval between two notes, with inversions and examples |
+| `Kf` | [Key Finder](https://4lltools.morizdigital.com/key-finder) | Identify the musical key from chords or notes. Analyze chord progressions and find the most likely key |
+| `Me` | [Metronome](https://4lltools.morizdigital.com/metronome) | Keep time with a swinging metronome, accent beats, subdivisions and tap tempo |
+| `Sf` | [Scale Finder](https://4lltools.morizdigital.com/scale-finder) | Show any scale on a piano keyboard and fretboard with 80+ scales |
+| `Set` | [Setlist Manager](https://4lltools.morizdigital.com/setlist-manager) | Plan setlists for gigs with drag-to-reorder and running times |
+| `Vp` | [Virtual Piano](https://4lltools.morizdigital.com/piano-keyboard) | Play a piano with your mouse, fingers or keyboard, with scales and chords highlighted |
+| `Vr` | [Vocal Range Test](https://4lltools.morizdigital.com/vocal-range-test) | Sing from low to high to find your vocal range and voice type on a live piano roll |
 
 </details>
 
@@ -313,6 +414,29 @@ Click a category to expand it. Every name links to the live tool.
 </details>
 
 <details>
+<summary><b>✈️ Travel</b> · 15 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Cmc` | [Commute Cost Comparer](https://4lltools.morizdigital.com/commute-compare) | Compare car, motorbike, train, bus and bike commutes by time, monthly cost and CO₂ side by side |
+| `Cur` | [Currency Converter](https://4lltools.morizdigital.com/currency-converter) | Convert between 150+ currencies with live rates (mock), historical charts, and offline mode |
+| `Dst` | [Distance Calculator](https://4lltools.morizdigital.com/distance-calculator) | Measure the great-circle distance between two coordinates on Earth |
+| `Ev` | [EV Charging Time & Cost](https://4lltools.morizdigital.com/ev-charging) | Estimate how long and how much it costs to charge an electric car at home or a fast charger |
+| `Lay` | [Flight Layover Calculator](https://4lltools.morizdigital.com/flight-layover) | Check whether a layover is long enough to safely make a connection |
+| `Jl` | [Jet Lag Planner](https://4lltools.morizdigital.com/jet-lag-planner) | Plan sleep and light for the days around a flight so your body clock shifts to the new time zone |
+| `Pk` | [Packing List Generator](https://4lltools.morizdigital.com/packing-list) | Build a packing checklist from trip type, weather and days, with items popping into a suitcase |
+| `Pt2` | [Parking Timer & Spot Note](https://4lltools.morizdigital.com/parking-timer) | Time your parking with a countdown ring and a reminder, and note where you parked the car |
+| `Tz2` | [Tire Size Calculator](https://4lltools.morizdigital.com/tire-size) | Compare two tire sizes rolling side by side with diameter difference and speedometer error |
+| `Tb` | [Travel Budget Planner](https://4lltools.morizdigital.com/travel-budget) | Plan a trip budget day by day, watch the total stack up and split it between travelers |
+| `Ins` | [Travel Insurance Comparator](https://4lltools.morizdigital.com/travel-insurance) | Compare travel insurance plans by coverage, price, and exclusions |
+| `Cf` | [Trip Carbon Footprint](https://4lltools.morizdigital.com/carbon-footprint) | Add flights, drives and train rides to see a trip's CO₂ and the trees it would take to offset it |
+| `Fc` | [Trip Fuel Cost Calculator](https://4lltools.morizdigital.com/fuel-cost) | Work out the fuel cost of a road trip and split it between passengers as a car drives the route |
+| `Ti` | [Trip Itinerary Planner](https://4lltools.morizdigital.com/trip-itinerary) | Drag stops and activities onto day timelines to plan a trip, then print or save it as PNG |
+| `Vc` | [Visa Requirements Checker](https://4lltools.morizdigital.com/visa-checker) | Check visa requirements for your passport and destination |
+
+</details>
+
+<details>
 <summary><b>🎛️ Design</b> · 10 tools</summary>
 
 | | Tool | What it does |
@@ -327,24 +451,6 @@ Click a category to expand it. Every name links to the live tool.
 | `Gl` | [Glassmorphism Generator](https://4lltools.morizdigital.com/glassmorphism) | Design frosted-glass cards with backdrop blur, tint and border, then copy CSS or Tailwind |
 | `Svg` | [SVG Optimizer](https://4lltools.morizdigital.com/svg-optimizer) | Shrink SVG files with SVGO: strip metadata, comments and junk, then compare before and after |
 | `Tw` | [Tailwind Color Shades Generator](https://4lltools.morizdigital.com/tailwind-shades) | Turn one color into a Tailwind 50–950 OKLCH shade scale with contrast labels and @theme output |
-
-</details>
-
-<details>
-<summary><b>🌙 Everyday</b> · 10 tools</summary>
-
-| | Tool | What it does |
-| :-: | --- | --- |
-| `Cz2` | [Clothing & Shoe Size Converter](https://4lltools.morizdigital.com/clothing-size) | Convert clothing and shoe sizes between US, UK, EU, Asia and Indonesia with a measuring guide |
-| `Tsb` | [Digital Tasbih & Tally Counter](https://4lltools.morizdigital.com/digital-tasbih) | Count dhikr or anything else with a big tap button, bead animation and saved totals |
-| `Hj` | [Hijri Calendar Converter](https://4lltools.morizdigital.com/hijri-calendar) | Convert dates between Gregorian and Hijri, with moon phases and a Ramadan and Eid countdown |
-| `Lw` | [Life in Weeks](https://4lltools.morizdigital.com/life-in-weeks) | See every week of a life as a grid that fills up to today, with your milestones marked |
-| `Ps2` | [Prayer Times & Qibla](https://4lltools.morizdigital.com/prayer-times) | Calculate daily prayer times from your location and find the qibla with a compass |
-| `Pg` | [Pregnancy Due Date & Week by Week](https://4lltools.morizdigital.com/pregnancy-week) | Find your due date and follow each week of pregnancy with baby size shown as a growing fruit |
-| `Rt` | [Reaction Time Test](https://4lltools.morizdigital.com/reaction-time) | Wait for green, tap as fast as you can and compare your reaction time with typical ranges |
-| `Sk` | [Scoreboard & Score Keeper](https://4lltools.morizdigital.com/scoreboard) | Keep score for badminton, football, cards or board games with big tap-to-score panels |
-| `Tc` | [Tip Calculator](https://4lltools.morizdigital.com/tip-calculator) | Work out a tip and split it per person in seconds, with rounding that suits your wallet |
-| `Wt` | [Weton & Javanese Calendar](https://4lltools.morizdigital.com/weton-calculator) | Find the weton, pasaran and neptu of any date on a turning Javanese calendar wheel |
 
 </details>
 
@@ -385,24 +491,6 @@ Click a category to expand it. Every name links to the live tool.
 </details>
 
 <details>
-<summary><b>📚 Learning</b> · 10 tools</summary>
-
-| | Tool | What it does |
-| :-: | --- | --- |
-| `Fq` | [Flag & Capital Quiz](https://4lltools.morizdigital.com/flag-quiz) | Guess the country from its flag or capital, with a streak meter and a region filter |
-| `Fcd` | [Flashcards & Spaced Repetition](https://4lltools.morizdigital.com/flashcards) | Study with flip cards and spaced repetition boxes, import CSV decks and keep them in your browser |
-| `Fv2` | [Fraction Visualizer](https://4lltools.morizdigital.com/fraction-visualizer) | Add, compare and simplify fractions with pie and bar models that split and merge on screen |
-| `Hw` | [Handwriting Tracing Practice](https://4lltools.morizdigital.com/handwriting-tracing) | Trace letters and numbers with animated stroke order, then print practice worksheets |
-| `Ab` | [Interactive Abacus (Soroban)](https://4lltools.morizdigital.com/abacus) | Slide the beads of a soroban abacus, read the value live and follow guided addition lessons |
-| `Pe` | [Interactive Periodic Table](https://4lltools.morizdigital.com/periodic-table) | Explore every element with detail cards and animated heatmaps of periodic trends |
-| `Lc` | [Learn to Tell Time](https://4lltools.morizdigital.com/learn-clock) | Drag the hands of a clock and read the time in words in English or Indonesian, then take a quiz |
-| `Mm2` | [Mental Math Trainer](https://4lltools.morizdigital.com/mental-math) | Race the clock on arithmetic sprints at your level and watch your streak and score climb |
-| `Mu` | [Multiplication Practice](https://4lltools.morizdigital.com/multiplication-practice) | Learn times tables with dot arrays that group into the answer, plus a quiz with streaks |
-| `Ws` | [Word Scramble Game](https://4lltools.morizdigital.com/word-scramble) | Unscramble shuffled letters that snap into place, with English and Indonesian word lists |
-
-</details>
-
-<details>
 <summary><b>💰 Money</b> · 10 tools</summary>
 
 | | Tool | What it does |
@@ -417,24 +505,6 @@ Click a category to expand it. Every name links to the live tool.
 | `Sbs` | [Subscription Cost Tracker](https://4lltools.morizdigital.com/subscription-tracker) | Ring calendar of renewal dates with yearly total odometer; toggle off to animate savings |
 | `Thp` | [Take-Home Pay Calculator](https://4lltools.morizdigital.com/take-home-pay) | Animated waterfall from gross to net with Indonesian PPh 21 TER, BPJS, and flat-tax mode |
 | `Up` | [Unit Price Comparer](https://4lltools.morizdigital.com/unit-price-compare) | Enter pack sizes and prices; bars race to show cheapest per gram, ml or piece with winner highlighted |
-
-</details>
-
-<details>
-<summary><b>🎵 Music</b> · 10 tools</summary>
-
-| | Tool | What it does |
-| :-: | --- | --- |
-| `An` | [Ambient Noise Generator](https://4lltools.morizdigital.com/ambient-noise) | Play rain, brown, pink or white noise, fan or cafe sounds with a sleep timer, made live in your browser |
-| `Bt` | [BPM Tap Tempo](https://4lltools.morizdigital.com/bpm-tapper) | Tap along to a song to find its tempo, with a pulsing ring that shows how steady you are |
-| `Co5` | [Circle of Fifths](https://4lltools.morizdigital.com/circle-of-fifths) | Turn the circle of fifths to any key to see its scale, relative minor and chords, and hear them |
-| `Dr` | [Drum Machine](https://4lltools.morizdigital.com/drum-machine) | Program a 16-step beat with synthesized drums, a moving playhead, tempo and swing |
-| `Et2` | [Ear Training](https://4lltools.morizdigital.com/ear-training) | Train your ear to recognize intervals and chords with quizzes and a progress chart |
-| `Gc` | [Guitar Chord Finder](https://4lltools.morizdigital.com/chord-finder) | Look up guitar chords with animated finger positions, hear them strummed and transpose with a capo |
-| `Tu` | [Instrument Tuner](https://4lltools.morizdigital.com/instrument-tuner) | Tune a guitar, ukulele, bass or violin with your microphone and a live needle gauge |
-| `Me` | [Metronome](https://4lltools.morizdigital.com/metronome) | Keep time with a swinging metronome, accent beats, subdivisions and tap tempo |
-| `Vp` | [Virtual Piano](https://4lltools.morizdigital.com/piano-keyboard) | Play a piano with your mouse, fingers or keyboard, with scales and chords highlighted |
-| `Vr` | [Vocal Range Test](https://4lltools.morizdigital.com/vocal-range-test) | Sing from low to high to find your vocal range and voice type on a live piano roll |
 
 </details>
 
@@ -471,42 +541,6 @@ Click a category to expand it. Every name links to the live tool.
 | `Rsa` | [RSA Key Pair Generator](https://4lltools.morizdigital.com/rsa-key-generator) | Create RSA public and private keys as PEM plus an OpenSSH public key, right in your browser |
 | `Ce` | [SSL Certificate Decoder](https://4lltools.morizdigital.com/certificate-decoder) | Decode SSL/TLS certificates and CSRs: expiry, SANs, issuer, key size, fingerprints and chain order |
 | `Ae` | [Text Encryption (AES-256)](https://4lltools.morizdigital.com/text-encryption) | Encrypt and decrypt text or files with a passphrase using AES-256-GCM and PBKDF2 |
-
-</details>
-
-<details>
-<summary><b>✈️ Travel</b> · 10 tools</summary>
-
-| | Tool | What it does |
-| :-: | --- | --- |
-| `Cmc` | [Commute Cost Comparer](https://4lltools.morizdigital.com/commute-compare) | Compare car, motorbike, train, bus and bike commutes by time, monthly cost and CO₂ side by side |
-| `Ev` | [EV Charging Time & Cost](https://4lltools.morizdigital.com/ev-charging) | Estimate how long and how much it costs to charge an electric car at home or a fast charger |
-| `Jl` | [Jet Lag Planner](https://4lltools.morizdigital.com/jet-lag-planner) | Plan sleep and light for the days around a flight so your body clock shifts to the new time zone |
-| `Pk` | [Packing List Generator](https://4lltools.morizdigital.com/packing-list) | Build a packing checklist from trip type, weather and days, with items popping into a suitcase |
-| `Pt2` | [Parking Timer & Spot Note](https://4lltools.morizdigital.com/parking-timer) | Time your parking with a countdown ring and a reminder, and note where you parked the car |
-| `Tz2` | [Tire Size Calculator](https://4lltools.morizdigital.com/tire-size) | Compare two tire sizes rolling side by side with diameter difference and speedometer error |
-| `Tb` | [Travel Budget Planner](https://4lltools.morizdigital.com/travel-budget) | Plan a trip budget day by day, watch the total stack up and split it between travelers |
-| `Cf` | [Trip Carbon Footprint](https://4lltools.morizdigital.com/carbon-footprint) | Add flights, drives and train rides to see a trip's CO₂ and the trees it would take to offset it |
-| `Fc` | [Trip Fuel Cost Calculator](https://4lltools.morizdigital.com/fuel-cost) | Work out the fuel cost of a road trip and split it between passengers as a car drives the route |
-| `Ti` | [Trip Itinerary Planner](https://4lltools.morizdigital.com/trip-itinerary) | Drag stops and activities onto day timelines to plan a trip, then print or save it as PNG |
-
-</details>
-
-<details>
-<summary><b>💼 Work</b> · 10 tools</summary>
-
-| | Tool | What it does |
-| :-: | --- | --- |
-| `Fr2` | [Freelance Rate Calculator](https://4lltools.morizdigital.com/freelance-rate) | Find the hourly and day rate you need from your income goal, costs and billable hours |
-| `Gn` | [Gantt Chart Maker](https://4lltools.morizdigital.com/gantt-chart) | Plan a project by dragging task bars and dependencies on a timeline, then save it as PNG |
-| `Iv` | [Invoice Generator](https://4lltools.morizdigital.com/invoice-generator) | Fill in an invoice with a live preview, tax and discount, and download it as a PDF |
-| `Wh` | [Online Whiteboard](https://4lltools.morizdigital.com/whiteboard) | Sketch with pens, shapes, sticky notes and text on a board you can pan and zoom |
-| `Oc` | [Org Chart Builder](https://4lltools.morizdigital.com/org-chart) | Build an organization chart that lays itself out as you add and move people |
-| `Ot` | [Overtime Pay Calculator](https://4lltools.morizdigital.com/overtime-pay) | Work out overtime pay under Indonesian rules for weekdays, rest days and public holidays |
-| `Spt` | [Presentation Speaker Timer](https://4lltools.morizdigital.com/speaker-timer) | A big full-screen countdown for talks that changes color as time runs low |
-| `Sc` | [Seating Chart Planner](https://4lltools.morizdigital.com/seating-planner) | Drag guests onto tables for weddings and events, with rules for who sits together or apart |
-| `Sh2` | [Shift Scheduler](https://4lltools.morizdigital.com/shift-scheduler) | Drag shifts onto a week grid and see coverage gaps and overtime in a heatmap |
-| `Su2` | [Team Standup Timer](https://4lltools.morizdigital.com/standup-timer) | Shuffle who speaks next and give each person a countdown in your daily standup |
 
 </details>
 

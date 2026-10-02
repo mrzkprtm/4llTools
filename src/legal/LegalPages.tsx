@@ -118,7 +118,20 @@ function Privacy() {
           generator (business, client and bank details), life in weeks and pregnancy week (dates), clothing size (body
           measurements), prayer times (your location), digital tasbih (counts), weton calculator and scoreboard.
         </li>
-        {/* everyday-owner-tools */}
+        <li>
+          <b>Work and money:</b> meeting notes, timesheet, expense tracker, project estimator, ROI calculator,
+          break-even calculator and budget envelope.
+        </li>
+        <li>
+          <b>Study and reference:</b> citation generator (your sources), formula sheet (favorite formulas), language
+          vocab, quiz generator (your quizzes), grade calculator (courses and grades), spaced repetition (review
+          schedule), study planner, chord transposer (chords and capo settings) and setlist manager.
+        </li>
+        <li>
+          <b>Home, events and hobbies:</b> grocery list, meal planner, event RSVP (guest lists), home inventory
+          (including values and warranties), gift idea (recipients and ideas), mind map, pet care (feeding,
+          medication and weight logs) and plant care (watering schedule).
+        </li>
       </ul>
 
       <h2>Hosting and visitor statistics</h2>

@@ -1,17 +1,23 @@
-import { Children, type ReactNode } from 'react'
+import { Children, type CSSProperties, type ReactNode } from 'react'
 
 /**
  * Odometer text: every digit sits in a 0–9 column that scrolls to its value
  * with a spring when the value changes. Other characters render as plain text.
  * Screen readers get the plain value.
  */
-export default function Roll({ children, className }: { children: ReactNode; className?: string }) {
-  const text = Children.toArray(children).join('')
+export interface RollProps {
+  children?: ReactNode
+  value?: any
+  className?: string
+  style?: CSSProperties
+}
+
+export function Roll({ children, value, className, style }: RollProps) {
+  const text = Children.toArray(children ?? value ?? '').join('')
   const chars = [...text]
   return (
-    <span className={`roll ${className ?? ''}`} aria-label={text}>
+    <span className={`roll ${className ?? ''}`} aria-label={text} style={style}>
       {chars.map((ch, i) => {
-        // Key digits by their place from the right, so "99" → "100" rolls the right columns.
         const key = chars.length - i
         return /\d/.test(ch) ? (
           <span key={key} className="roll-col" aria-hidden="true">
@@ -26,3 +32,5 @@ export default function Roll({ children, className }: { children: ReactNode; cla
     </span>
   )
 }
+
+export default Roll
