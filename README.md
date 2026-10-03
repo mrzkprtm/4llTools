@@ -227,7 +227,7 @@ Click a category to expand it. Every name links to the live tool.
 
 </details>
 
-#### Everyday tools (234)
+#### Everyday tools (244)
 
 <details>
 <summary><b>🛠️ Developer</b> · 28 tools</summary>
@@ -318,6 +318,32 @@ Click a category to expand it. Every name links to the live tool.
 </details>
 
 <details>
+<summary><b>⏱️ Utility</b> · 18 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Cv` | [Color Vision Test](https://4lltools.morizdigital.com/color-blind-test) | Test your color vision with generated dot plates and see a score for common deficiencies |
+| `Dpx` | [Dead Pixel & Screen Tester](https://4lltools.morizdigital.com/dead-pixel-test) | Check a screen for dead pixels and backlight bleed with full-screen colors and gradients |
+| `Gp` | [Gamepad & Controller Tester](https://4lltools.morizdigital.com/gamepad-tester) | Test a game controller's sticks, triggers, buttons, drift and vibration in your browser |
+| `Hr` | [Hearing Frequency Test](https://4lltools.morizdigital.com/hearing-test) | Check which frequencies you can hear in each ear with tones and an animated audiogram |
+| `Kbt` | [Keyboard Tester](https://4lltools.morizdigital.com/keyboard-tester) | Press keys to light them up on an on-screen keyboard and find stuck or dead keys |
+| `Hzt` | [Monitor Refresh Rate Test](https://4lltools.morizdigital.com/refresh-rate-test) | Measure your screen's refresh rate and watch motion smoothness with moving test objects |
+| `Ms` | [Mouse & Click Tester](https://4lltools.morizdigital.com/mouse-tester) | Test clicks per second, double-click faults, the scroll wheel and mouse movement |
+| `Sr2` | [On-Screen Ruler & Protractor](https://4lltools.morizdigital.com/screen-ruler) | Measure in centimeters and inches after calibrating with a card, or measure angles |
+| `Po` | [Pomodoro Timer](https://4lltools.morizdigital.com/pomodoro) | Focus timer with pomodoro work and break cycles, a task list, chimes and daily stats |
+| `Rw` | [Random Picker Wheel](https://4lltools.morizdigital.com/random-picker) | Spin a wheel of names, pick random winners, shuffle lists, split teams, roll dice or flip a coin |
+| `Sl2` | [Screen Light & Ring Light](https://4lltools.morizdigital.com/screen-light) | Turn your screen into an adjustable light or ring light for video calls and selfies |
+| `Sr` | [Screen Recorder](https://4lltools.morizdigital.com/screen-recorder) | Record your screen, a window or a tab with microphone audio and download the video |
+| `St` | [Stopwatch & Timer](https://4lltools.morizdigital.com/stopwatch-timer) | A stopwatch with laps and a countdown timer with an alarm |
+| `Tch` | [Touchscreen Multi-Touch Tester](https://4lltools.morizdigital.com/touch-tester) | See every finger on a touchscreen and paint the screen to find dead zones |
+| `Ty` | [Typing Speed Test](https://4lltools.morizdigital.com/typing-test) | Test your typing speed in WPM and accuracy with English or Indonesian words |
+| `Wb` | [Webcam & Mic Test](https://4lltools.morizdigital.com/webcam-mic-test) | Check your webcam, microphone level and left/right speakers before a video call |
+| `Tag` | [YouTube Tag Extractor](https://4lltools.morizdigital.com/youtube-tags) | Reveal the hidden keyword tags behind any YouTube video and copy them for your own uploads |
+| `⏱` | [YouTube Timestamp Links](https://4lltools.morizdigital.com/youtube-timestamp) | Create YouTube links that start at an exact second and turn chapter lists into clean shareable URLs |
+
+</details>
+
+<details>
 <summary><b>💼 Work</b> · 18 tools</summary>
 
 | | Tool | What it does |
@@ -344,26 +370,27 @@ Click a category to expand it. Every name links to the live tool.
 </details>
 
 <details>
-<summary><b>⏱️ Utility</b> · 16 tools</summary>
+<summary><b>📝 Text</b> · 17 tools</summary>
 
 | | Tool | What it does |
 | :-: | --- | --- |
-| `Cv` | [Color Vision Test](https://4lltools.morizdigital.com/color-blind-test) | Test your color vision with generated dot plates and see a score for common deficiencies |
-| `Dpx` | [Dead Pixel & Screen Tester](https://4lltools.morizdigital.com/dead-pixel-test) | Check a screen for dead pixels and backlight bleed with full-screen colors and gradients |
-| `Gp` | [Gamepad & Controller Tester](https://4lltools.morizdigital.com/gamepad-tester) | Test a game controller's sticks, triggers, buttons, drift and vibration in your browser |
-| `Hr` | [Hearing Frequency Test](https://4lltools.morizdigital.com/hearing-test) | Check which frequencies you can hear in each ear with tones and an animated audiogram |
-| `Kbt` | [Keyboard Tester](https://4lltools.morizdigital.com/keyboard-tester) | Press keys to light them up on an on-screen keyboard and find stuck or dead keys |
-| `Hzt` | [Monitor Refresh Rate Test](https://4lltools.morizdigital.com/refresh-rate-test) | Measure your screen's refresh rate and watch motion smoothness with moving test objects |
-| `Ms` | [Mouse & Click Tester](https://4lltools.morizdigital.com/mouse-tester) | Test clicks per second, double-click faults, the scroll wheel and mouse movement |
-| `Sr2` | [On-Screen Ruler & Protractor](https://4lltools.morizdigital.com/screen-ruler) | Measure in centimeters and inches after calibrating with a card, or measure angles |
-| `Po` | [Pomodoro Timer](https://4lltools.morizdigital.com/pomodoro) | Focus timer with pomodoro work and break cycles, a task list, chimes and daily stats |
-| `Rw` | [Random Picker Wheel](https://4lltools.morizdigital.com/random-picker) | Spin a wheel of names, pick random winners, shuffle lists, split teams, roll dice or flip a coin |
-| `Sl2` | [Screen Light & Ring Light](https://4lltools.morizdigital.com/screen-light) | Turn your screen into an adjustable light or ring light for video calls and selfies |
-| `Sr` | [Screen Recorder](https://4lltools.morizdigital.com/screen-recorder) | Record your screen, a window or a tab with microphone audio and download the video |
-| `St` | [Stopwatch & Timer](https://4lltools.morizdigital.com/stopwatch-timer) | A stopwatch with laps and a countdown timer with an alarm |
-| `Tch` | [Touchscreen Multi-Touch Tester](https://4lltools.morizdigital.com/touch-tester) | See every finger on a touchscreen and paint the screen to find dead zones |
-| `Ty` | [Typing Speed Test](https://4lltools.morizdigital.com/typing-test) | Test your typing speed in WPM and accuracy with English or Indonesian words |
-| `Wb` | [Webcam & Mic Test](https://4lltools.morizdigital.com/webcam-mic-test) | Check your webcam, microphone level and left/right speakers before a video call |
+| `Tk` | [AI Token Counter](https://4lltools.morizdigital.com/token-counter) | Count GPT tokens exactly and estimate Claude, Gemini and Llama tokens for any prompt or document |
+| `Aa` | [Case Converter](https://4lltools.morizdigital.com/case-converter) | Switch text between UPPER, lower, Title, camelCase, snake_case and more |
+| `Em` | [Emoji Finder](https://4lltools.morizdigital.com/emoji-picker) | Search every emoji by name or keyword, pick a skin tone and copy it with one tap |
+| `Ft` | [Fancy Text Generator](https://4lltools.morizdigital.com/fancy-text) | Turn text into bold, italic, script, bubble and other Unicode fonts for Instagram and TikTok bios |
+| `Fr` | [Find & Replace](https://4lltools.morizdigital.com/find-replace) | Find and replace text in bulk with plain or regex rules, capture groups and a live preview |
+| `Zw` | [Invisible Character Remover](https://4lltools.morizdigital.com/invisible-characters) | Reveal and remove zero-width spaces, hidden Unicode and smart quotes from AI or pasted text |
+| `Kw` | [Keyword Density](https://4lltools.morizdigital.com/keyword-density) | See how often words and phrases appear in your text with 1u20133 n-gram analysis and stopword filtering |
+| `Ln` | [Line Tools](https://4lltools.morizdigital.com/line-tools) | Sort, dedupe, reverse, trim or shuffle lines of text |
+| `Li` | [Lorem Ipsum Generator](https://4lltools.morizdigital.com/lorem-ipsum) | Generate placeholder paragraphs, sentences or words |
+| `Md` | [Markdown Preview](https://4lltools.morizdigital.com/markdown-preview) | Write Markdown and see it rendered live |
+| `Rd` | [Readability Checker](https://4lltools.morizdigital.com/readability-checker) | Score English text with Flesch, Gunning Fog and SMOG and highlight long sentences and passive voice |
+| `Sl` | [Slug Generator](https://4lltools.morizdigital.com/slug-generator) | Turn a title into a clean URL slug |
+| `Stt` | [Speech to Text](https://4lltools.morizdigital.com/speech-to-text) | Dictate and transcribe speech to text live in many languages, then copy or download it |
+| `Tx` | [Text Cleaner](https://4lltools.morizdigital.com/text-cleaner) | Fix messy pasted text: trim lines, collapse spaces, straighten quotes, strip emoji and dedupe |
+| `Df` | [Text Diff](https://4lltools.morizdigital.com/text-diff) | Compare two texts and see what was added or removed |
+| `Tts` | [Text to Speech](https://4lltools.morizdigital.com/text-to-speech) | Read any text aloud with your device voices, adjustable speed and pitch, and word highlighting |
+| `Wc` | [Word Counter](https://4lltools.morizdigital.com/word-counter) | Count words, characters, sentences and reading time |
 
 </details>
 
@@ -391,29 +418,6 @@ Click a category to expand it. Every name links to the live tool.
 </details>
 
 <details>
-<summary><b>📝 Text</b> · 15 tools</summary>
-
-| | Tool | What it does |
-| :-: | --- | --- |
-| `Tk` | [AI Token Counter](https://4lltools.morizdigital.com/token-counter) | Count GPT tokens exactly and estimate Claude, Gemini and Llama tokens for any prompt or document |
-| `Aa` | [Case Converter](https://4lltools.morizdigital.com/case-converter) | Switch text between UPPER, lower, Title, camelCase, snake_case and more |
-| `Em` | [Emoji Finder](https://4lltools.morizdigital.com/emoji-picker) | Search every emoji by name or keyword, pick a skin tone and copy it with one tap |
-| `Ft` | [Fancy Text Generator](https://4lltools.morizdigital.com/fancy-text) | Turn text into bold, italic, script, bubble and other Unicode fonts for Instagram and TikTok bios |
-| `Fr` | [Find & Replace](https://4lltools.morizdigital.com/find-replace) | Find and replace text in bulk with plain or regex rules, capture groups and a live preview |
-| `Zw` | [Invisible Character Remover](https://4lltools.morizdigital.com/invisible-characters) | Reveal and remove zero-width spaces, hidden Unicode and smart quotes from AI or pasted text |
-| `Ln` | [Line Tools](https://4lltools.morizdigital.com/line-tools) | Sort, dedupe, reverse, trim or shuffle lines of text |
-| `Li` | [Lorem Ipsum Generator](https://4lltools.morizdigital.com/lorem-ipsum) | Generate placeholder paragraphs, sentences or words |
-| `Md` | [Markdown Preview](https://4lltools.morizdigital.com/markdown-preview) | Write Markdown and see it rendered live |
-| `Rd` | [Readability Checker](https://4lltools.morizdigital.com/readability-checker) | Score English text with Flesch, Gunning Fog and SMOG and highlight long sentences and passive voice |
-| `Sl` | [Slug Generator](https://4lltools.morizdigital.com/slug-generator) | Turn a title into a clean URL slug |
-| `Stt` | [Speech to Text](https://4lltools.morizdigital.com/speech-to-text) | Dictate and transcribe speech to text live in many languages, then copy or download it |
-| `Df` | [Text Diff](https://4lltools.morizdigital.com/text-diff) | Compare two texts and see what was added or removed |
-| `Tts` | [Text to Speech](https://4lltools.morizdigital.com/text-to-speech) | Read any text aloud with your device voices, adjustable speed and pitch, and word highlighting |
-| `Wc` | [Word Counter](https://4lltools.morizdigital.com/word-counter) | Count words, characters, sentences and reading time |
-
-</details>
-
-<details>
 <summary><b>✈️ Travel</b> · 15 tools</summary>
 
 | | Tool | What it does |
@@ -437,7 +441,7 @@ Click a category to expand it. Every name links to the live tool.
 </details>
 
 <details>
-<summary><b>🎛️ Design</b> · 10 tools</summary>
+<summary><b>🎛️ Design</b> · 13 tools</summary>
 
 | | Tool | What it does |
 | :-: | --- | --- |
@@ -449,8 +453,11 @@ Click a category to expand it. Every name links to the live tool.
 | `Cl` | [CSS Clip-Path Maker](https://4lltools.morizdigital.com/clip-path) | Make CSS clip-path polygons, circles and insets by dragging points on a live preview |
 | `Cb` | [Cubic Bezier Easing Editor](https://4lltools.morizdigital.com/cubic-bezier) | Drag a CSS cubic-bezier() easing curve, preview it against linear and copy the transition |
 | `Gl` | [Glassmorphism Generator](https://4lltools.morizdigital.com/glassmorphism) | Design frosted-glass cards with backdrop blur, tint and border, then copy CSS or Tailwind |
+| `OG` | [OG Image Maker](https://4lltools.morizdigital.com/og-image) | Make a 1200×630 Open Graph card with your title, brand and colours, ready to export as PNG |
 | `Svg` | [SVG Optimizer](https://4lltools.morizdigital.com/svg-optimizer) | Shrink SVG files with SVGO: strip metadata, comments and junk, then compare before and after |
 | `Tw` | [Tailwind Color Shades Generator](https://4lltools.morizdigital.com/tailwind-shades) | Turn one color into a Tailwind 50–950 OKLCH shade scale with contrast labels and @theme output |
+| `Twt` | [Tweet Image Maker](https://4lltools.morizdigital.com/tweet-image) | Turn a post into a crisp 1080×1080 share card with avatar, badge and like counts, exported as PNG |
+| `Bn` | [YouTube Banner Maker](https://4lltools.morizdigital.com/youtube-banner) | Design YouTube channel art at 2560×1440 with a safe-area overlay and one-click PNG export |
 
 </details>
 
@@ -487,6 +494,24 @@ Click a category to expand it. Every name links to the live tool.
 | `Rs` | [Recipe Scaler](https://4lltools.morizdigital.com/recipe-scaler) | Paste a recipe, move servings slider, quantities re-scale with smart unit conversion, numbers animate |
 | `Rl` | [Room Layout Planner](https://4lltools.morizdigital.com/room-planner) | Drag furniture to scale on a floor plan; it snaps to walls and shows clearance warnings; export PNG |
 | `Tf` | [Tile & Flooring Calculator](https://4lltools.morizdigital.com/tile-calculator) | Tiles lay themselves across the drawn floor, with cut pieces highlighted, waste %, and boxes to buy |
+
+</details>
+
+<details>
+<summary><b>🖼️ Image</b> · 10 tools</summary>
+
+| | Tool | What it does |
+| :-: | --- | --- |
+| `Ex` | [EXIF / Metadata Remover](https://4lltools.morizdigital.com/exif-remover) | Strip GPS location, camera details and other hidden metadata from photos |
+| `Fv` | [Favicon Generator](https://4lltools.morizdigital.com/favicon-generator) | Create favicon.ico, Apple touch and maskable PWA icons plus a web manifest from an image or emoji |
+| `He` | [HEIC to JPG Converter](https://4lltools.morizdigital.com/heic-to-jpg) | Convert iPhone HEIC and HEIF photos to JPG or PNG in bulk, privately in your browser |
+| `Ic` | [Image Color Extractor](https://4lltools.morizdigital.com/color-extractor) | Extract a color palette from any photo, pick exact pixel colors and export HEX as CSS or JSON |
+| `Im` | [Image Resizer & Compressor](https://4lltools.morizdigital.com/image-resizer) | Resize, compress and convert images to JPG, PNG or WebP |
+| `Ig` | [Instagram Grid Slicer](https://4lltools.morizdigital.com/instagram-grid) | Slice one photo into nine seamless tiles for an Instagram grid, or stitch nine photos into one image |
+| `Mem` | [Meme Generator](https://4lltools.morizdigital.com/meme-maker) | Make classic top-and-bottom caption memes — upload a picture, type the joke, download the PNG |
+| `Sb` | [Screenshot Beautifier](https://4lltools.morizdigital.com/screenshot-beautifier) | Put screenshots on gradient backgrounds with padding, shadow and a macOS or browser window frame |
+| `Sg` | [Signature Maker](https://4lltools.morizdigital.com/signature-pad) | Draw or type an e-signature with mouse, finger or pen and save it as a transparent PNG or SVG |
+| `YT` | [YouTube Thumbnail Downloader](https://4lltools.morizdigital.com/youtube-thumbnail) | Paste a YouTube link to preview every thumbnail size and save the sharpest one as a PNG image |
 
 </details>
 
@@ -557,21 +582,6 @@ Click a category to expand it. Every name links to the live tool.
 | `%` | [Percentage Calculator](https://4lltools.morizdigital.com/percentage-calculator) | Work out percentages, changes and discounts |
 | `Tz` | [Time Zone Converter & Meeting Planner](https://4lltools.morizdigital.com/time-zone-converter) | Convert times between world time zones, WIB, WITA and WIT, and find overlapping work hours |
 | `Zk` | [Zakat Calculator](https://4lltools.morizdigital.com/zakat-calculator) | Hitung zakat mal, zakat penghasilan and zakat fitrah with gold or silver nisab (2.5%) |
-
-</details>
-
-<details>
-<summary><b>🖼️ Image</b> · 7 tools</summary>
-
-| | Tool | What it does |
-| :-: | --- | --- |
-| `Ex` | [EXIF / Metadata Remover](https://4lltools.morizdigital.com/exif-remover) | Strip GPS location, camera details and other hidden metadata from photos |
-| `Fv` | [Favicon Generator](https://4lltools.morizdigital.com/favicon-generator) | Create favicon.ico, Apple touch and maskable PWA icons plus a web manifest from an image or emoji |
-| `He` | [HEIC to JPG Converter](https://4lltools.morizdigital.com/heic-to-jpg) | Convert iPhone HEIC and HEIF photos to JPG or PNG in bulk, privately in your browser |
-| `Ic` | [Image Color Extractor](https://4lltools.morizdigital.com/color-extractor) | Extract a color palette from any photo, pick exact pixel colors and export HEX as CSS or JSON |
-| `Im` | [Image Resizer & Compressor](https://4lltools.morizdigital.com/image-resizer) | Resize, compress and convert images to JPG, PNG or WebP |
-| `Sb` | [Screenshot Beautifier](https://4lltools.morizdigital.com/screenshot-beautifier) | Put screenshots on gradient backgrounds with padding, shadow and a macOS or browser window frame |
-| `Sg` | [Signature Maker](https://4lltools.morizdigital.com/signature-pad) | Draw or type an e-signature with mouse, finger or pen and save it as a transparent PNG or SVG |
 
 </details>
 

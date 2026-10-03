@@ -26,7 +26,7 @@ const seeded = (seed = 1) => () => ((seed = (seed * 16807) % 2147483647) - 1) / 
 
 describe('registry with all tools', () => {
   it('finds all 334 tools with unique names', () => {
-    expect(tools).toHaveLength(334)
+    expect(tools).toHaveLength(344)
     expect(new Set(tools.map((t) => t.name)).size).toBe(tools.length)
   })
 
