@@ -29,6 +29,7 @@
     "jsbarcode": "^3.12.3",
     "jsonpath-plus": "^11.0.0",
     "jsqr": "^1.4.0",
+    "lamejs": "^1.2.1",
     "marked": "^18.0.14",
     "mermaid": "^12.0.0",
     "modern-screenshot": "^4.7.0",

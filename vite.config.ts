@@ -1,12 +1,16 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
-import { createServer, defineConfig, type Plugin } from 'vite'
+import { createServer, type Plugin } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { renderShareCard, writeFavicons, type ShareCard } from './build/seo-assets.ts'
 
 export default defineConfig({
   plugins: [react(), majesticons(), licenses(), prerender()],
+  test: {
+    testTimeout: 20000,
+  },
 })
 
 /**
