@@ -73,12 +73,13 @@ function Privacy() {
       </p>
       <ul>
         <li>
-          <b>Camera:</b> the QR reader, the webcam and mic test, the screen recorder (your screen), and the parking timer
-          when you take a photo of your parking spot.
+          <b>Camera:</b> the QR reader, the webcam and mic test, the webcam recorder, the screen recorder (your screen),
+          and the parking timer when you take a photo of your parking spot.
         </li>
         <li>
-          <b>Microphone:</b> the webcam and mic test, audio visualizer, screen recorder, speech to text, instrument tuner
-          and vocal range test. Sound is analysed live and never recorded unless you download a recording.
+          <b>Microphone:</b> the webcam and mic test, the voice recorder, the webcam recorder, audio visualizer, screen
+          recorder, speech to text, instrument tuner and vocal range test. Sound is analysed live and never recorded
+          unless you download a recording.
         </li>
         <li>
           <b>Location and compass:</b> prayer times can use your location to work out the schedule, and your
