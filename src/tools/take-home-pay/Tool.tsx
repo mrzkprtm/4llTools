@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import { useState } from 'react'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface TaxBracket {
@@ -24,16 +24,16 @@ function formatCurrency(n: number): string {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n)
 }
 
-function calculateTax(income: number, brackets: TaxBracket[]): { tax: number; details: { bracket: string; taxable: number; tax: number }[] } {
+function calculateTax(income: number, brackets: TaxBracket[]): { tax: number; details: { bracket: string; rate: string; taxable: number; tax: number }[] } {
   let remaining = income
   let tax = 0
-  const details: { bracket: string; taxable: number; tax: number }[] = []
+  const details: { bracket: string; rate: string; taxable: number; tax: number }[] = []
   for (const b of brackets) {
     const taxableInBracket = Math.min(remaining, b.max - b.min)
     if (taxableInBracket <= 0) break
     const bracketTax = taxableInBracket * b.rate
     tax += bracketTax
-    details.push({ bracket: `${b.rate * 100}%`, taxable: taxableInBracket, tax: bracketTax })
+    details.push({ bracket: b.max === Infinity ? `Over ${formatCurrency(b.min)}` : `${formatCurrency(b.min)} – ${formatCurrency(b.max)}`, rate: `${Math.round(b.rate * 100)}%`, taxable: taxableInBracket, tax: bracketTax })
     remaining -= taxableInBracket
   }
   return { tax, details }
@@ -59,6 +59,7 @@ export default function TakeHomePayCalculator() {
   const genericTax = mode === 'generic' ? grossMonthly * genericRate / 100 : 0
   const totalDeductions = mode === 'indonesia' ? monthlyTax + totalBpjs : genericTax
   const netMonthly = grossMonthly - totalDeductions
+  const pctOfGross = (n: number) => grossMonthly > 0 ? n / grossMonthly * 100 : 0
 
   return (
     <div>
@@ -82,7 +83,7 @@ export default function TakeHomePayCalculator() {
         )}
       </div>
 
-      <div style={{ marginBottom: 16 }}>
+      {mode === 'indonesia' && <div style={{ marginBottom: 16 }}>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 16 }}>
           <input type="checkbox" checked={bpjsKesehatan} onChange={e => setBpjsKesehatan(e.target.checked)} /> BPJS Kesehatan (1%)
         </label>
@@ -92,7 +93,7 @@ export default function TakeHomePayCalculator() {
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <input type="checkbox" checked={bpjsPensiun} onChange={e => setBpjsPensiun(e.target.checked)} /> BPJS Pensiun (1%)
         </label>
-      </div>
+      </div>}
 
       <div style={{ background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16, marginBottom: 16 }}>
         <div className="row" style={{ justifyContent: 'space-between', fontSize: '1.2rem', marginBottom: 8 }}>
@@ -101,9 +102,9 @@ export default function TakeHomePayCalculator() {
         </div>
 
         <div className="split-bar" style={{ marginBottom: 12 }} aria-hidden="true">
-          <i style={{ flexGrow: mode === 'indonesia' ? monthlyTax / grossMonthly * 100 : genericTax / grossMonthly * 100 }}></i>
-          {mode === 'indonesia' && totalBpjs > 0 && <i style={{ flexGrow: totalBpjs / grossMonthly * 100, background: 'color-mix(in srgb, var(--accent) 35%, var(--sunken))' }}></i>}
-          <i style={{ flexGrow: Math.max(0, 100 - (mode === 'indonesia' ? (monthlyTax + totalBpjs) / grossMonthly * 100 : genericTax / grossMonthly * 100)) }}></i>
+          <i style={{ flexGrow: pctOfGross(mode === 'indonesia' ? monthlyTax : genericTax) }}></i>
+          {mode === 'indonesia' && totalBpjs > 0 && <i style={{ flexGrow: pctOfGross(totalBpjs), background: 'color-mix(in srgb, var(--accent) 35%, var(--sunken))' }}></i>}
+          <i style={{ flexGrow: Math.max(0, 100 - pctOfGross(totalDeductions)) }}></i>
         </div>
 
         <div className="row" style={{ justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--muted)' }}>
@@ -116,7 +117,7 @@ export default function TakeHomePayCalculator() {
       <div className="stats" style={{ marginBottom: 16 }}>
         <div className="stat"><b style={{ color: 'var(--danger)' }}><Roll>{formatCurrency(totalDeductions)}</Roll></b><span className="muted">Total Deductions</span></div>
         <div className="stat"><b style={{ color: 'var(--ok)' }}><Roll>{formatCurrency(netMonthly)}</Roll></b><span className="muted">Take-Home Pay</span></div>
-        <div className="stat"><b><Roll>{Math.round(netMonthly / grossMonthly * 100)}</Roll>%</b><span className="muted">Retention Rate</span></div>
+        <div className="stat"><b><Roll>{Math.round(pctOfGross(netMonthly))}</Roll>%</b><span className="muted">Retention Rate</span></div>
       </div>
 
       {mode === 'indonesia' && (
@@ -129,7 +130,7 @@ export default function TakeHomePayCalculator() {
                 <tr key={i} className="pop-row" style={{ animation: reducedMotion() ? 'none' : 'rise 0.3s var(--ease-out) both', animationDelay: `${i * 30}ms` }}>
                   <td>{d.bracket}</td>
                   <td><Roll>{formatCurrency(d.taxable)}</Roll></td>
-                  <td>{d.bracket}</td>
+                  <td>{d.rate}</td>
                   <td><Roll>{formatCurrency(d.tax)}</Roll></td>
                 </tr>
               ))}

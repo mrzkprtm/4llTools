@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 interface Product {
@@ -12,12 +12,14 @@ interface Product {
 }
 
 const COLORS = ['#e11d48', '#f97316', '#84cc16', '#06b6d4', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e']
-const UNITS = ['g', 'kg', 'ml', 'l', 'pcs', 'oz', 'lb']
+const UNITS: Product['unit'][] = ['g', 'kg', 'ml', 'l', 'pcs', 'oz', 'lb']
 
 function normalizeToBase(quantity: number, unit: string): { baseQty: number; baseUnit: string } {
+  // Weights all become grams and volumes milliliters, so products in different units compare fairly
   if (unit === 'kg') return { baseQty: quantity * 1000, baseUnit: 'g' }
+  if (unit === 'oz') return { baseQty: quantity * 28.3495, baseUnit: 'g' }
+  if (unit === 'lb') return { baseQty: quantity * 453.592, baseUnit: 'g' }
   if (unit === 'l') return { baseQty: quantity * 1000, baseUnit: 'ml' }
-  if (unit === 'lb') return { baseQty: quantity * 16, baseUnit: 'oz' }
   return { baseQty: quantity, baseUnit: unit }
 }
 
@@ -25,10 +27,18 @@ function formatCurrency(n: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
 }
 
+/** Unit prices are often fractions of a cent (e.g. per gram), so show more digits. */
+function formatUnitPrice(n: number): string {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: n < 1 ? 4 : 2 }).format(n)
+}
+
 export default function UnitPriceComparer() {
   const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('unit-price-compare')
-    return saved ? JSON.parse(saved) : [
+    try {
+      const saved = localStorage.getItem('unit-price-compare')
+      if (saved) return JSON.parse(saved) as Product[]
+    } catch {}
+    return [
       { id: 1, name: 'Brand A', price: 4.99, quantity: 500, unit: 'g', color: COLORS[0] },
       { id: 2, name: 'Brand B', price: 8.99, quantity: 1, unit: 'kg', color: COLORS[1] },
       { id: 3, name: 'Brand C', price: 3.49, quantity: 300, unit: 'g', color: COLORS[2] },
@@ -40,11 +50,18 @@ export default function UnitPriceComparer() {
 
   const normalized = products.map(p => {
     const { baseQty, baseUnit } = normalizeToBase(p.quantity, p.unit)
-    const perUnit = p.price / baseQty
+    const perUnit = baseQty > 0 ? p.price / baseQty : Infinity
     return { ...p, baseQty, baseUnit, perUnit }
   })
 
-  const cheapest = normalized.reduce((min, p) => p.perUnit < min.perUnit ? p : min, normalized[0])
+  // Only products measured the same way (weight, volume or pieces) can be compared
+  const bestByUnit = new Map<string, (typeof normalized)[number]>()
+  for (const p of normalized) {
+    const best = bestByUnit.get(p.baseUnit)
+    if (!best || p.perUnit < best.perUnit) bestByUnit.set(p.baseUnit, p)
+  }
+  const isBest = (p: (typeof normalized)[number]) => bestByUnit.get(p.baseUnit)?.id === p.id && Number.isFinite(p.perUnit)
+  const cheapest = normalized.length ? bestByUnit.get(normalized[0].baseUnit) : undefined
 
   const addProduct = () => {
     if (!formData.name || !formData.price || !formData.quantity) return
@@ -52,7 +69,7 @@ export default function UnitPriceComparer() {
     setFormData({ name: '', price: '', quantity: '', unit: 'g' })
   }
 
-  const updateProduct = (id: number, field: keyof Product, value: string | number) => {
+  const updateProduct = <K extends keyof Product>(id: number, field: K, value: Product[K]) => {
     setProducts(products.map(p => p.id === id ? { ...p, [field]: value } : p))
   }
 
@@ -75,9 +92,11 @@ export default function UnitPriceComparer() {
       <div style={{ marginBottom: 16 }}>
         <div className="row" style={{ alignItems: 'center', gap: 16, marginBottom: 12 }}>
           <span style={{ fontSize: '1.2rem' }}>Cheapest per unit:</span>
-          <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--ok)' }}>
-            <b>{cheapest.name}</b> at <b><Roll>{formatCurrency(cheapest.perUnit)}</Roll></b>/{cheapest.baseUnit}
-          </span>
+          {cheapest && Number.isFinite(cheapest.perUnit) ? (
+            <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--ok)' }}>
+              <b>{cheapest.name}</b> at <b><Roll>{formatUnitPrice(cheapest.perUnit)}</Roll></b>/{cheapest.baseUnit}
+            </span>
+          ) : <span className="muted">Add a product to compare</span>}
         </div>
 
         <div style={{ display: 'grid', gap: 8, maxHeight: 300, overflow: 'auto' }}>
@@ -85,7 +104,7 @@ export default function UnitPriceComparer() {
             <div key={p.id} className="pop-row" style={{
               display: 'flex', alignItems: 'center', gap: 12, padding: 10,
               background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)',
-              borderLeft: p.id === cheapest.id ? '4px solid var(--ok)' : 'none',
+              borderLeft: isBest(p) ? '4px solid var(--ok)' : 'none',
               animation: reducedMotion() ? 'none' : 'pop 0.3s var(--spring-bouncy) both',
               animationDelay: `${i * 40}ms`
             }}>
@@ -93,16 +112,16 @@ export default function UnitPriceComparer() {
               <span style={{ flex: 1, fontWeight: 500 }}>{p.name}</span>
               <span className="muted" style={{ minWidth: 120 }}>{formatCurrency(p.price)} / {p.quantity}{p.unit}</span>
               <span style={{ fontFamily: 'var(--mono)', minWidth: 140, textAlign: 'right' }}>
-                <b><Roll>{formatCurrency(p.perUnit)}</Roll></b>/{p.baseUnit}
+                <b><Roll>{Number.isFinite(p.perUnit) ? formatUnitPrice(p.perUnit) : '—'}</Roll></b>/{p.baseUnit}
               </span>
-              <span className={p.id === cheapest.id ? 'chip good' : ''} style={{ fontSize: '0.7rem' }}>
-                {p.id === cheapest.id ? 'BEST' : ''}
+              <span className={isBest(p) ? 'chip good' : ''} style={{ fontSize: '0.7rem' }}>
+                {isBest(p) ? 'BEST' : ''}
               </span>
             </div>
           ))}
         </div>
 
-        <div style={{ marginTop: 16, height: 200, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
+        <div style={{ marginTop: 16, height: 40 + normalized.length * 40, background: 'var(--sunken)', border: '1px solid var(--border)', borderRadius: 'var(--radius)' }}>
           <canvas
             width={600}
             height={200}
@@ -116,18 +135,21 @@ export default function UnitPriceComparer() {
               ctx.scale(dpr, dpr)
 
               const w = canvas.width / dpr
-              const h = canvas.height / dpr
-              const maxPerUnit = Math.max(...normalized.map(p => p.perUnit))
-              const barH = 30
-              const gap = 10
-              const startY = 30
+              const css = getComputedStyle(canvas)
+              const cssVar = (name: string, fallback: string) => css.getPropertyValue(name).trim() || fallback
+              const font = cssVar('--font', 'sans-serif')
+              const mono = cssVar('--mono', 'monospace')
+              const maxPerUnit = Math.max(0, ...normalized.map(p => Number.isFinite(p.perUnit) ? p.perUnit : 0)) || 1
+              const barH = 20
+              const gap = 20
+              const startY = 25
 
               normalized.forEach((p, i) => {
                 const y = startY + i * (barH + gap)
-                const barW = (p.perUnit / maxPerUnit) * (w - 60)
+                const barW = Number.isFinite(p.perUnit) ? (p.perUnit / maxPerUnit) * (w - 200) : 0
                 // Background
-                ctx.fillStyle = 'var(--border)'
-                ctx.fillRect(30, y, w - 60, barH)
+                ctx.fillStyle = cssVar('--border', '#ddd')
+                ctx.fillRect(30, y, w - 200, barH)
                 // Bar
                 const grad = ctx.createLinearGradient(30, 0, 30 + barW, 0)
                 grad.addColorStop(0, p.color + '80')
@@ -135,19 +157,19 @@ export default function UnitPriceComparer() {
                 ctx.fillStyle = grad
                 ctx.fillRect(30, y, barW, barH)
                 // Label
-                ctx.fillStyle = 'var(--text)'
-                ctx.font = '12px var(--font)'
-                ctx.textAlign = 'right'
-                ctx.fillText(p.name, 25, y + barH * 0.7)
-                // Value
-                ctx.font = 'bold 12px var(--mono)'
+                ctx.fillStyle = cssVar('--text', '#222')
+                ctx.font = `12px ${font}`
                 ctx.textAlign = 'left'
-                ctx.fillText(`${formatCurrency(p.perUnit)}/${p.baseUnit}`, 30 + barW + 10, y + barH * 0.7)
+                ctx.fillText(p.name, 30, y - 3)
+                // Value
+                ctx.font = `bold 12px ${mono}`
+                ctx.textAlign = 'left'
+                ctx.fillText(`${Number.isFinite(p.perUnit) ? formatUnitPrice(p.perUnit) : '—'}/${p.baseUnit}`, 30 + barW + 10, y + barH * 0.7)
                 // Winner marker
-                if (p.id === cheapest.id) {
-                  ctx.fillStyle = 'var(--ok)'
-                  ctx.font = '14px var(--font)'
-                  ctx.fillText('✓', 30 + barW + 120, y + barH * 0.7)
+                if (isBest(p)) {
+                  ctx.fillStyle = cssVar('--ok', '#16a34a')
+                  ctx.font = `14px ${font}`
+                  ctx.fillText('✓', 30 + barW + 130, y + barH * 0.7)
                 }
               })
             }}
@@ -167,18 +189,18 @@ export default function UnitPriceComparer() {
             <input type="text" value={p.name} onChange={e => updateProduct(p.id, 'name', e.target.value)} style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--text)' }} />
             <input type="number" step="0.01" min={0} value={p.price} onChange={e => updateProduct(p.id, 'price', Number(e.target.value))} style={{ width: 80 }} />
             <input type="number" step="0.01" min={0} value={p.quantity} onChange={e => updateProduct(p.id, 'quantity', Number(e.target.value))} style={{ width: 70 }} />
-            <select value={p.unit} onChange={e => updateProduct(p.id, 'unit', e.target.value)} style={{ width: 80 }}>
+            <select value={p.unit} onChange={e => updateProduct(p.id, 'unit', e.target.value as Product['unit'])} style={{ width: 80 }}>
               {UNITS.map(u => <option key={u} value={u}>{u}</option>)}
             </select>
             <span style={{ fontFamily: 'var(--mono)', minWidth: 140, textAlign: 'right' }}>
-              <Roll>{formatCurrency(normalizeToBase(p.quantity, p.unit).baseQty ? p.price / normalizeToBase(p.quantity, p.unit).baseQty : 0)}</Roll>/{normalizeToBase(p.quantity, p.unit).baseUnit}
+              <Roll>{formatUnitPrice(normalizeToBase(p.quantity, p.unit).baseQty ? p.price / normalizeToBase(p.quantity, p.unit).baseQty : 0)}</Roll>/{normalizeToBase(p.quantity, p.unit).baseUnit}
             </span>
             <button className="btn" style={{ padding: '4px 8px', color: 'var(--danger)' }} onClick={() => deleteProduct(p.id)}>✕</button>
           </div>
         ))}
       </div>
 
-      <Hint>Enter products with price and quantity. Bars race to show cheapest per base unit (g, ml, pc). Winner highlighted in green.</Hint>
+      <Hint>Enter products with price and quantity. Bars race to show cheapest per base unit (g, ml, pcs); weights and volumes are compared separately. Winner highlighted in green.</Hint>
     </div>
   )
 }

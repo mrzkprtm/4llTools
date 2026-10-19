@@ -1,27 +1,35 @@
 import { useState, useEffect, useRef } from 'react'
-import { Roll } from '../../motion/Roll'
+import Roll from '../../motion/Roll'
 import { reducedMotion } from '../../motion/springs'
 
 const DAILY_GOAL_ML = 2000
 
+interface DayEntry {
+  date: string // YYYY-MM-DD, local time
+  amount: number // ml
+}
+
+function localDate(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
 export default function WaterIntakeTracker() {
-  const [amount, setAmount] = useState(() => {
-    const saved = localStorage.getItem('water-intake')
-    return saved ? JSON.parse(saved) : 0
-  })
   const [weight, setWeight] = useState(70)
   const [activity, setActivity] = useState<'sedentary' | 'light' | 'moderate' | 'intense'>('light')
   const [goal, setGoal] = useState(DAILY_GOAL_ML)
-  const [history, setHistory] = useState<{ date: string; amount: number }[]>(() => {
-    const saved = localStorage.getItem('water-intake-history')
-    return saved ? JSON.parse(saved) : []
+  // One entry per day; today's entry is the current amount, so the count starts fresh each day
+  const [history, setHistory] = useState<DayEntry[]>(() => {
+    try {
+      const saved = localStorage.getItem('water-intake-history')
+      if (saved) return JSON.parse(saved) as DayEntry[]
+    } catch {}
+    return []
   })
   const waveRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    try { localStorage.setItem('water-intake', JSON.stringify(amount)) } catch {}
     try { localStorage.setItem('water-intake-history', JSON.stringify(history)) } catch {}
-  }, [amount, history])
+  }, [history])
 
   useEffect(() => {
     const base = weight * 35
@@ -29,16 +37,19 @@ export default function WaterIntakeTracker() {
     setGoal(Math.round(base * activityMultiplier[activity]))
   }, [weight, activity])
 
-  const addWater = (ml: number) => {
-    const newAmount = Math.min(goal, amount + ml)
-    setAmount(newAmount)
-    if (newAmount === goal) {
-      // Celebrate!
-    }
+  const today = localDate(new Date())
+  const todayHistory = history.find(h => h.date === today)
+  const amount = todayHistory?.amount ?? 0
+
+  const setAmount = (value: number) => {
+    setHistory(prev => [...prev.filter(h => h.date !== today), { date: today, amount: value }]
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(-30))
   }
 
-  const today = new Date().toISOString().split('T')[0]
-  const todayHistory = history.find(h => h.date === today)
+  const addWater = (ml: number) => {
+    setAmount(Math.min(goal, amount + ml))
+  }
 
   return (
     <div>
@@ -49,7 +60,7 @@ export default function WaterIntakeTracker() {
         </div>
         <div style={{ flex: 1, minWidth: 180 }}>
           <label>Activity Level</label>
-          <select value={activity} onChange={e => setActivity(e.target.value as any)}>
+          <select value={activity} onChange={e => setActivity(e.target.value as typeof activity)}>
             <option value="sedentary">Sedentary</option>
             <option value="light">Light</option>
             <option value="moderate">Moderate</option>
@@ -67,7 +78,7 @@ export default function WaterIntakeTracker() {
               bottom: 0,
               left: 0,
               right: 0,
-              height: `${(amount / goal) * 100}%`,
+              height: `${goal > 0 ? Math.min(1, amount / goal) * 100 : 0}%`,
               background: 'linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 60%, transparent))',
               borderRadius: '0 0 77px 77px',
               transition: reducedMotion() ? 'none' : 'height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -95,7 +106,7 @@ export default function WaterIntakeTracker() {
       <div className="stats" style={{ marginTop: 16 }}>
         <div className="stat"><b><Roll>{amount}</Roll></b><span className="muted">ml consumed</span></div>
         <div className="stat"><b><Roll>{goal}</Roll></b><span className="muted">ml goal</span></div>
-        <div className="stat"><b><Roll>{Math.round((amount / goal) * 100)}</Roll>%</b><span className="muted">Complete</span></div>
+        <div className="stat"><b><Roll>{goal > 0 ? Math.round((amount / goal) * 100) : 0}</Roll>%</b><span className="muted">Complete</span></div>
       </div>
 
       <div style={{ marginTop: 16 }}>
@@ -103,14 +114,14 @@ export default function WaterIntakeTracker() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8 }}>
           {history.slice(-7).reverse().map(h => (
             <div key={h.date} className="stat" style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{new Date(h.date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{new Date(`${h.date}T00:00`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</div>
               <div style={{ fontFamily: 'var(--mono)', fontWeight: 700 }}><Roll>{h.amount}</Roll> ml</div>
             </div>
           ))}
         </div>
       </div>
 
-      <Hint>Tap buttons to add water. Glass fills with animated wave. Goal adjusts by weight and activity.</Hint>
+      <Hint>Tap buttons to add water. The glass fills as you drink and resets each day. Goal adjusts by weight and activity.</Hint>
     </div>
   )
 }

@@ -22,12 +22,18 @@ function formatCurrency(n: number): string {
 
 export default function BillSplitter() {
   const [items, setItems] = useState<Item[]>(() => {
-    const saved = localStorage.getItem('bill-splitter-items')
-    return saved ? JSON.parse(saved) : [{ id: Date.now(), name: 'Pizza', price: 25.00, assignee: null }]
+    try {
+      const saved = localStorage.getItem('bill-splitter-items')
+      if (saved) return JSON.parse(saved) as Item[]
+    } catch {}
+    return [{ id: Date.now(), name: 'Pizza', price: 25.00, assignee: null }]
   })
   const [people, setPeople] = useState<Person[]>(() => {
-    const saved = localStorage.getItem('bill-splitter-people')
-    return saved ? JSON.parse(saved) : DEFAULT_PEOPLE
+    try {
+      const saved = localStorage.getItem('bill-splitter-people')
+      if (saved) return JSON.parse(saved) as Person[]
+    } catch {}
+    return DEFAULT_PEOPLE
   })
   const [taxRate, setTaxRate] = useState(8)
   const [serviceRate, setServiceRate] = useState(10)
